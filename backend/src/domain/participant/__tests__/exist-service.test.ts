@@ -1,13 +1,14 @@
-import { ExistService } from '../participant/exist.service'
-import { Participant } from '../participant/participant'
-import { IParticipantRepository } from '../participant/participant.repository'
+import { createRandomIdString } from 'src/util/random'
+import { ExistService } from '../exist.service'
+import { IParticipantRepository } from '../participant.repository'
+import { Participant } from '../participant'
 
 describe('ExistService', () => {
   let existService: ExistService
   let participantRepository: IParticipantRepository
 
   const participant = Participant.create({
-    id: '1',
+    id: createRandomIdString(),
     name: 'test',
     email: 'participant@example.com',
     status: 'participating',
