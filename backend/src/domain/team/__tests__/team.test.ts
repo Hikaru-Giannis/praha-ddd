@@ -1,5 +1,6 @@
 import { createRandomIdString } from 'src/util/random'
 import { Team } from '../team'
+import { TeamMember } from '../team-member'
 
 describe('Team', () => {
   it('should throw an error when the name is not a number', () => {
@@ -8,6 +9,7 @@ describe('Team', () => {
         id: '1',
         name: 'abc',
         status: 'active',
+        teamMembers: [],
       }),
     ).toThrowError(new Error('名前は数字のみです'))
   })
@@ -18,6 +20,7 @@ describe('Team', () => {
         id: createRandomIdString(),
         name: '1234',
         status: 'active',
+        teamMembers: [],
       }),
     ).toThrowError(new Error('名前は3文字以下です'))
   })
@@ -27,6 +30,12 @@ describe('Team', () => {
       id: createRandomIdString(),
       name: '123',
       status: 'active',
+      teamMembers: [
+        TeamMember.create({
+          teamId: createRandomIdString(),
+          participantId: createRandomIdString(),
+        }),
+      ],
     })
 
     expect(team).toBeInstanceOf(Team)

@@ -1,17 +1,22 @@
+import { TeamMember } from './team-member'
+
 type createTeamProps = {
   id: string
   name: string
   status: 'active' | 'inactive' | 'disbanded'
+  teamMembers: TeamMember[]
 }
 
 export class Team {
   private readonly id: string
   private readonly name: string
   private readonly status: 'active' | 'inactive' | 'disbanded'
+  private readonly teamMembers: TeamMember[]
   private constructor(
     id: string,
     name: string,
     status: 'active' | 'inactive' | 'disbanded',
+    teamMembers: TeamMember[],
   ) {
     this.id = id
     // 名前は数字のみ
@@ -24,9 +29,10 @@ export class Team {
     }
     this.name = name
     this.status = status
+    this.teamMembers = teamMembers
   }
 
-  static create({ id, name, status }: createTeamProps) {
-    return new Team(id, name, status)
+  static create({ id, name, status, teamMembers }: createTeamProps) {
+    return new Team(id, name, status, teamMembers)
   }
 }
