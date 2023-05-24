@@ -32,6 +32,7 @@ describe('Team', () => {
       status: 'active',
       teamMembers: [
         TeamMember.create({
+          id: createRandomIdString(),
           teamId: createRandomIdString(),
           participantId: createRandomIdString(),
         }),

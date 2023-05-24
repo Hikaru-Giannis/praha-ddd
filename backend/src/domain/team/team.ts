@@ -1,21 +1,29 @@
 import { TeamMember } from './team-member'
 
+type Status = 'active' | 'inactive' | 'disbanded'
+
+export const Status = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  DISBANDED: 'disbanded',
+} as const
+
 type createTeamProps = {
   id: string
   teamName: string
-  status: 'active' | 'inactive' | 'disbanded'
+  status: Status
   teamMembers: TeamMember[]
 }
 
 export class Team {
-  private readonly id: string
+  public readonly id: string
   private readonly teamName: string
-  private readonly status: 'active' | 'inactive' | 'disbanded'
+  private readonly status: Status
   private readonly teamMembers: TeamMember[]
   private constructor(
     id: string,
     teamName: string,
-    status: 'active' | 'inactive' | 'disbanded',
+    status: Status,
     teamMembers: TeamMember[],
   ) {
     this.id = id
@@ -34,5 +42,18 @@ export class Team {
 
   static create({ id, teamName, status, teamMembers }: createTeamProps) {
     return new Team(id, teamName, status, teamMembers)
+  }
+
+  public isInactive(): boolean {
+    return this.status === 'inactive'
+  }
+
+  public assignTeamMember(teamMember: TeamMember): Team {
+    return Team.create({
+      id: this.id,
+      teamName: this.teamName,
+      status: this.status,
+      teamMembers: [...this.teamMembers, teamMember],
+    })
   }
 }
