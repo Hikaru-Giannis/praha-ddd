@@ -45,7 +45,7 @@ export class Team {
   }
 
   public isInactive(): boolean {
-    return this.status === 'inactive'
+    return this.status === Status.INACTIVE
   }
 
   public assignTeamMember(teamMember: TeamMember): Team {

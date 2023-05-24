@@ -27,11 +27,10 @@ export class AssignTeamService {
       }
     }
 
-    // なければ新規作成する
     const newTeamId = createRandomIdString()
     const newTeam = Team.create({
       id: newTeamId,
-      teamName: participant.id,
+      teamName: 'a',
       status: Status.INACTIVE,
       teamMembers: [
         TeamMember.create({
