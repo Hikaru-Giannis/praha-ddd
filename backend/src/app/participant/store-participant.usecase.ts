@@ -5,7 +5,6 @@ import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { AssignTeamService } from 'src/domain/team/assign-team.service'
 import { ITeamRepository } from 'src/domain/team/team.repository'
-import { createRandomIdString } from 'src/util/random'
 
 type StoreParticipantProps = {
   name: string
@@ -21,10 +20,8 @@ export class StoreParticipantUseCase {
 
   public async handle({ name, email }: StoreParticipantProps) {
     const participant = Participant.create({
-      id: createRandomIdString(),
       name,
       email,
-      status: 'participating',
     })
 
     const existService = new ExistService(this.participantRepository)

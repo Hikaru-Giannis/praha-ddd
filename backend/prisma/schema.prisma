@@ -13,3 +13,16 @@ model SomeData {
   required Boolean
   number   Int     @db.SmallInt
 }
+
+enum ParticipantStatus {
+  participating
+  adjourning
+  withdrawn
+}
+
+model Participant {
+  id     String @id @default(uuid()) @db.Uuid
+  name   String @db.VarChar(255)
+  email  String @unique @db.VarChar(255)
+  status ParticipantStatus
+}

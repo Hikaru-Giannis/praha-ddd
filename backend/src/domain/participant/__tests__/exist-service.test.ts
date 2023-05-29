@@ -1,4 +1,3 @@
-import { createRandomIdString } from 'src/util/random'
 import { ExistService } from '../exist.service'
 import { IParticipantRepository } from '../participant.repository'
 import { Participant } from '../participant'
@@ -8,15 +7,14 @@ describe('ExistService', () => {
   let participantRepository: IParticipantRepository
 
   const participant = Participant.create({
-    id: createRandomIdString(),
     name: 'test',
     email: 'participant@example.com',
-    status: 'participating',
   })
 
   beforeEach(() => {
     participantRepository = {
       findByEmail: jest.fn(),
+      save: jest.fn(),
     }
 
     existService = new ExistService(participantRepository)
