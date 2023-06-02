@@ -5,9 +5,9 @@ export class GetParticipantIndexResponse {
   @ApiProperty({ type: () => [Participant] })
   participants: Participant[]
 
-  public constructor(params: { someDatas: ParticipantDTO[] }) {
-    const { someDatas } = params
-    this.participants = someDatas.map(({ id, name, email, status }) => {
+  public constructor(params: { participantDTO: ParticipantDTO[] }) {
+    const { participantDTO } = params
+    this.participants = participantDTO.map(({ id, name, email, status }) => {
       return new Participant({
         id,
         name,

@@ -51,4 +51,8 @@ export class Participant {
       status: this.status,
     }
   }
+
+  public changeStatus(status: Status): Participant {
+    return new Participant(this.id, this.name, this.email, status)
+  }
 }

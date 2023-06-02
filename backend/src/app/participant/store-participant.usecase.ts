@@ -1,6 +1,6 @@
 import { AssignPairService } from 'src/domain/pair/assign-pair.service'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
-import { ExistService } from 'src/domain/participant/exist.service'
+import { ValidateEmailUniquenessService } from 'src/domain/participant/validate-email-uniqueness.service'
 import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { AssignTeamService } from 'src/domain/team/assign-team.service'
@@ -24,8 +24,10 @@ export class StoreParticipantUseCase {
       email,
     })
 
-    const existService = new ExistService(this.participantRepository)
-    if (await existService.exist(participant)) {
+    const validateEmailUniquenessService = new ValidateEmailUniquenessService(
+      this.participantRepository,
+    )
+    if (await validateEmailUniquenessService.do(participant)) {
       throw new Error('参加者は既に存在しています')
     }
 
