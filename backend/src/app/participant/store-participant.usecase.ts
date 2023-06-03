@@ -18,7 +18,7 @@ export class StoreParticipantUseCase {
     private readonly pairRepository: IPairRepository,
   ) {}
 
-  public async handle({ name, email }: StoreParticipantProps) {
+  public async do({ name, email }: StoreParticipantProps) {
     const participant = Participant.create({
       name,
       email,

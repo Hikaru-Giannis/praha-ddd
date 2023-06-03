@@ -8,6 +8,6 @@ export class ValidateEmailUniquenessService {
     const duplicatedParticipant = await this.participantRepository.findByEmail(
       participant.email,
     )
-    return duplicatedParticipant === null
+    return duplicatedParticipant !== null
   }
 }

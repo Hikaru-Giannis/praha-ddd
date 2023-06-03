@@ -1,10 +1,12 @@
 import { PrismaClient, ParticipantStatus } from '@prisma/client'
+import { uuid } from 'uuidv4'
 
 const prisma = new PrismaClient()
 
 async function main() {
   // 30人分のダミーデータを作成
   const participants = Array.from({ length: 30 }).map((_, i) => ({
+    id: uuid(),
     name: `Participant ${i + 1}`,
     email: `participant${i}` + '@example.com',
     status: ParticipantStatus.participating,
