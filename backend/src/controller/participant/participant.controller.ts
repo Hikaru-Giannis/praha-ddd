@@ -34,8 +34,7 @@ export class ParticipantController {
   ): Promise<{
     status: number
   }> {
-    const prisma = new PrismaClient()
-    const participantrepo = new ParticipantRepository(prisma)
+    const participantrepo = new ParticipantRepository()
     const teamRepo = new TeamRepository()
     const pairRepo = new PairRepository()
     const validateEmailUniquenessService = new ValidateEmailUniquenessService(
@@ -62,8 +61,7 @@ export class ParticipantController {
   ): Promise<{
     status: number
   }> {
-    const prisma = new PrismaClient()
-    const repo = new ParticipantRepository(prisma)
+    const repo = new ParticipantRepository()
     const usecase = new PutParticipantUseCase(repo)
     await usecase.do(putParticipantDto.id, putParticipantDto.status)
     return { status: 200 }

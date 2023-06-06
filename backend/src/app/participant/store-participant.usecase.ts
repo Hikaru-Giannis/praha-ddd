@@ -5,14 +5,18 @@ import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { AssignTeamService } from 'src/domain/team/assign-team.service'
 import { ITeamRepository } from 'src/domain/team/team.repository'
+import { Inject, Injectable } from '@nestjs/common'
+import { tokens } from 'src/tokens'
 
 type StoreParticipantProps = {
   name: string
   email: string
 }
 
+@Injectable()
 export class StoreParticipantUseCase {
   public constructor(
+    @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,
     private readonly teamRepository: ITeamRepository,
     private readonly pairRepository: IPairRepository,
