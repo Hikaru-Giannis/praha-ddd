@@ -11,6 +11,7 @@ import { PutParticipantRequest } from './request/put-participant-request'
 import { StoreParticipantUseCase } from 'src/app/participant/store-participant.usecase'
 import { PairRepository } from 'src/infra/db/repository/pair/pair.repository'
 import { PostParticipantRequest } from './request/post-participant-request'
+import { ValidateEmailUniquenessService } from 'src/domain/participant/validate-email-uniqueness.service'
 
 @Controller('participant')
 export class ParticipantController {
@@ -37,10 +38,14 @@ export class ParticipantController {
     const participantrepo = new ParticipantRepository(prisma)
     const teamRepo = new TeamRepository()
     const pairRepo = new PairRepository()
+    const validateEmailUniquenessService = new ValidateEmailUniquenessService(
+      participantrepo,
+    )
     const usecase = new StoreParticipantUseCase(
       participantrepo,
       teamRepo,
       pairRepo,
+      validateEmailUniquenessService,
     )
     await usecase.do({
       name: postParticipantDto.name,

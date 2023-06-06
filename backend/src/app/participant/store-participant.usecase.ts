@@ -16,6 +16,7 @@ export class StoreParticipantUseCase {
     private readonly participantRepository: IParticipantRepository,
     private readonly teamRepository: ITeamRepository,
     private readonly pairRepository: IPairRepository,
+    private readonly validateEmailUniquenessService: ValidateEmailUniquenessService,
   ) {}
 
   public async do({ name, email }: StoreParticipantProps) {
@@ -24,10 +25,8 @@ export class StoreParticipantUseCase {
       email,
     })
 
-    const validateEmailUniquenessService = new ValidateEmailUniquenessService(
-      this.participantRepository,
-    )
-    if (await validateEmailUniquenessService.do(participant)) {
+    // メールアドレスの重複チェック
+    if (await this.validateEmailUniquenessService.do(participant)) {
       throw new Error('参加者は既に存在しています')
     }
 
