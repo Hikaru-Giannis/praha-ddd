@@ -21,8 +21,30 @@ enum ParticipantStatus {
 }
 
 model Participant {
-  id     String @id @db.Uuid
+  id     String @id
   name   String @db.VarChar(255)
   email  String @unique @db.VarChar(255)
   status ParticipantStatus
+  teamMember TeamMember?
+}
+
+enum TeamStatus {
+  active
+  inactive
+  disbanded
+}
+
+model Team {
+  id     String @id
+  name   String @db.VarChar(255)
+  status TeamStatus
+  members TeamMember[]
+}
+
+model TeamMember {
+  id     String @id
+  participant_id String @unique
+  participant Participant @relation(fields: [participant_id], references: [id])
+  team_id String
+  team Team @relation(fields: [team_id], references: [id])
 }

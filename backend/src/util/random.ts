@@ -1,5 +1,5 @@
-import { uuid } from 'uuidv4'
+import { ulid } from 'ulid'
 
 export const createRandomIdString = () => {
-  return uuid()
+  return ulid()
 }
