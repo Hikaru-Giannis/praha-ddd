@@ -11,12 +11,20 @@ export class ParticipantQS implements IParticipantQS {
   }
 
   public async fetchAll(): Promise<ParticipantDTO[]> {
-    const allParticipants = await this.prismaClient.participant.findMany()
-    return allParticipants.map(
-      (participantDM) =>
-        new ParticipantDTO({
-          ...participantDM,
-        }),
-    )
+    const participantsWithTeams = await this.prismaClient.participant.findMany({
+      include: {
+        teamMember: {
+          include: {
+            team: true,
+          },
+        },
+      },
+    })
+
+    return participantsWithTeams.map((participantWithTeams) => {
+      return new ParticipantDTO({
+        ...participantWithTeams,
+      })
+    })
   }
 }

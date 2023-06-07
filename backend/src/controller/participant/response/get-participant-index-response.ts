@@ -7,14 +7,17 @@ export class GetParticipantIndexResponse {
 
   public constructor(params: { participantDTO: ParticipantDTO[] }) {
     const { participantDTO } = params
-    this.participants = participantDTO.map(({ id, name, email, status }) => {
-      return new Participant({
-        id,
-        name,
-        email,
-        status,
-      })
-    })
+    this.participants = participantDTO.map(
+      ({ id, name, email, status, team }) => {
+        return new Participant({
+          id,
+          name,
+          email,
+          status,
+          team,
+        })
+      },
+    )
   }
 }
 
@@ -31,15 +34,26 @@ class Participant {
   @ApiProperty()
   status: 'participating' | 'adjourning' | 'withdrawn'
 
+  @ApiProperty()
+  team?: {
+    id: string
+    name: string
+  }
+
   public constructor(params: {
     id: string
     name: string
     email: string
     status: 'participating' | 'adjourning' | 'withdrawn'
+    team?: {
+      id: string
+      name: string
+    }
   }) {
     this.id = params.id
     this.name = params.name
     this.email = params.email
     this.status = params.status
+    this.team = params.team
   }
 }

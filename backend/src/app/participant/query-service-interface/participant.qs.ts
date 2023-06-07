@@ -5,6 +5,19 @@ type createProps = {
   name: string
   email: string
   status: Status
+  teamMember: TeamMember | null
+}
+
+type TeamMember = {
+  id: string
+  participant_id: string
+  team_id: string
+  team: Team
+}
+
+type Team = {
+  id: string
+  name: string
 }
 
 export class ParticipantDTO {
@@ -12,12 +25,13 @@ export class ParticipantDTO {
   public readonly name: string
   public readonly email: string
   public readonly status: Status
+  public readonly team?: Team
   public constructor(props: createProps) {
-    const { id, name, email, status } = props
-    this.id = id
-    this.name = name
-    this.email = email
-    this.status = status
+    this.id = props.id
+    this.name = props.name
+    this.email = props.email
+    this.status = props.status
+    this.team = props.teamMember?.team
   }
 }
 
