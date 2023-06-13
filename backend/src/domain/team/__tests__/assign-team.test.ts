@@ -30,9 +30,7 @@ describe('AssignTeamService', () => {
       email: 'participantEmail',
     })
     const team = Team.create({
-      id: createRandomIdString(),
       teamName: 'teamName',
-      status: 'inactive',
       teamMembers: [],
     })
 

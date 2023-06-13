@@ -1,17 +1,9 @@
+import { createRandomIdString } from 'src/util/random'
 import { TeamMember } from './team-member'
-
-type TeamStatus = 'active' | 'inactive' | 'disbanded'
-
-export const TeamStatus = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive',
-  DISBANDED: 'disbanded',
-} as const
+import { TeamStatus } from './TeamStatus'
 
 type createTeamProps = {
-  id: string
   teamName: string
-  status: TeamStatus
   teamMembers: TeamMember[]
 }
 
@@ -40,19 +32,22 @@ export class Team {
     this.teamMembers = teamMembers
   }
 
-  static create({ id, teamName, status, teamMembers }: createTeamProps) {
-    return new Team(id, teamName, status, teamMembers)
+  static create({ teamName, teamMembers }: createTeamProps) {
+    return new Team(
+      createRandomIdString(),
+      teamName,
+      TeamStatus.active(),
+      teamMembers,
+    )
   }
 
   public isInactive(): boolean {
-    return this.status === TeamStatus.INACTIVE
+    return this.status.isInactive()
   }
 
   public assignTeamMember(teamMember: TeamMember): Team {
     return Team.create({
-      id: this.id,
       teamName: this.teamName,
-      status: this.status,
       teamMembers: [...this.teamMembers, teamMember],
     })
   }
