@@ -34,7 +34,7 @@ describe('AssignTeamService', () => {
       teamMembers: [],
     })
 
-    team.isInactive = jest.fn().mockReturnValue(true)
+    jest.spyOn(team, 'isInactive', 'get').mockReturnValue(true)
     mockRepo.fetchAll.mockResolvedValue([team])
 
     await service.assign(participant)

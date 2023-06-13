@@ -20,15 +20,15 @@ export class TeamStatus {
     return new TeamStatus(TEAM_STATUS.DISBANDED)
   }
 
-  public isActive(): boolean {
+  public get isActive(): boolean {
     return this.value === TEAM_STATUS.ACTIVE
   }
 
-  public isInactive(): boolean {
+  public get isInactive(): boolean {
     return this.value === TEAM_STATUS.INACTIVE
   }
 
-  public isDisbanded(): boolean {
+  public get isDisbanded(): boolean {
     return this.value === TEAM_STATUS.DISBANDED
   }
 }
