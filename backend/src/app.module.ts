@@ -4,7 +4,6 @@ import { ParticipantController } from './controller/participant/participant.cont
 import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
 
-// memo: DIコンテナとしては使わないため、controllerの追加だけしてください
 @Module({
   imports: [],
   controllers: [SampleController, ParticipantController],
