@@ -1,8 +1,7 @@
-import { Participant, STATUS } from 'src/domain/participant/participant'
+import { Participant } from 'src/domain/participant/participant'
 import { AssignTeamService } from '../assign-team.service'
 import { ITeamRepository } from '../team.repository'
 import { Team } from '../team'
-import { createRandomIdString } from 'src/util/random'
 
 jest.mock('src/domain/participant/participant')
 jest.mock('../team-member')
