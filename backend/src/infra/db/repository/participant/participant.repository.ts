@@ -1,17 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
+import { tokens } from 'src/tokens'
 
 @Injectable()
 export class ParticipantRepository implements IParticipantRepository {
-  private prismClient: PrismaClient
-  public constructor() {
-    this.prismClient = new PrismaClient()
-  }
+  public constructor(
+    @Inject(tokens.PrismaClient)
+    private prismaClient: PrismaClient,
+  ) {}
 
   public async findById(id: string): Promise<Participant> {
-    const participant = await this.prismClient.participant.findUnique({
+    const participant = await this.prismaClient.participant.findUnique({
       where: { id },
     })
     if (!participant) {
@@ -26,7 +27,7 @@ export class ParticipantRepository implements IParticipantRepository {
   }
 
   public async save(participant: Participant): Promise<void> {
-    await this.prismClient.participant.upsert({
+    await this.prismaClient.participant.upsert({
       where: { id: participant.id },
       update: participant.getAllProperties(),
       create: participant.getAllProperties(),

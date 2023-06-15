@@ -4,6 +4,7 @@ import { ParticipantController } from './controller/participant/participant.cont
 import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
 import { TeamController } from './controller/team/team.controller'
+import { PrismaClient } from '@prisma/client'
 
 @Module({
   imports: [],
@@ -12,6 +13,10 @@ import { TeamController } from './controller/team/team.controller'
     {
       provide: tokens.IParticipantRepository,
       useClass: ParticipantRepository,
+    },
+    {
+      provide: tokens.PrismaClient,
+      useValue: PrismaClient,
     },
   ],
 })

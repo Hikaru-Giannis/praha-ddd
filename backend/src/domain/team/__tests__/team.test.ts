@@ -10,7 +10,6 @@ describe('Team', () => {
     expect(() =>
       team.assignTeamMember(
         TeamMember.create({
-          id: createRandomIdString(),
           teamId: createRandomIdString(),
           participantId: createRandomIdString(),
         }),
@@ -25,7 +24,6 @@ describe('Team', () => {
     expect(() =>
       team.assignTeamMember(
         TeamMember.create({
-          id: createRandomIdString(),
           teamId: createRandomIdString(),
           participantId: createRandomIdString(),
         }),

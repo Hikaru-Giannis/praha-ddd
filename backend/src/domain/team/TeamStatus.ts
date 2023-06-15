@@ -3,7 +3,7 @@ const TEAM_STATUS = {
   INACTIVE: 'inactive',
   DISBANDED: 'disbanded',
 } as const
-type TeamStatusType = typeof TEAM_STATUS[keyof typeof TEAM_STATUS]
+export type TeamStatusType = typeof TEAM_STATUS[keyof typeof TEAM_STATUS]
 
 export class TeamStatus {
   private constructor(public readonly value: TeamStatusType) {}
@@ -30,5 +30,9 @@ export class TeamStatus {
 
   public get isDisbanded(): boolean {
     return this.value === TEAM_STATUS.DISBANDED
+  }
+
+  public static reconstruct(value: TeamStatusType): TeamStatus {
+    return new TeamStatus(value)
   }
 }

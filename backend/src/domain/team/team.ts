@@ -1,10 +1,17 @@
 import { createRandomIdString } from 'src/util/random'
 import { TeamMember } from './team-member'
-import { TeamStatus } from './TeamStatus'
+import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
 
 type createTeamProps = {
   teamName: string
+}
+
+type reconstructTeamProps = {
+  id: string
+  teamName: string
+  status: TeamStatusType
+  teamMembers: TeamMember[]
 }
 
 export class Team {
@@ -42,5 +49,21 @@ export class Team {
       ...this.teamMembers,
       teamMember,
     ])
+  }
+
+  static reconstruct({
+    id,
+    teamName,
+    status,
+    teamMembers,
+  }: reconstructTeamProps) {
+    return new Team(
+      id,
+      TeamName.create(teamName),
+      TeamStatus.reconstruct(status),
+      teamMembers.map((teamMember) => {
+        return TeamMember.reconstruct(teamMember.getAllProperties)
+      }),
+    )
   }
 }
