@@ -30,6 +30,35 @@ export class TeamRepository implements ITeamRepository {
   }
 
   public async save(team: Team): Promise<void> {
-    console.log(team)
+    const allProperties = team.getAllProperties()
+    await this.prismaClient.team.upsert({
+      where: { id: team.id },
+      update: {
+        name: allProperties.teamName,
+        status: allProperties.status,
+      },
+      create: {
+        id: allProperties.id,
+        name: allProperties.teamName,
+        status: allProperties.status,
+      },
+    })
+
+    await Promise.all(
+      allProperties.teamMembers.map(async (teamMember) => {
+        await this.prismaClient.teamMember.upsert({
+          where: { id: teamMember.id },
+          update: {
+            team_id: teamMember.teamId,
+            participant_id: teamMember.participantId,
+          },
+          create: {
+            id: teamMember.id,
+            team_id: teamMember.teamId,
+            participant_id: teamMember.participantId,
+          },
+        })
+      }),
+    )
   }
 }

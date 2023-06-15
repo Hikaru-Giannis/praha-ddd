@@ -66,4 +66,15 @@ export class Team {
       }),
     )
   }
+
+  public getAllProperties() {
+    return {
+      id: this.id,
+      teamName: this.teamName.value,
+      status: this.status.value,
+      teamMembers: this.teamMembers.map((teamMember) => {
+        return teamMember.getAllProperties
+      }),
+    }
+  }
 }
