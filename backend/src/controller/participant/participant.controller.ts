@@ -15,7 +15,6 @@ import { ValidateEmailUniquenessService } from 'src/domain/participant/validate-
 
 @Controller('participant')
 export class ParticipantController {
-  // memo: @ApiResponseを定義しておかないとSwaggerに出力されない
   @Get('index')
   @ApiResponse({ status: 200, type: GetParticipantIndexResponse })
   async getSomeData(): Promise<GetParticipantIndexResponse> {

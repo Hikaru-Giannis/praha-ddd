@@ -5,7 +5,6 @@ import { TeamName } from './TeamName'
 
 type createTeamProps = {
   teamName: string
-  teamMembers: TeamMember[]
 }
 
 export class Team {
@@ -13,11 +12,12 @@ export class Team {
   private readonly teamName: TeamName
   private readonly status: TeamStatus
   private readonly teamMembers: TeamMember[]
+
   private constructor(
     id: string,
     teamName: TeamName,
     status: TeamStatus,
-    teamMembers: TeamMember[],
+    teamMembers: TeamMember[] = [],
   ) {
     this.id = id
     this.teamName = teamName
@@ -25,12 +25,11 @@ export class Team {
     this.teamMembers = teamMembers
   }
 
-  static create({ teamName, teamMembers }: createTeamProps) {
+  static create({ teamName }: createTeamProps) {
     return new Team(
       createRandomIdString(),
       TeamName.create(teamName),
       TeamStatus.active(),
-      teamMembers,
     )
   }
 
@@ -39,9 +38,9 @@ export class Team {
   }
 
   public assignTeamMember(teamMember: TeamMember): Team {
-    return Team.create({
-      teamName: this.teamName.value,
-      teamMembers: [...this.teamMembers, teamMember],
-    })
+    return new Team(this.id, this.teamName, this.status, [
+      ...this.teamMembers,
+      teamMember,
+    ])
   }
 }

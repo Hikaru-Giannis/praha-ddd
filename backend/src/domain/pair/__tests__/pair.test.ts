@@ -5,7 +5,6 @@ describe('Pair', () => {
   it('should throw an error when the name is not an alphabet character', () => {
     expect(() =>
       Pair.create({
-        id: createRandomIdString(),
         teamId: createRandomIdString(),
         pairName: '123',
       }),
@@ -15,7 +14,6 @@ describe('Pair', () => {
   it('should throw an error when the name is more than 1 character', () => {
     expect(() =>
       Pair.create({
-        id: createRandomIdString(),
         teamId: createRandomIdString(),
         pairName: 'ab',
       }),
@@ -24,7 +22,6 @@ describe('Pair', () => {
 
   it('should create a new Pair when the name is an alphabet character and not more than 1 character', () => {
     const pair = Pair.create({
-      id: createRandomIdString(),
       teamId: createRandomIdString(),
       pairName: 'a',
     })

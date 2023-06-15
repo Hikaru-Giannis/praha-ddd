@@ -30,7 +30,6 @@ describe('AssignTeamService', () => {
     })
     const team = Team.create({
       teamName: 'teamName',
-      teamMembers: [],
     })
 
     jest.spyOn(team, 'isInactive', 'get').mockReturnValue(true)
