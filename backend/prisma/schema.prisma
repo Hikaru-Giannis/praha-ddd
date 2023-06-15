@@ -26,6 +26,7 @@ model Participant {
   email  String @unique @db.VarChar(255)
   status ParticipantStatus
   teamMember TeamMember?
+  pairMember PairMember?
 }
 
 enum TeamStatus {
@@ -39,6 +40,7 @@ model Team {
   name   String @db.VarChar(255)
   status TeamStatus
   members TeamMember[]
+  pairs Pair[]
 }
 
 model TeamMember {
@@ -47,4 +49,20 @@ model TeamMember {
   participant Participant @relation(fields: [participant_id], references: [id])
   team_id String
   team Team @relation(fields: [team_id], references: [id])
+}
+
+model Pair {
+  id     String @id
+  team_id String
+  team Team @relation(fields: [team_id], references: [id])
+  name   String @db.VarChar(255)
+  members PairMember[]
+}
+
+model PairMember {
+  id     String @id
+  participant_id String @unique
+  participant Participant @relation(fields: [participant_id], references: [id])
+  pair_id String
+  pair Pair @relation(fields: [pair_id], references: [id])
 }

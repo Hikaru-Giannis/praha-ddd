@@ -45,6 +45,42 @@ async function main() {
   await prisma.teamMember.createMany({
     data: teamMembers,
   })
+
+  // 1チームに2ペアとして12ペアを作成
+  // ペア名は英字で、昇順
+  const names = Array.from({ length: 12 }).map((_, i) =>
+    String.fromCharCode(65 + i),
+  )
+  const pairs = teams.flatMap((team) => {
+    const pairs = participants.splice(0, 12).map((participant) => ({
+      id: ulid(),
+      team_id: team.id,
+      participant_id: participant.id,
+      name: String(names.shift()),
+    }))
+    return pairs
+  })
+
+  // 作成したデータをDBに保存
+  await prisma.pair.createMany({
+    data: pairs,
+  })
+
+  // 作成したペアに参加者を割り当てる
+  // 1ペアに3人ずつ割り当てる
+  const pairMembers = pairs.flatMap((pair) => {
+    const pairMembers = participants.splice(0, 3).map((participant) => ({
+      id: ulid(),
+      participant_id: participant.id,
+      pair_id: pair.id,
+    }))
+    return pairMembers
+  })
+
+  // 作成したデータをDBに保存
+  await prisma.pairMember.createMany({
+    data: pairMembers,
+  })
 }
 
 main()
