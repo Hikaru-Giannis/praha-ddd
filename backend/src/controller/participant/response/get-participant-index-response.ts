@@ -14,8 +14,14 @@ export class GetParticipantIndexResponse {
           name,
           email,
           status,
-          team,
-          pair,
+          team: team && {
+            id: team.id,
+            name: team.name,
+          },
+          pair: pair && {
+            id: pair.id,
+            name: pair.name,
+          },
         })
       },
     )

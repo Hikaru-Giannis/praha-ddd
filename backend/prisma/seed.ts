@@ -30,14 +30,18 @@ async function main() {
     data: teams,
   })
 
+  const teamMemberParticipants = [...participants]
+
   // 作成したチームに参加者を割り当てる
   // 1チームに6人ずつ割り当てる
   const teamMembers = teams.flatMap((team) => {
-    const teamMembers = participants.splice(0, 6).map((participant) => ({
-      id: ulid(),
-      participant_id: participant.id,
-      team_id: team.id,
-    }))
+    const teamMembers = teamMemberParticipants
+      .splice(0, 6)
+      .map((participant) => ({
+        id: ulid(),
+        participant_id: participant.id,
+        team_id: team.id,
+      }))
     return teamMembers
   })
 
@@ -46,17 +50,16 @@ async function main() {
     data: teamMembers,
   })
 
-  // 1チームに2ペアとして12ペアを作成
-  // ペア名は英字で、昇順
-  const names = Array.from({ length: 12 }).map((_, i) =>
-    String.fromCharCode(65 + i),
-  )
+  // 1チームに2ペアとして10ペアを作成
+  const pairNames = ['A', 'B']
+
+  // ペア名は英字で、1チーム内で毎回昇順から割り当てる
+  // 例 ) 1-A, 1-B, 2-A, 2-B, 3-A, 3-B, ...
   const pairs = teams.flatMap((team) => {
-    const pairs = participants.splice(0, 12).map((participant) => ({
+    const pairs = pairNames.map((name) => ({
       id: ulid(),
+      name,
       team_id: team.id,
-      participant_id: participant.id,
-      name: String(names.shift()),
     }))
     return pairs
   })
@@ -69,11 +72,13 @@ async function main() {
   // 作成したペアに参加者を割り当てる
   // 1ペアに3人ずつ割り当てる
   const pairMembers = pairs.flatMap((pair) => {
-    const pairMembers = participants.splice(0, 3).map((participant) => ({
-      id: ulid(),
-      participant_id: participant.id,
-      pair_id: pair.id,
-    }))
+    const pairMembers = participants.splice(0, 3).map((participant) => {
+      return {
+        id: ulid(),
+        participant_id: participant.id,
+        pair_id: pair.id,
+      }
+    })
     return pairMembers
   })
 
