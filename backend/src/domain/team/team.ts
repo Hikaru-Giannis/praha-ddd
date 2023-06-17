@@ -35,7 +35,7 @@ export class Team {
   static create({ teamName }: createTeamProps) {
     return new Team(
       createRandomIdString(),
-      TeamName.create(teamName),
+      new TeamName(teamName),
       TeamStatus.active(),
     )
   }
@@ -59,8 +59,8 @@ export class Team {
   }: reconstructTeamProps) {
     return new Team(
       id,
-      TeamName.create(teamName),
-      TeamStatus.reconstruct(status),
+      new TeamName(teamName),
+      new TeamStatus(status),
       teamMembers.map((teamMember) => {
         return TeamMember.reconstruct(teamMember.getAllProperties)
       }),

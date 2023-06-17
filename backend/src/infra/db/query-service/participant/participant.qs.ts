@@ -5,10 +5,7 @@ import {
 } from 'src/app/participant/query-service-interface/participant.qs'
 
 export class ParticipantQS implements IParticipantQS {
-  private prismaClient: PrismaClient
-  public constructor(prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient
-  }
+  public constructor(private prismaClient: PrismaClient) {}
 
   public async fetchAll(): Promise<ParticipantDTO[]> {
     const participantsWithTeams = await this.prismaClient.participant.findMany({
@@ -16,6 +13,15 @@ export class ParticipantQS implements IParticipantQS {
         teamMember: {
           include: {
             team: true,
+          },
+        },
+        pairMember: {
+          include: {
+            pair: {
+              include: {
+                team: true,
+              },
+            },
           },
         },
       },

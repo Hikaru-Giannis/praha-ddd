@@ -1,16 +1,16 @@
 export class TeamName {
-  private constructor(public readonly value: string) {}
-
-  static create(teamName: string): TeamName {
+  public readonly value: string
+  public constructor(value: string) {
     // 名前は数字のみ
-    if (!teamName.match(/^[0-9]+$/)) {
+    if (!value.match(/^[0-9]+$/)) {
       throw new Error('名前は数字のみです')
     }
     // 名前は3文字以下
-    if (teamName.length > 3) {
+    if (value.length > 3) {
       throw new Error('名前は3文字以下です')
     }
-    return new TeamName(teamName)
+
+    this.value = value
   }
 
   public equals(other: TeamName): boolean {

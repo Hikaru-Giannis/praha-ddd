@@ -18,6 +18,6 @@ export class Pair {
   }
 
   static create({ teamId, pairName }: PairCreateProps) {
-    return new Pair(createRandomIdString(), teamId, PairName.create(pairName))
+    return new Pair(createRandomIdString(), teamId, new PairName(pairName))
   }
 }

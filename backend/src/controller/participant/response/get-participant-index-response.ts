@@ -8,13 +8,14 @@ export class GetParticipantIndexResponse {
   public constructor(params: { participantDTO: ParticipantDTO[] }) {
     const { participantDTO } = params
     this.participants = participantDTO.map(
-      ({ id, name, email, status, team }) => {
+      ({ id, name, email, status, team, pair }) => {
         return new Participant({
           id,
           name,
           email,
           status,
           team,
+          pair,
         })
       },
     )
@@ -40,6 +41,12 @@ class Participant {
     name: string
   }
 
+  @ApiProperty()
+  pair?: {
+    id: string
+    name: string
+  }
+
   public constructor(params: {
     id: string
     name: string
@@ -49,11 +56,16 @@ class Participant {
       id: string
       name: string
     }
+    pair?: {
+      id: string
+      name: string
+    }
   }) {
     this.id = params.id
     this.name = params.name
     this.email = params.email
     this.status = params.status
     this.team = params.team
+    this.pair = params.pair
   }
 }
