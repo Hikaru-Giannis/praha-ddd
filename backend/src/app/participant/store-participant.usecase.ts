@@ -39,7 +39,10 @@ export class StoreParticipantUseCase {
 
     // チーム割り当て
     const assignTeamService = new AssignTeamService(this.teamRepository)
-    await assignTeamService.assign(participant)
+    const team = await assignTeamService.assign(participant)
+    if (!team) {
+      throw new Error('チームの割り当てに失敗しました')
+    }
 
     // ペア割り当て
     const assignPairService = new AssignPairService(this.pairRepository)

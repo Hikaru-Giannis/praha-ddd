@@ -5,6 +5,7 @@ import { TeamName } from './TeamName'
 
 type createTeamProps = {
   teamName: string
+  teamMembers: TeamMember[]
 }
 
 type reconstructTeamProps = {
@@ -32,16 +33,22 @@ export class Team {
     this.teamMembers = teamMembers
   }
 
-  static create({ teamName }: createTeamProps) {
+  static create({ teamName, teamMembers }: createTeamProps) {
+    if (teamMembers.length >= 3) {
+      return new Team(
+        createRandomIdString(),
+        new TeamName(teamName),
+        TeamStatus.active(),
+        teamMembers,
+      )
+    }
+
     return new Team(
       createRandomIdString(),
       new TeamName(teamName),
-      TeamStatus.active(),
+      TeamStatus.inactive(),
+      teamMembers,
     )
-  }
-
-  public get isInactive(): boolean {
-    return this.status.isInactive
   }
 
   public assignTeamMember(teamMember: TeamMember): Team {
@@ -76,5 +83,22 @@ export class Team {
         return teamMember.getAllProperties
       }),
     }
+  }
+
+  public delete() {
+    return new Team(
+      this.id,
+      this.teamName,
+      TeamStatus.disbanded(),
+      this.teamMembers,
+    )
+  }
+
+  public get isInactive(): boolean {
+    return this.status.isInactive
+  }
+
+  public get teamMembersCount(): number {
+    return this.teamMembers.length
   }
 }

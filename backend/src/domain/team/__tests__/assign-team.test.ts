@@ -2,54 +2,72 @@ import { Participant } from 'src/domain/participant/participant'
 import { AssignTeamService } from '../assign-team.service'
 import { ITeamRepository } from '../team.repository'
 import { Team } from '../team'
-
-jest.mock('src/domain/participant/participant')
-jest.mock('../team-member')
-jest.mock('../team')
-jest.mock('src/util/random', () => ({
-  createRandomIdString: () => 'randomId',
-}))
+import { createMockRepository } from '@testUtil/team.factory'
+import { createMockParticipant } from '@testUtil/participant.factory'
 
 describe('AssignTeamService', () => {
-  let mockRepo: jest.Mocked<ITeamRepository>
   let service: AssignTeamService
+  let mockRepo: ITeamRepository
+  let mockParticipant: Participant
 
   beforeEach(() => {
-    mockRepo = {
-      fetchAll: jest.fn(),
-      save: jest.fn(),
-    }
-
+    mockRepo = createMockRepository()
+    mockParticipant = createMockParticipant()
     service = new AssignTeamService(mockRepo)
   })
 
-  it('assigns participant to existing inactive team', async () => {
-    const participant = Participant.create({
-      name: 'participantName',
-      email: 'participantEmail',
-    })
-    const team = Team.create({
-      teamName: 'teamName',
-    })
+  it('assigns participant to an inactive team if any exists', async () => {
+    const mockInactiveTeam = ({
+      id: 'team1',
+      isInactive: true,
+      assignTeamMember: jest.fn().mockReturnValue({
+        id: 'team1',
+        teamMembersCount: 1,
+      }),
+      teamMembersCount: 0,
+    } as unknown) as Team
+    const mockActiveTeam = ({
+      id: 'team2',
+      isInactive: false,
+      assignTeamMember: jest.fn().mockReturnValue({
+        id: 'team2',
+        teamMembersCount: 1,
+      }),
+      teamMembersCount: 0,
+    } as unknown) as Team
 
-    jest.spyOn(team, 'isInactive', 'get').mockReturnValue(true)
-    mockRepo.fetchAll.mockResolvedValue([team])
+    // Mock repository fetchAll method
+    ;(mockRepo.fetchAll as jest.Mock).mockResolvedValue([
+      mockInactiveTeam,
+      mockActiveTeam,
+    ])
 
-    await service.assign(participant)
+    await service.assign(mockParticipant)
 
+    // Assert that inactive team was updated
+    expect(mockInactiveTeam.assignTeamMember).toHaveBeenCalled()
     expect(mockRepo.save).toHaveBeenCalled()
   })
 
-  it('creates a new team if no inactive team exists', async () => {
-    const participant = Participant.create({
-      name: 'participantName',
-      email: 'participantEmail',
-    })
+  it('assigns participant to an active team if no inactive teams exist', async () => {
+    // Set up mock teams
+    const mockActiveTeam = ({
+      id: 'team1',
+      isInactive: false,
+      assignTeamMember: jest.fn().mockReturnValue({
+        id: 'team1',
+        teamMembersCount: 1,
+      }),
+      teamMembersCount: 0,
+    } as unknown) as Team
 
-    mockRepo.fetchAll.mockResolvedValue([])
+    // Mock repository fetchAll method
+    ;(mockRepo.fetchAll as jest.Mock).mockResolvedValue([mockActiveTeam])
 
-    await service.assign(participant)
+    await service.assign(mockParticipant)
 
+    // Assert that active team was updated
+    expect(mockActiveTeam.assignTeamMember).toHaveBeenCalled()
     expect(mockRepo.save).toHaveBeenCalled()
   })
 })

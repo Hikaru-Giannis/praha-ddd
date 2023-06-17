@@ -1,34 +1,42 @@
 import { Participant } from '../participant/participant'
+import { Team } from './team'
 import { TeamMember } from './team-member'
 import { ITeamRepository } from './team.repository'
 
 export class AssignTeamService {
   public constructor(private readonly teamRepository: ITeamRepository) {}
 
-  public async assign(participant: Participant): Promise<void> {
+  public async assign(participant: Participant): Promise<Team | undefined> {
     const allTeams = await this.teamRepository.fetchAll()
-    const inactiveTeams = allTeams.filter((team) => team.isInactive)
 
-    if (inactiveTeams.length > 0 && inactiveTeams[0]) {
-      // 不活性チームがある場合は、そのチームに参加者を追加する
-      const teamMember = TeamMember.create({
-        teamId: inactiveTeams[0].id,
-        participantId: participant.id,
-      })
-      const team = inactiveTeams[0].assignTeamMember(teamMember)
-      await this.teamRepository.save(team)
-      return
+    const inactiveTeams = allTeams.filter((team) => team.isInactive)
+    if (inactiveTeams.length > 0) {
+      // 非活性チームがある場合は、参加者を参加者数が少ないチームに追加する
+      inactiveTeams.sort((a, b) => a.teamMembersCount - b.teamMembersCount)
+      const inactiveTeam = inactiveTeams[0]
+      if (inactiveTeam) {
+        const teamMember = TeamMember.create({
+          teamId: inactiveTeam.id,
+          participantId: participant.id,
+        })
+        const team = inactiveTeam.assignTeamMember(teamMember)
+        await this.teamRepository.save(team)
+        return team
+      }
     }
 
-    // 不活性チームがない場合は、活性化チームに参加者を追加する
+    // 非活性チームがない場合は、参加者を活性チームに追加する
     const activeTeams = allTeams.filter((team) => !team.isInactive)
-    if (activeTeams[0]) {
+    activeTeams.sort((a, b) => a.teamMembersCount - b.teamMembersCount)
+    const activeTeam = activeTeams[0]
+    if (activeTeam) {
       const teamMember = TeamMember.create({
-        teamId: activeTeams[0].id,
+        teamId: activeTeam.id,
         participantId: participant.id,
       })
-      const team = activeTeams[0].assignTeamMember(teamMember)
+      const team = activeTeam.assignTeamMember(teamMember)
       await this.teamRepository.save(team)
+      return team
     }
   }
 }
