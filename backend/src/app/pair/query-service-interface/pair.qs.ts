@@ -2,10 +2,11 @@ type createProps = {
   id: string
   name: string
   status: string
-  teamMembers: TeamMember[]
+  team: Team
+  pairMembers: PairMember[]
 }
 
-type TeamMember = {
+type PairMember = {
   id: string
   name: string
   email: string
@@ -17,20 +18,26 @@ type Participant = {
   email: string
 }
 
-export class TeamDTO {
+type Team = {
+  id: string
+  name: string
+  status: string
+}
+
+export class PairDto {
   public readonly id: string
   public readonly name: string
-  public readonly status: string
-  public readonly teamMembers: Participant[]
+  public readonly team: Team
+  public readonly pairMembers: Participant[]
 
   public constructor(props: createProps) {
     this.id = props.id
     this.name = props.name
-    this.status = props.status
-    this.teamMembers =
-      props.teamMembers?.map((teamMember) => {
+    this.team = props.team
+    this.pairMembers =
+      props.pairMembers?.map((pairMember) => {
         return {
-          id: teamMember.id,
+          id: pairMember.id,
           name: 'name',
           email: 'email',
         }
@@ -38,6 +45,6 @@ export class TeamDTO {
   }
 }
 
-export interface ITeamQS {
-  fetchAll(): Promise<TeamDTO[]>
+export interface IPairQS {
+  fetchAll(): Promise<PairDto[]>
 }

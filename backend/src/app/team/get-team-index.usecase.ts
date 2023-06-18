@@ -6,11 +6,6 @@ export class GetTeamIndexUseCase {
     this.teamQS = teamQS
   }
   async do() {
-    try {
-      return await this.teamQS.fetchAll()
-    } catch (error) {
-      // memo: エラー処理
-      throw error
-    }
+    return await this.teamQS.fetchAll()
   }
 }
