@@ -36,7 +36,7 @@ export class ParticipantController {
     const prisma = new PrismaClient()
     const participantrepo = new ParticipantRepository(prisma)
     const teamRepo = new TeamRepository(prisma)
-    const pairRepo = new PairRepository()
+    const pairRepo = new PairRepository(prisma)
     const validateEmailUniquenessService = new ValidateEmailUniquenessService(
       participantrepo,
     )

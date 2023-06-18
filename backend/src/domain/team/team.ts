@@ -51,13 +51,6 @@ export class Team {
     )
   }
 
-  public assignTeamMember(teamMember: TeamMember): Team {
-    return new Team(this.id, this.teamName, this.status, [
-      ...this.teamMembers,
-      teamMember,
-    ])
-  }
-
   static reconstruct({
     id,
     teamName,
@@ -85,6 +78,12 @@ export class Team {
     }
   }
 
+  public assignTeamMember(teamMember: TeamMember): Team {
+    return new Team(this.id, this.teamName, this.status, [
+      ...this.teamMembers,
+      teamMember,
+    ])
+  }
   public delete() {
     return new Team(
       this.id,

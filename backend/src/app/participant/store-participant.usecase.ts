@@ -46,6 +46,6 @@ export class StoreParticipantUseCase {
 
     // ペア割り当て
     const assignPairService = new AssignPairService(this.pairRepository)
-    await assignPairService.assign(participant)
+    await assignPairService.assign(participant, team)
   }
 }

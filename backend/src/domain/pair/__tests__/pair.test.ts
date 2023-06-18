@@ -7,6 +7,7 @@ describe('Pair', () => {
       Pair.create({
         teamId: createRandomIdString(),
         pairName: '123',
+        pairMembers: [],
       }),
     ).toThrowError(new Error('名前は英字のみです'))
   })
@@ -16,6 +17,7 @@ describe('Pair', () => {
       Pair.create({
         teamId: createRandomIdString(),
         pairName: 'ab',
+        pairMembers: [],
       }),
     ).toThrowError(new Error('名前は1文字です'))
   })
@@ -24,6 +26,7 @@ describe('Pair', () => {
     const pair = Pair.create({
       teamId: createRandomIdString(),
       pairName: 'a',
+      pairMembers: [],
     })
 
     expect(pair).toBeInstanceOf(Pair)
