@@ -42,6 +42,6 @@ export class AssignTeamService {
       return team
     }
 
-    throw new Error('Failed to assign to inactive team')
+    throw new Error('チームの割り当てに失敗しました')
   }
 }
