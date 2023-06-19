@@ -30,7 +30,10 @@ export class StoreParticipantUseCase {
     })
 
     // メールアドレスの重複チェック
-    if (await this.validateEmailUniquenessService.do(participant)) {
+    if (
+      (await this.validateEmailUniquenessService.isUnique(participant)) ===
+      false
+    ) {
       throw new Error('参加者は既に存在しています')
     }
 

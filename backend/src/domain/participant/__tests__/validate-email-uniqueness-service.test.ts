@@ -23,17 +23,20 @@ describe('ValidateEmailUniquenessService', () => {
     )
   })
 
-  it('should return true when participant does not exist', async () => {
+  it('参加者が存在しない場合、trueを返す', async () => {
     jest.spyOn(participantRepository, 'findByEmail').mockResolvedValue(null)
-
-    expect(await validateEmailUniquenessService.do(participant)).toBe(true)
+    expect(await validateEmailUniquenessService.isUnique(participant)).toBe(
+      true,
+    )
   })
 
-  it('should return false when participant exists', async () => {
+  it('参加者が存在する場合、falseを返す', async () => {
     jest
       .spyOn(participantRepository, 'findByEmail')
       .mockResolvedValue(participant)
 
-    expect(await validateEmailUniquenessService.do(participant)).toBe(false)
+    expect(await validateEmailUniquenessService.isUnique(participant)).toBe(
+      false,
+    )
   })
 })
