@@ -93,6 +93,10 @@ export class Team {
     )
   }
 
+  public get isActive(): boolean {
+    return this.status.isActive
+  }
+
   public get isInactive(): boolean {
     return this.status.isInactive
   }

@@ -21,7 +21,6 @@ export class TeamRepository implements ITeamRepository {
         teamMembers: team.members.map((member) => {
           return TeamMember.reconstruct({
             id: member.id,
-            teamId: member.team_id,
             participantId: member.participant_id,
           })
         }),
@@ -49,12 +48,12 @@ export class TeamRepository implements ITeamRepository {
         await this.prismaClient.teamMember.upsert({
           where: { id: teamMember.id },
           update: {
-            team_id: teamMember.teamId,
+            team_id: team.id,
             participant_id: teamMember.participantId,
           },
           create: {
             id: teamMember.id,
-            team_id: teamMember.teamId,
+            team_id: team.id,
             participant_id: teamMember.participantId,
           },
         })

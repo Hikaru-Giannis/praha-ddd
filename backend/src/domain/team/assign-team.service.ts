@@ -6,37 +6,42 @@ import { ITeamRepository } from './team.repository'
 export class AssignTeamService {
   public constructor(private readonly teamRepository: ITeamRepository) {}
 
-  public async assign(participant: Participant): Promise<Team | undefined> {
+  public async assign(participant: Participant): Promise<Team> {
     const allTeams = await this.teamRepository.fetchAll()
 
     const inactiveTeams = allTeams.filter((team) => team.isInactive)
     if (inactiveTeams.length > 0) {
-      // 非活性チームがある場合は、参加者を参加者数が少ないチームに追加する
-      inactiveTeams.sort((a, b) => a.teamMembersCount - b.teamMembersCount)
-      const inactiveTeam = inactiveTeams[0]
-      if (inactiveTeam) {
-        const teamMember = TeamMember.create({
-          teamId: inactiveTeam.id,
-          participantId: participant.id,
-        })
-        const team = inactiveTeam.assignTeamMember(teamMember)
-        await this.teamRepository.save(team)
-        return team
-      }
-    }
-
-    // 非活性チームがない場合は、参加者を活性チームに追加する
-    const activeTeams = allTeams.filter((team) => !team.isInactive)
-    activeTeams.sort((a, b) => a.teamMembersCount - b.teamMembersCount)
-    const activeTeam = activeTeams[0]
-    if (activeTeam) {
-      const teamMember = TeamMember.create({
-        teamId: activeTeam.id,
-        participantId: participant.id,
-      })
-      const team = activeTeam.assignTeamMember(teamMember)
-      await this.teamRepository.save(team)
+      const team = this.assignToTeamWithMinMembers(inactiveTeams, participant)
       return team
     }
+
+    const activeTeams = allTeams.filter((team) => team.isActive)
+    return this.assignToTeamWithMinMembers(activeTeams, participant)
+  }
+
+  private assignToTeamWithMinMembers(
+    teams: Team[],
+    participant: Participant,
+  ): Team {
+    const minMembersCount = Math.min(
+      ...teams.map((team) => team.teamMembersCount),
+    )
+    const minMembersTeams = teams.filter(
+      (team) => team.teamMembersCount === minMembersCount,
+    )
+
+    const chosenTeam =
+      minMembersTeams[Math.floor(Math.random() * minMembersTeams.length)]
+
+    if (chosenTeam) {
+      const teamMember = TeamMember.create({
+        participantId: participant.id,
+      })
+      const team = chosenTeam.assignTeamMember(teamMember)
+      this.teamRepository.save(team)
+      return team
+    }
+
+    throw new Error('Failed to assign to inactive team')
   }
 }

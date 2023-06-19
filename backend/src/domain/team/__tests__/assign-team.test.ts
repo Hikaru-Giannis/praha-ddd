@@ -1,73 +1,113 @@
 import { Participant } from 'src/domain/participant/participant'
 import { AssignTeamService } from '../assign-team.service'
 import { ITeamRepository } from '../team.repository'
-import { Team } from '../team'
-import { createMockRepository } from '@testUtil/team.factory'
-import { createMockParticipant } from '@testUtil/participant.factory'
+import { createActiveTeam, createInactiveTeam } from '@testUtil/team.factory'
 
 describe('AssignTeamService', () => {
-  let service: AssignTeamService
-  let mockRepo: ITeamRepository
-  let mockParticipant: Participant
+  it('活性化チームと非活性化のチームが存在する場合、非活性化チームに参加者が割り当てられる', async () => {
+    const inactiveTeam = createInactiveTeam()
+    const activeTeam = createActiveTeam()
+    const participant = Participant.create({
+      name: 'test test',
+      email: 'test@example.com',
+    })
 
-  beforeEach(() => {
-    mockRepo = createMockRepository()
-    mockParticipant = createMockParticipant()
-    service = new AssignTeamService(mockRepo)
+    const teamRepository = ({
+      fetchAll: jest.fn().mockResolvedValueOnce([inactiveTeam, activeTeam]),
+      save: jest.fn(),
+    } as unknown) as ITeamRepository
+
+    const assignTeamService = new AssignTeamService(teamRepository)
+
+    const team = await assignTeamService.assign(participant)
+    expect(teamRepository.save).toHaveBeenCalledTimes(1)
+    expect(team?.isInactive).toBeTruthy()
   })
 
-  it('assigns participant to an inactive team if any exists', async () => {
-    const mockInactiveTeam = ({
-      id: 'team1',
-      isInactive: true,
-      assignTeamMember: jest.fn().mockReturnValue({
-        id: 'team1',
-        teamMembersCount: 1,
-      }),
-      teamMembersCount: 0,
-    } as unknown) as Team
-    const mockActiveTeam = ({
-      id: 'team2',
-      isInactive: false,
-      assignTeamMember: jest.fn().mockReturnValue({
-        id: 'team2',
-        teamMembersCount: 1,
-      }),
-      teamMembersCount: 0,
-    } as unknown) as Team
+  it('非活性化チームが存在しない場合、活性化チームに参加者が割り当てられる', async () => {
+    const activeTeam = createActiveTeam()
+    const participant = Participant.create({
+      name: 'test test',
+      email: 'test@example.com',
+    })
 
-    // Mock repository fetchAll method
-    ;(mockRepo.fetchAll as jest.Mock).mockResolvedValue([
-      mockInactiveTeam,
-      mockActiveTeam,
-    ])
+    const teamRepository = ({
+      fetchAll: jest.fn().mockResolvedValueOnce([activeTeam]),
+      save: jest.fn(),
+    } as unknown) as ITeamRepository
 
-    await service.assign(mockParticipant)
+    const assignTeamService = new AssignTeamService(teamRepository)
 
-    // Assert that inactive team was updated
-    expect(mockInactiveTeam.assignTeamMember).toHaveBeenCalled()
-    expect(mockRepo.save).toHaveBeenCalled()
+    const team = await assignTeamService.assign(participant)
+    expect(teamRepository.save).toHaveBeenCalledTimes(1)
+    expect(team?.isActive).toBeTruthy()
   })
 
-  it('assigns participant to an active team if no inactive teams exist', async () => {
-    // Set up mock teams
-    const mockActiveTeam = ({
-      id: 'team1',
-      isInactive: false,
-      assignTeamMember: jest.fn().mockReturnValue({
-        id: 'team1',
-        teamMembersCount: 1,
-      }),
-      teamMembersCount: 0,
-    } as unknown) as Team
+  it('非活性化チームのみの場合、非活性化チームで一番チームメンバーが少ないチームに参加者が割り当てられる', async () => {
+    const inactiveTeam1 = createInactiveTeam(0)
+    const inactiveTeam2 = createInactiveTeam(1)
+    const inactiveTeam3 = createInactiveTeam(2)
+    const activeTeam = createActiveTeam()
+    const participant = Participant.create({
+      name: 'test test',
+      email: 'test@example.com',
+    })
 
-    // Mock repository fetchAll method
-    ;(mockRepo.fetchAll as jest.Mock).mockResolvedValue([mockActiveTeam])
+    const teamRepository = ({
+      fetchAll: jest
+        .fn()
+        .mockResolvedValueOnce([
+          inactiveTeam1,
+          inactiveTeam2,
+          inactiveTeam3,
+          ,
+          activeTeam,
+        ]),
+      save: jest.fn(),
+    } as unknown) as ITeamRepository
 
-    await service.assign(mockParticipant)
+    const assignTeamService = new AssignTeamService(teamRepository)
 
-    // Assert that active team was updated
-    expect(mockActiveTeam.assignTeamMember).toHaveBeenCalled()
-    expect(mockRepo.save).toHaveBeenCalled()
+    const team = await assignTeamService.assign(participant)
+    expect(teamRepository.save).toHaveBeenCalledTimes(1)
+    expect(team?.teamMembersCount).toBe(1)
+  })
+
+  it('非活性化チームが存在しない場合、活性化チームかつ一番チームメンバーが少ないチームに参加者が割り当てられる', async () => {
+    const activeTeam1 = createActiveTeam(3)
+    const activeTeam2 = createActiveTeam(4)
+    const activeTeam3 = createActiveTeam(5)
+    const participant = Participant.create({
+      name: 'test test',
+      email: 'test@example.com',
+    })
+
+    const teamRepository = ({
+      fetchAll: jest
+        .fn()
+        .mockResolvedValueOnce([activeTeam1, activeTeam2, activeTeam3]),
+      save: jest.fn(),
+    } as unknown) as ITeamRepository
+
+    const assignTeamService = new AssignTeamService(teamRepository)
+
+    const team = await assignTeamService.assign(participant)
+    expect(teamRepository.save).toHaveBeenCalledTimes(1)
+    expect(team?.teamMembersCount).toBe(4)
+  })
+
+  it('非活性化チームと活性化チームが存在しない場合、例外エラーを返す', async () => {
+    const participant = Participant.create({
+      name: 'test test',
+      email: 'test@example.com',
+    })
+
+    const teamRepository = ({
+      fetchAll: jest.fn().mockResolvedValueOnce([]),
+      save: jest.fn(),
+    } as unknown) as ITeamRepository
+
+    const assignTeamService = new AssignTeamService(teamRepository)
+    await expect(assignTeamService.assign(participant)).rejects.toThrowError()
   })
 })
