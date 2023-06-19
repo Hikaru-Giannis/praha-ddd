@@ -4,6 +4,7 @@ import { Team } from 'src/domain/team/team'
 import { PairMember } from '../pair-member'
 import { AssignPairService } from '../assign-pair.service'
 import { IPairRepository } from '../pair.repository'
+import { TeamName } from 'src/domain/team/TeamName'
 
 describe('AssignPairService', () => {
   let service: AssignPairService
@@ -20,7 +21,7 @@ describe('AssignPairService', () => {
     email: 'test@example.com',
   })
   const team = Team.create({
-    teamName: 'Team Name',
+    teamName: new TeamName('Team Name'),
     teamMembers: [],
   })
 

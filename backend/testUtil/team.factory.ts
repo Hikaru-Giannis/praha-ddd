@@ -1,3 +1,4 @@
+import { TeamName } from 'src/domain/team/TeamName'
 import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
 
@@ -18,7 +19,7 @@ export const createTeamMembers = (count = 3): TeamMember[] => {
 export const createInactiveTeam = (memberCount: 0 | 1 | 2 = 1) => {
   const teamMembers = createTeamMembers(memberCount)
   return Team.create({
-    teamName: '1',
+    teamName: new TeamName('1'),
     teamMembers: teamMembers,
   })
 }
@@ -29,7 +30,7 @@ export const createInactiveTeam = (memberCount: 0 | 1 | 2 = 1) => {
 export const createActiveTeam = (memberCount: 3 | 4 | 5 | 6 = 3) => {
   const teamMembers = createTeamMembers(memberCount)
   return Team.create({
-    teamName: '2',
+    teamName: new TeamName('2'),
     teamMembers: teamMembers,
   })
 }

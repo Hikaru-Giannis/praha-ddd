@@ -4,13 +4,13 @@ import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
 
 type createTeamProps = {
-  teamName: string
+  teamName: TeamName
   teamMembers: TeamMember[]
 }
 
 type reconstructTeamProps = {
   id: string
-  teamName: string
+  teamName: TeamName
   status: TeamStatusType
   teamMembers: TeamMember[]
 }
@@ -37,7 +37,7 @@ export class Team {
     if (teamMembers.length >= 3) {
       return new Team(
         createRandomIdString(),
-        new TeamName(teamName),
+        teamName,
         TeamStatus.active(),
         teamMembers,
       )
@@ -45,7 +45,7 @@ export class Team {
 
     return new Team(
       createRandomIdString(),
-      new TeamName(teamName),
+      teamName,
       TeamStatus.inactive(),
       teamMembers,
     )
@@ -59,7 +59,7 @@ export class Team {
   }: reconstructTeamProps) {
     return new Team(
       id,
-      new TeamName(teamName),
+      teamName,
       new TeamStatus(status),
       teamMembers.map((teamMember) => {
         return TeamMember.reconstruct(teamMember.getAllProperties)

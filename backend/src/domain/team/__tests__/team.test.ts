@@ -1,25 +1,21 @@
 import { createRandomIdString } from 'src/util/random'
 import { Team } from '../team'
 import { TeamMember } from '../team-member'
+import { TeamName } from '../TeamName'
 
 describe('Team', () => {
-  it('should throw an error when the team name is not a number', () => {
-    const team = Team.create({
-      teamName: 'abc',
-      teamMembers: [],
-    })
+  it('チーム名が数字でない場合、エラーを出力する', () => {
     expect(() =>
-      team.assignTeamMember(
-        TeamMember.create({
-          participantId: createRandomIdString(),
-        }),
-      ),
+      Team.create({
+        teamName: new TeamName('abc'),
+        teamMembers: [],
+      }),
     ).toThrowError(new Error('名前は数字のみです'))
   })
 
-  it('should throw an error when the team name is more than 3 characters', () => {
+  it('チーム名が3文字以上の場合、エラーを出力する', () => {
     const team = Team.create({
-      teamName: '1234',
+      teamName: new TeamName('1234'),
       teamMembers: [],
     })
     expect(() =>
@@ -31,9 +27,9 @@ describe('Team', () => {
     ).toThrowError(new Error('名前は3文字以下です'))
   })
 
-  it('should create a new Team when the team name is a number and not more than 3 characters', () => {
+  it('チーム名が数字で3文字以内の場合、新しいチームを作成する', () => {
     const team = Team.create({
-      teamName: '123',
+      teamName: new TeamName('123'),
       teamMembers: [],
     })
     expect(team).toBeInstanceOf(Team)

@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
+import { TeamName } from 'src/domain/team/TeamName'
 
 export class TeamRepository implements ITeamRepository {
   public constructor(private prismaClient: PrismaClient) {}
@@ -16,7 +17,7 @@ export class TeamRepository implements ITeamRepository {
     return teams.map((team) => {
       return Team.reconstruct({
         id: team.id,
-        teamName: team.name,
+        teamName: new TeamName(team.name),
         status: team.status,
         teamMembers: team.members.map((member) => {
           return TeamMember.reconstruct({
