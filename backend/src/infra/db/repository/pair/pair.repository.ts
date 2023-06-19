@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
+import { PairName } from 'src/domain/pair/PairName'
 import { Pair } from 'src/domain/pair/pair'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { tokens } from 'src/tokens'
@@ -17,7 +18,11 @@ export class PairRepository implements IPairRepository {
     })
 
     return pairs.map((pair) =>
-      Pair.reconstruct({ ...pair, teamId: pair.team_id, pairName: pair.name }),
+      Pair.reconstruct({
+        ...pair,
+        teamId: pair.team_id,
+        pairName: new PairName(pair.name),
+      }),
     )
   }
 

@@ -4,14 +4,14 @@ import { PairMember } from './pair-member'
 
 type PairCreateProps = {
   teamId: string
-  pairName: string
+  pairName: PairName
   pairMembers: PairMember[]
 }
 
 type PairReconstructProps = {
   id: string
   teamId: string
-  pairName: string
+  pairName: PairName
 }
 
 export class Pair {
@@ -28,16 +28,11 @@ export class Pair {
   }
 
   static create({ teamId, pairName, pairMembers }: PairCreateProps) {
-    return new Pair(
-      createRandomIdString(),
-      teamId,
-      new PairName(pairName),
-      pairMembers,
-    )
+    return new Pair(createRandomIdString(), teamId, pairName, pairMembers)
   }
 
   static reconstruct({ id, teamId, pairName }: PairReconstructProps) {
-    return new Pair(id, teamId, new PairName(pairName))
+    return new Pair(id, teamId, pairName)
   }
 
   public get getAllProperties() {

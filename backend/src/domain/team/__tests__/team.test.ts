@@ -14,16 +14,11 @@ describe('Team', () => {
   })
 
   it('チーム名が3文字以上の場合、エラーを出力する', () => {
-    const team = Team.create({
-      teamName: new TeamName('1234'),
-      teamMembers: [],
-    })
     expect(() =>
-      team.assignTeamMember(
-        TeamMember.create({
-          participantId: createRandomIdString(),
-        }),
-      ),
+      Team.create({
+        teamName: new TeamName('1234'),
+        teamMembers: [],
+      }),
     ).toThrowError(new Error('名前は3文字以下です'))
   })
 

@@ -5,6 +5,7 @@ import { PairMember } from '../pair-member'
 import { AssignPairService } from '../assign-pair.service'
 import { IPairRepository } from '../pair.repository'
 import { TeamName } from 'src/domain/team/TeamName'
+import { PairName } from '../PairName'
 
 describe('AssignPairService', () => {
   let service: AssignPairService
@@ -28,7 +29,7 @@ describe('AssignPairService', () => {
   // Creating a Pair instance
   const pair = Pair.create({
     teamId: team.id,
-    pairName: 'Pair Name',
+    pairName: new PairName('a'),
     pairMembers: [],
   })
 
