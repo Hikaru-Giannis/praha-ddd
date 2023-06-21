@@ -6,12 +6,16 @@ import { ParticipantRepository } from './infra/db/repository/participant/partici
 import { TeamController } from './controller/team/team.controller'
 import { PrismaClient } from '@prisma/client'
 import { PairController } from './controller/pair/pair.controller'
+import { ParticipantIndexController } from './controller/participant/participant-index.controller'
+import { ParticipantQS } from './infra/db/query-service/participant/participant.qs'
+import { GetParticipantIndexUseCase } from './app/participant/get-participant-index.usecase'
 
 @Module({
   imports: [],
   controllers: [
     SampleController,
     ParticipantController,
+    ParticipantIndexController,
     TeamController,
     PairController,
   ],
@@ -22,7 +26,15 @@ import { PairController } from './controller/pair/pair.controller'
     },
     {
       provide: tokens.PrismaClient,
-      useValue: PrismaClient,
+      useClass: PrismaClient,
+    },
+    {
+      provide: tokens.IParticipantQS,
+      useClass: ParticipantQS,
+    },
+    {
+      provide: tokens.GetParticipantIndexUseCase,
+      useClass: GetParticipantIndexUseCase,
     },
   ],
 })
