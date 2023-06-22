@@ -6,4 +6,6 @@ export const tokens = {
   PrismaClient: Symbol('PrismaClient'),
   GetParticipantIndexUseCase: Symbol('GetParticipantIndexUseCase'),
   ValidateEmailUniquenessService: Symbol('ValidateEmailUniquenessService'),
+  StoreParticipantUseCase: Symbol('StoreParticipantUseCase'),
+  PutParticipantUseCase: Symbol('PutParticipantUseCase'),
 }

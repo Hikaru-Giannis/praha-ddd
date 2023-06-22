@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { SampleController } from './controller/sample/some-data.controller'
-import { ParticipantController } from './controller/participant/participant.controller'
 import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
 import { TeamController } from './controller/team/team.controller'
@@ -12,13 +11,18 @@ import { GetParticipantIndexUseCase } from './app/participant/get-participant-in
 import { ValidateEmailUniquenessService } from './domain/participant/validate-email-uniqueness.service'
 import { TeamRepository } from './infra/db/repository/team/team.repository'
 import { PairRepository } from './infra/db/repository/pair/pair.repository'
+import { ParticipantPostController } from './controller/participant/participant-post.controller'
+import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
+import { PutParticipantUseCase } from './app/participant/put-participant.usecase'
+import { ParticipantPutController } from './controller/participant/participant-put.controller'
 
 @Module({
   imports: [],
   controllers: [
     SampleController,
-    ParticipantController,
     ParticipantIndexController,
+    ParticipantPostController,
+    ParticipantPutController,
     TeamController,
     PairController,
   ],
@@ -50,6 +54,15 @@ import { PairRepository } from './infra/db/repository/pair/pair.repository'
     {
       provide: tokens.ValidateEmailUniquenessService,
       useClass: ValidateEmailUniquenessService,
+    },
+    {
+      provide: tokens.StoreParticipantUseCase,
+      useClass: StoreParticipantUseCase,
+    },
+
+    {
+      provide: tokens.PutParticipantUseCase,
+      useClass: PutParticipantUseCase,
     },
   ],
 })

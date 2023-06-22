@@ -1,11 +1,13 @@
-import { Controller, Body, Post } from '@nestjs/common'
+import { Controller, Body, Post, Inject } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { StoreParticipantUseCase } from 'src/app/participant/store-participant.usecase'
 import { PostParticipantRequest } from './request/post-participant-request'
+import { tokens } from 'src/tokens'
 
 @Controller('participant')
-export class ParticipantController {
+export class ParticipantPostController {
   constructor(
+    @Inject(tokens.StoreParticipantUseCase)
     private readonly storeParticipantUseCase: StoreParticipantUseCase,
   ) {}
   @Post()
