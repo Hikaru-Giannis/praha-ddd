@@ -2,11 +2,12 @@ import { IPairRepository } from './pair.repository'
 import { Participant } from '../participant/participant'
 import { Team } from '../team/team'
 import { PairMember } from './pair-member'
+import { Pair } from './pair'
 
 export class AssignPairService {
   constructor(private readonly pairRepository: IPairRepository) {}
 
-  public async assign(participant: Participant, team: Team): Promise<void> {
+  public async assign(participant: Participant, team: Team): Promise<Pair[]> {
     // ペアを割り当てる
     const pairs = await this.pairRepository.fetchByTeamId(team.id)
 
@@ -32,9 +33,7 @@ export class AssignPairService {
           participantId: participant.id,
         })
         const newPairs = chosenPair.dividePair(newPairMember, latestPair)
-        await this.pairRepository.save(newPairs[0])
-        await this.pairRepository.save(newPairs[1])
-        return
+        return newPairs
       }
 
       // ペアに参加者を追加する
@@ -42,8 +41,7 @@ export class AssignPairService {
         participantId: participant.id,
       })
       const newPair = chosenPair.assignPairMember(pairMember)
-      await this.pairRepository.save(newPair)
-      return
+      return [newPair]
     }
 
     throw new Error('ペアの割り当てに失敗しました')

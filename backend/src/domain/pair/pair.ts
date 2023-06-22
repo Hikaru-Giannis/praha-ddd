@@ -2,13 +2,13 @@ import { createRandomIdString } from 'src/util/random'
 import { PairName } from './PairName'
 import { PairMember } from './pair-member'
 
-type PairCreateProps = {
+type CreateProps = {
   teamId: string
   pairMembers: PairMember[]
   latestPair: Pair | undefined
 }
 
-type PairReconstructProps = {
+type ReconstructProps = {
   id: string
   teamId: string
   pairName: PairName
@@ -30,18 +30,17 @@ export class Pair {
     this.pairMembers = pairMembers
   }
 
-  static create({ teamId, pairMembers, latestPair }: PairCreateProps) {
+  static create({ teamId, pairMembers, latestPair }: CreateProps) {
     const newPairName = latestPair ? latestPair.pairName.next : PairName.first
     return new Pair(createRandomIdString(), teamId, newPairName, pairMembers)
   }
 
-  static reconstruct({
-    id,
-    teamId,
-    pairName,
-    pairMembers,
-  }: PairReconstructProps) {
+  static reconstruct({ id, teamId, pairName, pairMembers }: ReconstructProps) {
     return new Pair(id, teamId, pairName, pairMembers)
+  }
+
+  public equals(pair: Pair): boolean {
+    return this.id === pair.id
   }
 
   public get getAllProperties() {

@@ -9,6 +9,9 @@ import { PairController } from './controller/pair/pair.controller'
 import { ParticipantIndexController } from './controller/participant/participant-index.controller'
 import { ParticipantQS } from './infra/db/query-service/participant/participant.qs'
 import { GetParticipantIndexUseCase } from './app/participant/get-participant-index.usecase'
+import { ValidateEmailUniquenessService } from './domain/participant/validate-email-uniqueness.service'
+import { TeamRepository } from './infra/db/repository/team/team.repository'
+import { PairRepository } from './infra/db/repository/pair/pair.repository'
 
 @Module({
   imports: [],
@@ -25,6 +28,14 @@ import { GetParticipantIndexUseCase } from './app/participant/get-participant-in
       useClass: ParticipantRepository,
     },
     {
+      provide: tokens.ITeamRepository,
+      useClass: TeamRepository,
+    },
+    {
+      provide: tokens.IPairRepository,
+      useClass: PairRepository,
+    },
+    {
       provide: tokens.PrismaClient,
       useClass: PrismaClient,
     },
@@ -35,6 +46,10 @@ import { GetParticipantIndexUseCase } from './app/participant/get-participant-in
     {
       provide: tokens.GetParticipantIndexUseCase,
       useClass: GetParticipantIndexUseCase,
+    },
+    {
+      provide: tokens.ValidateEmailUniquenessService,
+      useClass: ValidateEmailUniquenessService,
     },
   ],
 })

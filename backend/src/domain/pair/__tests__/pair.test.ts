@@ -1,21 +1,26 @@
 import { Pair } from '../pair'
+import { PairMember } from '../pair-member'
 import { PairName } from '../PairName'
-import { createActiveTeam } from '@testUtil/team.factory'
 
 describe('Pair', () => {
-  it('ペアを作成する', () => {
-    const team = createActiveTeam(4)
-    const pair = Pair.create({
-      teamId: team.id,
-      pairMembers: [],
-      latestPair: undefined,
+  it('作成', () => {
+    const pairMember = PairMember.create({
+      participantId: 'participantId',
     })
 
-    expect(pair).toEqual({
+    const createProps = {
+      teamId: 'teamId',
+      pairMembers: [pairMember],
+      latestPair: undefined,
+    }
+
+    const pair = Pair.create(createProps)
+    expect(pair).toBeDefined()
+    expect(pair.getAllProperties).toEqual({
       id: expect.any(String),
-      teamId: team.id,
+      teamId: 'teamId',
       pairName: PairName.first,
-      pairMembers: [],
+      pairMembers: [pairMember.getAllProperties],
     })
   })
 })

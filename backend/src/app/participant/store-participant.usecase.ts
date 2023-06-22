@@ -18,8 +18,11 @@ export class StoreParticipantUseCase {
   public constructor(
     @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,
+    @Inject(tokens.ITeamRepository)
     private readonly teamRepository: ITeamRepository,
+    @Inject(tokens.IPairRepository)
     private readonly pairRepository: IPairRepository,
+    @Inject(tokens.ValidateEmailUniquenessService)
     private readonly validateEmailUniquenessService: ValidateEmailUniquenessService,
   ) {}
 
@@ -46,9 +49,16 @@ export class StoreParticipantUseCase {
     if (!team) {
       throw new Error('チームの割り当てに失敗しました')
     }
+    this.teamRepository.save(team)
 
     // ペア割り当て
     const assignPairService = new AssignPairService(this.pairRepository)
-    await assignPairService.assign(participant, team)
+    const pairs = await assignPairService.assign(participant, team)
+    if (!pairs) {
+      throw new Error('ペアの割り当てに失敗しました')
+    }
+    pairs.map((pair) => {
+      this.pairRepository.save(pair)
+    })
   }
 }

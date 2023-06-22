@@ -20,7 +20,6 @@ describe('AssignTeamService', () => {
     const assignTeamService = new AssignTeamService(teamRepository)
 
     const team = await assignTeamService.assign(participant)
-    expect(teamRepository.save).toHaveBeenCalledTimes(1)
     expect(team?.isInactive).toBeTruthy()
   })
 
@@ -39,7 +38,6 @@ describe('AssignTeamService', () => {
     const assignTeamService = new AssignTeamService(teamRepository)
 
     const team = await assignTeamService.assign(participant)
-    expect(teamRepository.save).toHaveBeenCalledTimes(1)
     expect(team?.isActive).toBeTruthy()
   })
 
@@ -69,7 +67,6 @@ describe('AssignTeamService', () => {
     const assignTeamService = new AssignTeamService(teamRepository)
 
     const team = await assignTeamService.assign(participant)
-    expect(teamRepository.save).toHaveBeenCalledTimes(1)
     expect(team?.teamMembersCount).toBe(1)
   })
 
@@ -92,7 +89,6 @@ describe('AssignTeamService', () => {
     const assignTeamService = new AssignTeamService(teamRepository)
 
     const team = await assignTeamService.assign(participant)
-    expect(teamRepository.save).toHaveBeenCalledTimes(1)
     expect(team?.teamMembersCount).toBe(4)
   })
 

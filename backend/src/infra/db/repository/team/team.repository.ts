@@ -3,9 +3,15 @@ import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
 import { TeamName } from 'src/domain/team/TeamName'
+import { Inject, Injectable } from '@nestjs/common'
+import { tokens } from 'src/tokens'
 
+@Injectable()
 export class TeamRepository implements ITeamRepository {
-  public constructor(private prismaClient: PrismaClient) {}
+  public constructor(
+    @Inject(tokens.PrismaClient)
+    private prismaClient: PrismaClient,
+  ) {}
 
   public async fetchAll(): Promise<Team[]> {
     const teams = await this.prismaClient.team.findMany({

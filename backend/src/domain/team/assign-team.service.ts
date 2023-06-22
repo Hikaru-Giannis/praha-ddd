@@ -38,7 +38,6 @@ export class AssignTeamService {
         participantId: participant.id,
       })
       const team = chosenTeam.assignTeamMember(teamMember)
-      this.teamRepository.save(team)
       return team
     }
 
