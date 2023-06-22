@@ -1,8 +1,14 @@
+import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { ITeamQS, TeamDTO } from 'src/app/team/query-service-interface/team.qs'
+import { tokens } from 'src/tokens'
 
+@Injectable()
 export class TeamQS implements ITeamQS {
-  public constructor(private prismaClient: PrismaClient) {}
+  public constructor(
+    @Inject(tokens.PrismaClient)
+    private prismaClient: PrismaClient,
+  ) {}
 
   public async fetchAll(): Promise<TeamDTO[]> {
     // チームメンバーと参加者を取得する

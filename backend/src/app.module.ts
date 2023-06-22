@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { SampleController } from './controller/sample/some-data.controller'
 import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
-import { TeamController } from './controller/team/team.controller'
+import { TeamIndexController } from './controller/team/team-index.controller'
 import { PrismaClient } from '@prisma/client'
 import { PairController } from './controller/pair/pair.controller'
 import { ParticipantIndexController } from './controller/participant/participant-index.controller'
@@ -15,6 +15,8 @@ import { ParticipantPostController } from './controller/participant/participant-
 import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
 import { PutParticipantUseCase } from './app/participant/put-participant.usecase'
 import { ParticipantPutController } from './controller/participant/participant-put.controller'
+import { GetTeamIndexUseCase } from './app/team/get-team-index.usecase'
+import { TeamQS } from './infra/db/query-service/team/team.qs'
 
 @Module({
   imports: [],
@@ -23,7 +25,7 @@ import { ParticipantPutController } from './controller/participant/participant-p
     ParticipantIndexController,
     ParticipantPostController,
     ParticipantPutController,
-    TeamController,
+    TeamIndexController,
     PairController,
   ],
   providers: [
@@ -59,10 +61,17 @@ import { ParticipantPutController } from './controller/participant/participant-p
       provide: tokens.StoreParticipantUseCase,
       useClass: StoreParticipantUseCase,
     },
-
     {
       provide: tokens.PutParticipantUseCase,
       useClass: PutParticipantUseCase,
+    },
+    {
+      provide: tokens.GetTeamIndexUseCase,
+      useClass: GetTeamIndexUseCase,
+    },
+    {
+      provide: tokens.ITeamQS,
+      useClass: TeamQS,
     },
   ],
 })

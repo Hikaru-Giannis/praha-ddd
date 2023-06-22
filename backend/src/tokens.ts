@@ -8,4 +8,6 @@ export const tokens = {
   ValidateEmailUniquenessService: Symbol('ValidateEmailUniquenessService'),
   StoreParticipantUseCase: Symbol('StoreParticipantUseCase'),
   PutParticipantUseCase: Symbol('PutParticipantUseCase'),
+  GetTeamIndexUseCase: Symbol('GetTeamIndexUseCase'),
+  ITeamQS: Symbol('ITeamQS'),
 }
