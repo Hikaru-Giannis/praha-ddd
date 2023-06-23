@@ -4,7 +4,7 @@ import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
 import { TeamIndexController } from './controller/team/team-index.controller'
 import { PrismaClient } from '@prisma/client'
-import { PairController } from './controller/pair/pair.controller'
+import { PairIndexController } from './controller/pair/pair-index.controller'
 import { ParticipantIndexController } from './controller/participant/participant-index.controller'
 import { ParticipantQS } from './infra/db/query-service/participant/participant.qs'
 import { GetParticipantIndexUseCase } from './app/participant/get-participant-index.usecase'
@@ -17,6 +17,8 @@ import { PutParticipantUseCase } from './app/participant/put-participant.usecase
 import { ParticipantPutController } from './controller/participant/participant-put.controller'
 import { GetTeamIndexUseCase } from './app/team/get-team-index.usecase'
 import { TeamQS } from './infra/db/query-service/team/team.qs'
+import { GetPairIndexUseCase } from './app/pair/get-pair.index.usecase'
+import { PairQS } from './infra/db/query-service/pair/pair.qs'
 
 @Module({
   imports: [],
@@ -26,7 +28,7 @@ import { TeamQS } from './infra/db/query-service/team/team.qs'
     ParticipantPostController,
     ParticipantPutController,
     TeamIndexController,
-    PairController,
+    PairIndexController,
   ],
   providers: [
     {
@@ -72,6 +74,14 @@ import { TeamQS } from './infra/db/query-service/team/team.qs'
     {
       provide: tokens.ITeamQS,
       useClass: TeamQS,
+    },
+    {
+      provide: tokens.GetPairIndexUseCase,
+      useClass: GetPairIndexUseCase,
+    },
+    {
+      provide: tokens.IPairQS,
+      useClass: PairQS,
     },
   ],
 })

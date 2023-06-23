@@ -10,4 +10,6 @@ export const tokens = {
   PutParticipantUseCase: Symbol('PutParticipantUseCase'),
   GetTeamIndexUseCase: Symbol('GetTeamIndexUseCase'),
   ITeamQS: Symbol('ITeamQS'),
+  GetPairIndexUseCase: Symbol('GetPairIndexUseCase'),
+  IPairQS: Symbol('IPairQS'),
 }

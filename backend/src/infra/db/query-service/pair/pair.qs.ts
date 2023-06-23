@@ -1,8 +1,14 @@
+import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { IPairQS, PairDto } from 'src/app/pair/query-service-interface/pair.qs'
+import { tokens } from 'src/tokens'
 
+@Injectable()
 export class PairQS implements IPairQS {
-  public constructor(private prismaClient: PrismaClient) {}
+  public constructor(
+    @Inject(tokens.PrismaClient)
+    private prismaClient: PrismaClient,
+  ) {}
 
   public async fetchAll(): Promise<PairDto[]> {
     // ペアメンバーと参加者を取得する
