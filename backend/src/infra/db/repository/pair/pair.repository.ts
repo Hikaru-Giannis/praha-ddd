@@ -13,6 +13,28 @@ export class PairRepository implements IPairRepository {
     private prismaClient: PrismaClient,
   ) {}
 
+  public async findById(id: string): Promise<Pair | null> {
+    const pair = await this.prismaClient.pair.findUnique({
+      where: { id },
+      include: { members: true },
+    })
+
+    return pair
+      ? Pair.reconstruct({
+          ...pair,
+          teamId: pair.team_id,
+          pairName: new PairName(pair.name),
+          pairMembers: pair.members.map((member) =>
+            PairMember.reconstruct({
+              ...member,
+              participantId: member.participant_id,
+              teamId: pair.team_id,
+            }),
+          ),
+        })
+      : null
+  }
+
   public async fetchByTeamId(teamId: string) {
     const pairs = await this.prismaClient.pair.findMany({
       where: { team_id: teamId },
@@ -28,6 +50,7 @@ export class PairRepository implements IPairRepository {
           PairMember.reconstruct({
             ...member,
             participantId: member.participant_id,
+            teamId: pair.team_id,
           }),
         ),
       }),

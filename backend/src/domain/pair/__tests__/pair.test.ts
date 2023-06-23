@@ -6,6 +6,7 @@ describe('Pair', () => {
   it('作成', () => {
     const pairMember = PairMember.create({
       participantId: 'participantId',
+      teamId: 'teamId',
     })
 
     const createProps = {

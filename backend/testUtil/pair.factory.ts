@@ -8,6 +8,7 @@ export const createPairMembers = (memberCount: 2 | 3): PairMember[] => {
   return Array.from({ length: memberCount }, (_, i) => {
     return PairMember.create({
       participantId: `0${i + 1}`,
+      teamId: '1',
     })
   })
 }

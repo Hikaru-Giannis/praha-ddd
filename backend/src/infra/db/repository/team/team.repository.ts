@@ -13,6 +13,29 @@ export class TeamRepository implements ITeamRepository {
     private prismaClient: PrismaClient,
   ) {}
 
+  public async findById(id: string): Promise<Team | null> {
+    const team = await this.prismaClient.team.findUnique({
+      where: { id },
+      include: {
+        members: true,
+      },
+    })
+
+    return team
+      ? Team.reconstruct({
+          id: team.id,
+          teamName: new TeamName(team.name),
+          status: team.status,
+          teamMembers: team.members.map((member) => {
+            return TeamMember.reconstruct({
+              id: member.id,
+              participantId: member.participant_id,
+            })
+          }),
+        })
+      : null
+  }
+
   public async fetchAll(): Promise<Team[]> {
     const teams = await this.prismaClient.team.findMany({
       include: {
