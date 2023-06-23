@@ -62,7 +62,7 @@ export class Pair {
     return this.pairMembersCount >= this.MaxPairMembersCount
   }
 
-  public dividePair(pairMember: PairMember, latestPair: Pair): [Pair, Pair] {
+  public dividePair(pairMember: PairMember): [Pair, [PairMember, PairMember]] {
     if (this.isFull === false) {
       throw new Error('人数が不足しています。')
     }
@@ -85,11 +85,7 @@ export class Pair {
           (pairMember) => pairMember.id !== randomPairMember.id,
         ),
       ),
-      Pair.create({
-        teamId: this.teamId,
-        pairMembers: [pairMember, randomPairMember],
-        latestPair,
-      }),
+      [pairMember, randomPairMember],
     ]
   }
 
