@@ -5,6 +5,7 @@ import { TeamMember } from 'src/domain/team/team-member'
 import { TeamName } from 'src/domain/team/TeamName'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
+import { Pair } from 'src/domain/pair/pair'
 
 @Injectable()
 export class TeamRepository implements ITeamRepository {
@@ -16,6 +17,31 @@ export class TeamRepository implements ITeamRepository {
   public async findById(id: string): Promise<Team | null> {
     const team = await this.prismaClient.team.findUnique({
       where: { id },
+      include: {
+        members: true,
+      },
+    })
+
+    return team
+      ? Team.reconstruct({
+          id: team.id,
+          teamName: new TeamName(team.name),
+          status: team.status,
+          teamMembers: team.members.map((member) => {
+            return TeamMember.reconstruct({
+              id: member.id,
+              participantId: member.participant_id,
+            })
+          }),
+        })
+      : null
+  }
+
+  public async findByPair(pair: Pair): Promise<Team | null> {
+    const allProperties = pair.getAllProperties
+
+    const team = await this.prismaClient.team.findUnique({
+      where: { id: allProperties.teamId },
       include: {
         members: true,
       },

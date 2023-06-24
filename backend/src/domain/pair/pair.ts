@@ -1,6 +1,7 @@
 import { createRandomIdString } from 'src/util/random'
 import { PairName } from './PairName'
 import { PairMember } from './pair-member'
+import { TeamMember } from '../team/team-member'
 
 type CreateProps = {
   teamId: string
@@ -99,5 +100,13 @@ export class Pair {
       ...this.pairMembers,
       pairMember,
     ])
+  }
+
+  public changeTeam(teamId: string): Pair {
+    return new Pair(this.id, teamId, this.pairName, this.pairMembers)
+  }
+
+  public hasPairMember(teamMember: TeamMember): boolean {
+    return this.pairMembers.some((member) => member.equals(teamMember))
   }
 }

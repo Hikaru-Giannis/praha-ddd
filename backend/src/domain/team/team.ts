@@ -2,6 +2,7 @@ import { createRandomIdString } from 'src/util/random'
 import { TeamMember } from './team-member'
 import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
+import { Pair } from '../pair/pair'
 
 type createTeamProps = {
   teamName: TeamName
@@ -84,6 +85,14 @@ export class Team {
       teamMember,
     ])
   }
+
+  public assignTeamMembers(teamMembers: TeamMember[]): Team {
+    return new Team(this.id, this.teamName, this.status, [
+      ...this.teamMembers,
+      ...teamMembers,
+    ])
+  }
+
   public delete() {
     return new Team(
       this.id,
@@ -103,5 +112,22 @@ export class Team {
 
   public get teamMembersCount(): number {
     return this.teamMembers.length
+  }
+
+  public moveTeamMember(pair: Pair): [Team, TeamMember[]] {
+    // 引数のペアのチームメンバーを取得
+    const movedTeamMembers = this.teamMembers.filter((teamMember) => {
+      return pair.hasPairMember(teamMember)
+    })
+
+    // 引数のペアのチームメンバーを削除
+    const teamMembers = this.teamMembers.filter((teamMember) => {
+      return !pair.hasPairMember(teamMember)
+    })
+
+    return [
+      new Team(this.id, this.teamName, this.status, teamMembers),
+      movedTeamMembers,
+    ]
   }
 }

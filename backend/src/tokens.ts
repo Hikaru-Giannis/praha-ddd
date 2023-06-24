@@ -12,4 +12,5 @@ export const tokens = {
   ITeamQS: Symbol('ITeamQS'),
   GetPairIndexUseCase: Symbol('GetPairIndexUseCase'),
   IPairQS: Symbol('IPairQS'),
+  ChangePairUseCase: Symbol('ChangePairUseCase'),
 }
