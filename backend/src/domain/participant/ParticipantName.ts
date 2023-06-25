@@ -1,5 +1,6 @@
 export class ParticipantName {
-  constructor(public readonly value: string) {
+  public readonly value: string
+  constructor(value: string) {
     // 1文字以上255文字以内の文字列であること
     if (value.length < 1 || value.length > 255) {
       throw new Error('Invalid participant name.')
