@@ -14,7 +14,7 @@ import { PairRepository } from './infra/db/repository/pair/pair.repository'
 import { ParticipantPostController } from './controller/participant/participant-post.controller'
 import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
 import { PutParticipantUseCase } from './app/participant/put-participant.usecase'
-import { ParticipantPutController } from './controller/participant/participant-put.controller'
+import { ParticipantPatchController } from './controller/participant/participant-patch.controller'
 import { GetTeamIndexUseCase } from './app/team/get-team-index.usecase'
 import { TeamQS } from './infra/db/query-service/team/team.qs'
 import { GetPairIndexUseCase } from './app/pair/get-pair.index.usecase'
@@ -30,7 +30,7 @@ import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
     SampleController,
     ParticipantIndexController,
     ParticipantPostController,
-    ParticipantPutController,
+    ParticipantPatchController,
     TeamIndexController,
     TeamPatchController,
     PairIndexController,
