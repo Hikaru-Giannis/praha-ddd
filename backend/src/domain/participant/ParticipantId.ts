@@ -1,3 +1,5 @@
-export class ParticipantId {
-  public constructor(public readonly value: string) {}
+import { BaseEntityId } from '../common/BaseEntityId'
+
+export class ParticipantId extends BaseEntityId {
+  type = 'ParticipantId' as const
 }

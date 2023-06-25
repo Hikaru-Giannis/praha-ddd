@@ -6,6 +6,7 @@ import { TeamName } from 'src/domain/team/TeamName'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { Pair } from 'src/domain/pair/pair'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 
 @Injectable()
 export class TeamRepository implements ITeamRepository {
@@ -30,7 +31,7 @@ export class TeamRepository implements ITeamRepository {
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
-              participantId: member.participant_id,
+              participantId: new ParticipantId(member.participant_id),
             })
           }),
         })
@@ -55,7 +56,7 @@ export class TeamRepository implements ITeamRepository {
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
-              participantId: member.participant_id,
+              participantId: new ParticipantId(member.participant_id),
             })
           }),
         })
@@ -77,7 +78,7 @@ export class TeamRepository implements ITeamRepository {
         teamMembers: team.members.map((member) => {
           return TeamMember.reconstruct({
             id: member.id,
-            participantId: member.participant_id,
+            participantId: new ParticipantId(member.participant_id),
           })
         }),
       })
@@ -105,12 +106,12 @@ export class TeamRepository implements ITeamRepository {
           where: { id: teamMember.id },
           update: {
             team_id: team.id,
-            participant_id: teamMember.participantId,
+            participant_id: teamMember.participantId.value,
           },
           create: {
             id: teamMember.id,
             team_id: team.id,
-            participant_id: teamMember.participantId,
+            participant_id: teamMember.participantId.value,
           },
         })
       }),

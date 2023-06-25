@@ -4,6 +4,7 @@ import { PairName } from 'src/domain/pair/PairName'
 import { Pair } from 'src/domain/pair/pair'
 import { PairMember } from 'src/domain/pair/pair-member'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { tokens } from 'src/tokens'
 
 @Injectable()
@@ -27,7 +28,7 @@ export class PairRepository implements IPairRepository {
           pairMembers: pair.members.map((member) =>
             PairMember.reconstruct({
               ...member,
-              participantId: member.participant_id,
+              participantId: new ParticipantId(member.participant_id),
               teamId: pair.team_id,
             }),
           ),
@@ -49,7 +50,7 @@ export class PairRepository implements IPairRepository {
         pairMembers: pair.members.map((member) =>
           PairMember.reconstruct({
             ...member,
-            participantId: member.participant_id,
+            participantId: new ParticipantId(member.participant_id),
             teamId: pair.team_id,
           }),
         ),
@@ -70,7 +71,7 @@ export class PairRepository implements IPairRepository {
         pairMembers: pair.members.map((member) =>
           PairMember.reconstruct({
             ...member,
-            participantId: member.participant_id,
+            participantId: new ParticipantId(member.participant_id),
             teamId: pair.team_id,
           }),
         ),
@@ -100,12 +101,12 @@ export class PairRepository implements IPairRepository {
           where: { id: pairMember.id },
           update: {
             pair_id: pair.id,
-            participant_id: pairMember.participantId,
+            participant_id: pairMember.participantId.value,
           },
           create: {
             id: pairMember.id,
             pair_id: pair.id,
-            participant_id: pairMember.participantId,
+            participant_id: pairMember.participantId.value,
           },
         })
       }),

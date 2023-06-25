@@ -1,14 +1,18 @@
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { TeamName } from 'src/domain/team/TeamName'
 import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
+import { ulid } from 'ulid'
 
 /**
  * チームメンバーを作成
  */
 export const createTeamMembers = (count = 3): TeamMember[] => {
   return Array.from({ length: count }, (_, i) => {
+    // ulidを使う
+
     return TeamMember.create({
-      participantId: `0${i + 1}`,
+      participantId: new ParticipantId(ulid()),
     })
   })
 }

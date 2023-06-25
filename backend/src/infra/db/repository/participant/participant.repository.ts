@@ -27,7 +27,7 @@ export class ParticipantRepository implements IParticipantRepository {
 
   public async save(participant: Participant): Promise<void> {
     await this.prismaClient.participant.upsert({
-      where: { id: participant.id },
+      where: { id: participant.id.value },
       update: participant.getAllProperties(),
       create: participant.getAllProperties(),
     })

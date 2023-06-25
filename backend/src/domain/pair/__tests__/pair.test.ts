@@ -1,11 +1,13 @@
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { Pair } from '../pair'
 import { PairMember } from '../pair-member'
 import { PairName } from '../PairName'
+import { ulid } from 'ulid'
 
 describe('Pair', () => {
   it('作成', () => {
     const pairMember = PairMember.create({
-      participantId: 'participantId',
+      participantId: new ParticipantId(ulid()),
     })
 
     const createProps = {

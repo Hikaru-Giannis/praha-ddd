@@ -1,6 +1,7 @@
 import { createRandomIdString } from 'src/util/random'
 import { PairName } from './PairName'
 import { PairMember } from './pair-member'
+import { ParticipantId } from '../participant/ParticipantId'
 
 type CreateProps = {
   teamId: string
@@ -104,11 +105,11 @@ export class Pair {
     return new Pair(this.id, teamId, this.pairName, this.pairMembers)
   }
 
-  public hasPairMember(participantId: string): boolean {
+  public hasPairMember(participantId: ParticipantId): boolean {
     return this.pairMembers.some((member) => member.equals(participantId))
   }
 
-  public movePairMember(participantId: string): [Pair, PairMember] {
+  public movePairMember(participantId: ParticipantId): [Pair, PairMember] {
     if (this.isFull === false) {
       throw new Error('Insufficient number of pair members.')
     }

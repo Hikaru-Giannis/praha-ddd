@@ -1,18 +1,19 @@
 import { createRandomIdString } from 'src/util/random'
+import { ParticipantId } from '../participant/ParticipantId'
 
 type CreateProps = {
-  participantId: string
+  participantId: ParticipantId
 }
 
 type ReconstructProps = {
   id: string
-  participantId: string
+  participantId: ParticipantId
 }
 
 export class TeamMember {
   private constructor(
     public readonly id: string,
-    public readonly participantId: string,
+    public readonly participantId: ParticipantId,
   ) {}
 
   static create({ participantId }: CreateProps) {
@@ -30,7 +31,7 @@ export class TeamMember {
     }
   }
 
-  public equals(participantId: string): boolean {
-    return this.participantId === participantId
+  public equals(participantId: ParticipantId): boolean {
+    return this.participantId.equals(participantId)
   }
 }
