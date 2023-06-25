@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { Status } from 'src/domain/participant/participant'
+import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { tokens } from 'src/tokens'
 
@@ -9,7 +9,7 @@ export class PutParticipantUseCase {
     @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,
   ) {}
-  async do(participantId: string, status: Status) {
+  async do(participantId: string, status: ParticipantStatusType) {
     try {
       const participant = await this.participantRepository.findById(
         participantId,

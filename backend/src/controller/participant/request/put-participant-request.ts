@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
-import { Status } from 'src/domain/participant/participant'
+import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
 
 export class PutParticipantRequest {
   @ApiProperty()
@@ -9,5 +9,5 @@ export class PutParticipantRequest {
 
   @ApiProperty()
   @IsNotEmpty()
-  readonly status!: Status
+  readonly status!: ParticipantStatusType
 }

@@ -1,10 +1,10 @@
-import { Status } from 'src/domain/participant/participant'
+import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
 
-type createProps = {
+type CreateProps = {
   id: string
   name: string
   email: string
-  status: Status
+  status: ParticipantStatusType
   teamMember: TeamMember | null
   pairMember: PairMember | null
 }
@@ -38,10 +38,10 @@ export class ParticipantDTO {
   public readonly id: string
   public readonly name: string
   public readonly email: string
-  public readonly status: Status
+  public readonly status: ParticipantStatusType
   public readonly team?: Team
   public readonly pair?: Pair
-  public constructor(props: createProps) {
+  public constructor(props: CreateProps) {
     this.id = props.id
     this.name = props.name
     this.email = props.email
