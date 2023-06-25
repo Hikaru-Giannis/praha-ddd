@@ -4,12 +4,12 @@ import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
 import { Pair } from '../pair/pair'
 
-type createTeamProps = {
+type CreateProps = {
   teamName: TeamName
   teamMembers: TeamMember[]
 }
 
-type reconstructTeamProps = {
+type ReconstructProps = {
   id: string
   teamName: TeamName
   status: TeamStatusType
@@ -34,7 +34,7 @@ export class Team {
     this.teamMembers = teamMembers
   }
 
-  static create({ teamName, teamMembers }: createTeamProps) {
+  static create({ teamName, teamMembers }: CreateProps) {
     if (teamMembers.length >= 3) {
       return new Team(
         createRandomIdString(),
@@ -52,12 +52,7 @@ export class Team {
     )
   }
 
-  static reconstruct({
-    id,
-    teamName,
-    status,
-    teamMembers,
-  }: reconstructTeamProps) {
+  static reconstruct({ id, teamName, status, teamMembers }: ReconstructProps) {
     return new Team(
       id,
       teamName,

@@ -1,10 +1,10 @@
 import { createRandomIdString } from 'src/util/random'
 
-type createTeamMemberProps = {
+type CreateProps = {
   participantId: string
 }
 
-type reconstructTeamMemberProps = {
+type ReconstructProps = {
   id: string
   participantId: string
 }
@@ -15,11 +15,11 @@ export class TeamMember {
     public readonly participantId: string,
   ) {}
 
-  static create({ participantId }: createTeamMemberProps) {
+  static create({ participantId }: CreateProps) {
     return new TeamMember(createRandomIdString(), participantId)
   }
 
-  static reconstruct({ id, participantId }: reconstructTeamMemberProps) {
+  static reconstruct({ id, participantId }: ReconstructProps) {
     return new TeamMember(id, participantId)
   }
 

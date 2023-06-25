@@ -1,10 +1,10 @@
 import { createRandomIdString } from 'src/util/random'
 
-type CreatePairMemberProps = {
+type CreateProps = {
   participantId: string
 }
 
-type ReconstructPairMemberProps = {
+type ReconstructProps = {
   id: string
   participantId: string
   teamId: string
@@ -16,11 +16,11 @@ export class PairMember {
     private readonly participantId: string,
   ) {}
 
-  static create({ participantId }: CreatePairMemberProps) {
+  static create({ participantId }: CreateProps) {
     return new PairMember(createRandomIdString(), participantId)
   }
 
-  static reconstruct({ id, participantId }: ReconstructPairMemberProps) {
+  static reconstruct({ id, participantId }: ReconstructProps) {
     return new PairMember(id, participantId)
   }
 
