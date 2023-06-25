@@ -13,4 +13,5 @@ export const tokens = {
   GetPairIndexUseCase: Symbol('GetPairIndexUseCase'),
   IPairQS: Symbol('IPairQS'),
   ChangePairUseCase: Symbol('ChangePairUseCase'),
+  ChangePaiticipantUseCase: Symbol('ChangePaiticipantUseCase'),
 }

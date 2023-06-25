@@ -21,6 +21,8 @@ import { GetPairIndexUseCase } from './app/pair/get-pair.index.usecase'
 import { PairQS } from './infra/db/query-service/pair/pair.qs'
 import { TeamPatchController } from './controller/team/team-patch.controller'
 import { ChangePairUseCase } from './app/team/change-pair.usecase'
+import { PairPatchController } from './controller/pair/pair-patch.controller'
+import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
 
 @Module({
   imports: [],
@@ -32,6 +34,7 @@ import { ChangePairUseCase } from './app/team/change-pair.usecase'
     TeamIndexController,
     TeamPatchController,
     PairIndexController,
+    PairPatchController,
   ],
   providers: [
     {
@@ -89,6 +92,10 @@ import { ChangePairUseCase } from './app/team/change-pair.usecase'
     {
       provide: tokens.ChangePairUseCase,
       useClass: ChangePairUseCase,
+    },
+    {
+      provide: tokens.ChangePaiticipantUseCase,
+      useClass: ChangePaiticipantUseCase,
     },
   ],
 })
