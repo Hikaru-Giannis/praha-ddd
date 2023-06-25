@@ -1,6 +1,7 @@
 import { createRandomIdString } from 'src/util/random'
 import { ParticipantStatus, ParticipantStatusType } from './ParticipantStatus'
 import { ParticipantId } from './ParticipantId'
+import { ParticipantName } from './ParticipantName'
 
 type CreateProps = {
   name: string
@@ -17,7 +18,7 @@ type ReconstructProps = {
 export class Participant {
   private constructor(
     public readonly id: ParticipantId,
-    private readonly name: string,
+    private readonly name: ParticipantName,
     public readonly email: string,
     private readonly status: ParticipantStatus,
   ) {}
@@ -25,7 +26,7 @@ export class Participant {
   static create({ name, email }: CreateProps) {
     return new Participant(
       new ParticipantId(createRandomIdString()),
-      name,
+      new ParticipantName(name),
       email,
       ParticipantStatus.participating(),
     )
@@ -35,7 +36,7 @@ export class Participant {
   static reconstruct({ id, name, email, status }: ReconstructProps) {
     return new Participant(
       new ParticipantId(id),
-      name,
+      new ParticipantName(name),
       email,
       new ParticipantStatus(status),
     )
@@ -45,7 +46,7 @@ export class Participant {
   public getAllProperties() {
     return {
       id: this.id.value,
-      name: this.name,
+      name: this.name.value,
       email: this.email,
       status: this.status.value,
     }
