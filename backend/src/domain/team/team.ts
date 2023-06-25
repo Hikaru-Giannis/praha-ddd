@@ -117,12 +117,12 @@ export class Team {
   public moveTeamMember(pair: Pair): [Team, TeamMember[]] {
     // 引数のペアのチームメンバーを取得
     const movedTeamMembers = this.teamMembers.filter((teamMember) => {
-      return pair.hasPairMember(teamMember)
+      return pair.hasPairMember(teamMember.participantId)
     })
 
     // 引数のペアのチームメンバーを削除
     const teamMembers = this.teamMembers.filter((teamMember) => {
-      return !pair.hasPairMember(teamMember)
+      return !pair.hasPairMember(teamMember.participantId)
     })
 
     return [

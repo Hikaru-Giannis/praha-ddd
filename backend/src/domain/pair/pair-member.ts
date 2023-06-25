@@ -1,9 +1,7 @@
 import { createRandomIdString } from 'src/util/random'
-import { TeamMember } from '../team/team-member'
 
 type CreatePairMemberProps = {
   participantId: string
-  teamId: string
 }
 
 type ReconstructPairMemberProps = {
@@ -16,19 +14,14 @@ export class PairMember {
   private constructor(
     public readonly id: string,
     private readonly participantId: string,
-    private readonly teamId: string,
   ) {}
 
-  static create({ participantId, teamId }: CreatePairMemberProps) {
-    return new PairMember(createRandomIdString(), participantId, teamId)
+  static create({ participantId }: CreatePairMemberProps) {
+    return new PairMember(createRandomIdString(), participantId)
   }
 
-  static reconstruct({
-    id,
-    participantId,
-    teamId,
-  }: ReconstructPairMemberProps) {
-    return new PairMember(id, participantId, teamId)
+  static reconstruct({ id, participantId }: ReconstructPairMemberProps) {
+    return new PairMember(id, participantId)
   }
 
   public get getAllProperties() {
@@ -38,7 +31,7 @@ export class PairMember {
     }
   }
 
-  public equals(teamMember: TeamMember): boolean {
-    return teamMember.equals(this.participantId)
+  public equals(participantId: string): boolean {
+    return this.participantId === participantId
   }
 }

@@ -31,7 +31,6 @@ export class AssignPairService {
         }
         const newPairMember = PairMember.create({
           participantId: participant.id,
-          teamId: team.id,
         })
         const [pair, newPairMembers] = chosenPair.dividePair(newPairMember)
         const newPair = Pair.create({
@@ -46,7 +45,6 @@ export class AssignPairService {
       // ペアに参加者を追加する
       const pairMember = PairMember.create({
         participantId: participant.id,
-        teamId: team.id,
       })
       const newPair = chosenPair.assignPairMember(pairMember)
       return [newPair]

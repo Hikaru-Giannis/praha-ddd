@@ -11,19 +11,18 @@ export class ParticipantRepository implements IParticipantRepository {
     private prismaClient: PrismaClient,
   ) {}
 
-  public async findById(id: string): Promise<Participant> {
+  public async findById(id: string): Promise<Participant | null> {
     const participant = await this.prismaClient.participant.findUnique({
       where: { id },
     })
-    if (!participant) {
-      throw new Error('参加者が見つかりませんでした')
-    }
-    return Participant.reconstruct(participant)
+    return participant ? Participant.reconstruct(participant) : null
   }
 
   public async findByEmail(email: string): Promise<Participant | null> {
-    console.log(email)
-    return null
+    const participant = await this.prismaClient.participant.findUnique({
+      where: { email },
+    })
+    return participant ? Participant.reconstruct(participant) : null
   }
 
   public async save(participant: Participant): Promise<void> {

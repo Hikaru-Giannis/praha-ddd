@@ -14,6 +14,9 @@ export class PutParticipantUseCase {
       const participant = await this.participantRepository.findById(
         participantId,
       )
+      if (!participant) {
+        throw new Error('Participant not found')
+      }
       const newParticipant = participant.changeStatus(status)
       await this.participantRepository.save(newParticipant)
     } catch (error) {

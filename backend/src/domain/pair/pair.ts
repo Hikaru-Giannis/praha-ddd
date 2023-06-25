@@ -1,7 +1,6 @@
 import { createRandomIdString } from 'src/util/random'
 import { PairName } from './PairName'
 import { PairMember } from './pair-member'
-import { TeamMember } from '../team/team-member'
 
 type CreateProps = {
   teamId: string
@@ -65,7 +64,7 @@ export class Pair {
 
   public dividePair(pairMember: PairMember): [Pair, [PairMember, PairMember]] {
     if (this.isFull === false) {
-      throw new Error('人数が不足しています。')
+      throw new Error('Insufficient number of pair members.')
     }
 
     // 現状のメンバーからランダムに1人を選択する
@@ -74,7 +73,7 @@ export class Pair {
     ]
 
     if (!randomPairMember) {
-      throw new Error('ペアメンバーが存在しません')
+      throw new Error('No pair member found.')
     }
 
     return [
@@ -91,9 +90,8 @@ export class Pair {
   }
 
   public assignPairMember(pairMember: PairMember): Pair {
-    // 3人以上のペアには参加者を追加できない
     if (this.pairMembersCount >= this.MaxPairMembersCount) {
-      throw new Error('3人以上のペアには参加者を追加できません')
+      throw new Error('Over the maximum number of pair members.')
     }
 
     return new Pair(this.id, this.teamId, this.pairName, [
@@ -106,7 +104,31 @@ export class Pair {
     return new Pair(this.id, teamId, this.pairName, this.pairMembers)
   }
 
-  public hasPairMember(teamMember: TeamMember): boolean {
-    return this.pairMembers.some((member) => member.equals(teamMember))
+  public hasPairMember(participantId: string): boolean {
+    return this.pairMembers.some((member) => member.equals(participantId))
+  }
+
+  public movePairMember(participantId: string): [Pair, PairMember] {
+    if (this.isFull === false) {
+      throw new Error('Insufficient number of pair members.')
+    }
+
+    const pairMember = this.pairMembers.find((member) =>
+      member.equals(participantId),
+    )
+
+    if (!pairMember) {
+      throw new Error('Not found pair member.')
+    }
+
+    return [
+      new Pair(
+        this.id,
+        this.teamId,
+        this.pairName,
+        this.pairMembers.filter((member) => !member.equals(participantId)),
+      ),
+      pairMember,
+    ]
   }
 }

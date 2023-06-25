@@ -57,6 +57,27 @@ export class PairRepository implements IPairRepository {
     )
   }
 
+  public async fetchAll() {
+    const pairs = await this.prismaClient.pair.findMany({
+      include: { members: true },
+    })
+
+    return pairs.map((pair) =>
+      Pair.reconstruct({
+        ...pair,
+        teamId: pair.team_id,
+        pairName: new PairName(pair.name),
+        pairMembers: pair.members.map((member) =>
+          PairMember.reconstruct({
+            ...member,
+            participantId: member.participant_id,
+            teamId: pair.team_id,
+          }),
+        ),
+      }),
+    )
+  }
+
   public async save(pair: Pair): Promise<void> {
     const allProperties = pair.getAllProperties
 

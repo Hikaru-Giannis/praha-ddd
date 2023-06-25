@@ -8,12 +8,12 @@ export const STATUS = {
   WITHDRAWN: 'withdrawn',
 } as const
 
-type ParticipantCreateProps = {
+type CreateProps = {
   name: string
   email: string
 }
 
-type ParticipantReconstructProps = {
+type ReconstructProps = {
   id: string
   name: string
   email: string
@@ -28,7 +28,7 @@ export class Participant {
     private readonly status: Status,
   ) {}
 
-  static create({ name, email }: ParticipantCreateProps) {
+  static create({ name, email }: CreateProps) {
     return new Participant(
       createRandomIdString(),
       name,
@@ -38,7 +38,7 @@ export class Participant {
   }
 
   // インフラ層で実装
-  static reconstruct({ id, name, email, status }: ParticipantReconstructProps) {
+  static reconstruct({ id, name, email, status }: ReconstructProps) {
     return new Participant(id, name, email, status)
   }
 

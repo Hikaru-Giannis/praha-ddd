@@ -1,4 +1,3 @@
-import { Participant } from '@prisma/client'
 import { createRandomIdString } from 'src/util/random'
 
 type createTeamMemberProps = {
@@ -13,7 +12,7 @@ type reconstructTeamMemberProps = {
 export class TeamMember {
   private constructor(
     public readonly id: string,
-    private readonly participantId: string,
+    public readonly participantId: string,
   ) {}
 
   static create({ participantId }: createTeamMemberProps) {
