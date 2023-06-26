@@ -14,4 +14,6 @@ export const tokens = {
   IPairQS: Symbol('IPairQS'),
   ChangePairUseCase: Symbol('ChangePairUseCase'),
   ChangePaiticipantUseCase: Symbol('ChangePaiticipantUseCase'),
+  AssignTeamService: Symbol('AssignTeamService'),
+  AssignPairService: Symbol('AssignPairService'),
 }

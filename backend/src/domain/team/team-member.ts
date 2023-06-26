@@ -7,7 +7,7 @@ type CreateProps = {
 
 type ReconstructProps = {
   id: string
-  participantId: ParticipantId
+  participantId: string
 }
 
 export class TeamMember {
@@ -21,13 +21,13 @@ export class TeamMember {
   }
 
   static reconstruct({ id, participantId }: ReconstructProps) {
-    return new TeamMember(id, participantId)
+    return new TeamMember(id, new ParticipantId(participantId))
   }
 
   public get getAllProperties() {
     return {
       id: this.id,
-      participantId: this.participantId,
+      participantId: this.participantId.value,
     }
   }
 

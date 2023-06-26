@@ -2,11 +2,9 @@ import { PrismaClient } from '@prisma/client'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
-import { TeamName } from 'src/domain/team/TeamName'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { Pair } from 'src/domain/pair/pair'
-import { ParticipantId } from 'src/domain/participant/ParticipantId'
 
 @Injectable()
 export class TeamRepository implements ITeamRepository {
@@ -26,12 +24,12 @@ export class TeamRepository implements ITeamRepository {
     return team
       ? Team.reconstruct({
           id: team.id,
-          teamName: new TeamName(team.name),
+          teamName: team.name,
           status: team.status,
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
-              participantId: new ParticipantId(member.participant_id),
+              participantId: member.participant_id,
             })
           }),
         })
@@ -51,12 +49,12 @@ export class TeamRepository implements ITeamRepository {
     return team
       ? Team.reconstruct({
           id: team.id,
-          teamName: new TeamName(team.name),
+          teamName: team.name,
           status: team.status,
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
-              participantId: new ParticipantId(member.participant_id),
+              participantId: member.participant_id,
             })
           }),
         })
@@ -73,12 +71,12 @@ export class TeamRepository implements ITeamRepository {
     return teams.map((team) => {
       return Team.reconstruct({
         id: team.id,
-        teamName: new TeamName(team.name),
+        teamName: team.name,
         status: team.status,
         teamMembers: team.members.map((member) => {
           return TeamMember.reconstruct({
             id: member.id,
-            participantId: new ParticipantId(member.participant_id),
+            participantId: member.participant_id,
           })
         }),
       })
@@ -88,7 +86,7 @@ export class TeamRepository implements ITeamRepository {
   public async save(team: Team): Promise<void> {
     const allProperties = team.getAllProperties()
     await this.prismaClient.team.upsert({
-      where: { id: team.id },
+      where: { id: team.id.value },
       update: {
         name: allProperties.teamName,
         status: allProperties.status,
@@ -105,13 +103,13 @@ export class TeamRepository implements ITeamRepository {
         await this.prismaClient.teamMember.upsert({
           where: { id: teamMember.id },
           update: {
-            team_id: team.id,
-            participant_id: teamMember.participantId.value,
+            team_id: team.id.value,
+            participant_id: teamMember.participantId,
           },
           create: {
             id: teamMember.id,
-            team_id: team.id,
-            participant_id: teamMember.participantId.value,
+            team_id: team.id.value,
+            participant_id: teamMember.participantId,
           },
         })
       }),

@@ -37,7 +37,7 @@ export class AssignTeamService {
       const teamMember = TeamMember.create({
         participantId: participant.id,
       })
-      const team = chosenTeam.assignTeamMember(teamMember)
+      const team = chosenTeam.assignTeamMembers([teamMember])
       return team
     }
 

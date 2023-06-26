@@ -7,6 +7,7 @@ import { AssignTeamService } from 'src/domain/team/assign-team.service'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
+import { DomainValidationError } from 'src/domain/error/domain-validation.error'
 
 type StoreParticipantProps = {
   name: string
@@ -24,6 +25,10 @@ export class StoreParticipantUseCase {
     private readonly pairRepository: IPairRepository,
     @Inject(tokens.ValidateEmailUniquenessService)
     private readonly validateEmailUniquenessService: ValidateEmailUniquenessService,
+    @Inject(tokens.AssignTeamService)
+    private readonly assignTeamService: AssignTeamService,
+    @Inject(tokens.AssignPairService)
+    private readonly assignPairService: AssignPairService,
   ) {}
 
   public async do({ name, email }: StoreParticipantProps) {
@@ -37,23 +42,21 @@ export class StoreParticipantUseCase {
       (await this.validateEmailUniquenessService.isUnique(participant)) ===
       false
     ) {
-      throw new Error('参加者は既に存在しています')
+      throw new DomainValidationError('参加者は既に存在しています')
     }
 
     // 参加者を保存
     await this.participantRepository.save(participant)
 
     // チーム割り当て
-    const assignTeamService = new AssignTeamService(this.teamRepository)
-    const team = await assignTeamService.assign(participant)
+    const team = await this.assignTeamService.assign(participant)
     if (!team) {
       throw new Error('チームの割り当てに失敗しました')
     }
     this.teamRepository.save(team)
 
     // ペア割り当て
-    const assignPairService = new AssignPairService(this.pairRepository)
-    const pairs = await assignPairService.assign(participant, team)
+    const pairs = await this.assignPairService.assign(participant, team)
     if (!pairs) {
       throw new Error('ペアの割り当てに失敗しました')
     }

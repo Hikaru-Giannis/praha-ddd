@@ -5,6 +5,7 @@ import { Pair } from 'src/domain/pair/pair'
 import { PairMember } from 'src/domain/pair/pair-member'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
+import { TeamId } from 'src/domain/team/TeamId'
 import { tokens } from 'src/tokens'
 
 @Injectable()
@@ -36,9 +37,9 @@ export class PairRepository implements IPairRepository {
       : null
   }
 
-  public async fetchByTeamId(teamId: string) {
+  public async fetchByTeamId(teamId: TeamId) {
     const pairs = await this.prismaClient.pair.findMany({
-      where: { team_id: teamId },
+      where: { team_id: teamId.value },
       include: { members: true },
     })
 

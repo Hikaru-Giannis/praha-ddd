@@ -3,6 +3,7 @@ import { TeamMember } from './team-member'
 import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
 import { Pair } from '../pair/pair'
+import { TeamId } from './TeamId'
 
 type CreateProps = {
   teamName: TeamName
@@ -11,19 +12,19 @@ type CreateProps = {
 
 type ReconstructProps = {
   id: string
-  teamName: TeamName
+  teamName: string
   status: TeamStatusType
   teamMembers: TeamMember[]
 }
 
 export class Team {
-  public readonly id: string
+  public readonly id: TeamId
   private readonly teamName: TeamName
   private readonly status: TeamStatus
   private readonly teamMembers: TeamMember[]
 
   private constructor(
-    id: string,
+    id: TeamId,
     teamName: TeamName,
     status: TeamStatus,
     teamMembers: TeamMember[] = [],
@@ -37,7 +38,7 @@ export class Team {
   static create({ teamName, teamMembers }: CreateProps) {
     if (teamMembers.length >= 3) {
       return new Team(
-        createRandomIdString(),
+        new TeamId(createRandomIdString()),
         teamName,
         TeamStatus.active(),
         teamMembers,
@@ -45,7 +46,7 @@ export class Team {
     }
 
     return new Team(
-      createRandomIdString(),
+      new TeamId(createRandomIdString()),
       teamName,
       TeamStatus.inactive(),
       teamMembers,
@@ -54,8 +55,8 @@ export class Team {
 
   static reconstruct({ id, teamName, status, teamMembers }: ReconstructProps) {
     return new Team(
-      id,
-      teamName,
+      new TeamId(id),
+      new TeamName(teamName),
       new TeamStatus(status),
       teamMembers.map((teamMember) => {
         return TeamMember.reconstruct(teamMember.getAllProperties)
@@ -65,20 +66,13 @@ export class Team {
 
   public getAllProperties() {
     return {
-      id: this.id,
+      id: this.id.value,
       teamName: this.teamName.value,
       status: this.status.value,
       teamMembers: this.teamMembers.map((teamMember) => {
         return teamMember.getAllProperties
       }),
     }
-  }
-
-  public assignTeamMember(teamMember: TeamMember): Team {
-    return new Team(this.id, this.teamName, this.status, [
-      ...this.teamMembers,
-      teamMember,
-    ])
   }
 
   public assignTeamMembers(teamMembers: TeamMember[]): Team {

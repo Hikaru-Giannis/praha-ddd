@@ -2,6 +2,7 @@ import { createRandomIdString } from 'src/util/random'
 import { PairName } from './PairName'
 import { PairMember } from './pair-member'
 import { ParticipantId } from '../participant/ParticipantId'
+import { TeamId } from '../team/TeamId'
 
 type CreateProps = {
   teamId: string
@@ -101,8 +102,8 @@ export class Pair {
     ])
   }
 
-  public changeTeam(teamId: string): Pair {
-    return new Pair(this.id, teamId, this.pairName, this.pairMembers)
+  public changeTeam(teamId: TeamId): Pair {
+    return new Pair(this.id, teamId.value, this.pairName, this.pairMembers)
   }
 
   public hasPairMember(participantId: ParticipantId): boolean {

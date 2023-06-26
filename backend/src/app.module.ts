@@ -23,6 +23,8 @@ import { TeamPatchController } from './controller/team/team-patch.controller'
 import { ChangePairUseCase } from './app/team/change-pair.usecase'
 import { PairPatchController } from './controller/pair/pair-patch.controller'
 import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
+import { AssignTeamService } from './domain/team/assign-team.service'
+import { AssignPairService } from './domain/pair/assign-pair.service'
 
 @Module({
   imports: [],
@@ -96,6 +98,14 @@ import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
     {
       provide: tokens.ChangePaiticipantUseCase,
       useClass: ChangePaiticipantUseCase,
+    },
+    {
+      provide: tokens.AssignTeamService,
+      useClass: AssignTeamService,
+    },
+    {
+      provide: tokens.AssignPairService,
+      useClass: AssignPairService,
     },
   ],
 })
