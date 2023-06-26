@@ -76,19 +76,17 @@ export class Team {
   }
 
   public assignTeamMembers(teamMembers: TeamMember[]): Team {
-    return new Team(this.id, this.teamName, this.status, [
-      ...this.teamMembers,
-      ...teamMembers,
-    ])
+    const newTeamMembers = [...this.teamMembers, ...teamMembers]
+    const newStatus = this.getStatusByTeamMembersCount(newTeamMembers.length)
+    return new Team(this.id, this.teamName, newStatus, newTeamMembers)
   }
 
-  public delete() {
-    return new Team(
-      this.id,
-      this.teamName,
-      TeamStatus.disbanded(),
-      this.teamMembers,
-    )
+  private getStatusByTeamMembersCount(teamMembersCount: number): TeamStatus {
+    if (teamMembersCount >= 3) {
+      return TeamStatus.active()
+    }
+
+    return TeamStatus.inactive()
   }
 
   public get isActive(): boolean {
@@ -114,8 +112,10 @@ export class Team {
       return !pair.hasPairMember(teamMember.participantId)
     })
 
+    const newStatus = this.getStatusByTeamMembersCount(teamMembers.length)
+
     return [
-      new Team(this.id, this.teamName, this.status, teamMembers),
+      new Team(this.id, this.teamName, newStatus, teamMembers),
       movedTeamMembers,
     ]
   }
