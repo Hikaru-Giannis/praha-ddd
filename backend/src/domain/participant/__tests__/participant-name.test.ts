@@ -1,3 +1,4 @@
+import { DomainValidationError } from 'src/domain/error/domain-validation.error'
 import { ParticipantName } from '../ParticipantName'
 
 describe('ParticipantName', () => {
@@ -9,16 +10,12 @@ describe('ParticipantName', () => {
 
   it('短すぎる名前の場合にエラーが投げられるか', () => {
     const name = ''
-    expect(() => new ParticipantName(name)).toThrowError(
-      'Invalid participant name.',
-    )
+    expect(() => new ParticipantName(name)).toThrow(DomainValidationError)
   })
 
   it('長すぎる名前の場合にエラーが投げられるか', () => {
     const name = new Array(257).join('a')
-    expect(() => new ParticipantName(name)).toThrowError(
-      'Invalid participant name.',
-    )
+    expect(() => new ParticipantName(name)).toThrow(DomainValidationError)
   })
 
   it('同じ値を持つ参加者名が等しいと判断されるか', () => {
