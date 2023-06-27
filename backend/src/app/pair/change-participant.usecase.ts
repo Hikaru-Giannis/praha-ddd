@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
+import { PairId } from 'src/domain/pair/PairId'
 
 @Injectable()
 export class ChangePaiticipantUseCase {
@@ -30,7 +31,9 @@ export class ChangePaiticipantUseCase {
     }
 
     // 移動後のペア
-    const destinationPair = allPairs.find((pair) => pair.id === pairId)
+    const destinationPair = allPairs.find((pair) =>
+      pair.id.equals(new PairId(pairId)),
+    )
     if (!destinationPair) {
       throw new Error('Pair is not found')
     }

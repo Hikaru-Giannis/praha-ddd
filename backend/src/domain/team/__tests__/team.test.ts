@@ -127,7 +127,7 @@ describe('Team', () => {
     })
 
     const pair = Pair.create({
-      teamId: team.id.value,
+      teamId: team.id,
       pairMembers: [
         PairMember.create({
           participantId: new ParticipantId('01F8MECHZX3TBDSZ7STCF8BCRY'),

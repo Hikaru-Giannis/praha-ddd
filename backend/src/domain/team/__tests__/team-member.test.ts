@@ -20,7 +20,7 @@ describe('TeamMember', () => {
     const teamMember = TeamMember.reconstruct(props)
 
     expect(teamMember).toBeInstanceOf(TeamMember)
-    expect(teamMember.id).toBe(props.id)
+    expect(teamMember.id.value).toBe(props.id)
     expect(teamMember.participantId).toEqual(
       new ParticipantId(props.participantId),
     )
@@ -41,7 +41,7 @@ describe('TeamMember', () => {
     const teamMember = TeamMember.create({ participantId })
 
     const properties = teamMember.getAllProperties
-    expect(properties.id).toBe(teamMember.id)
+    expect(properties.id).toBe(teamMember.id.value)
     expect(properties.participantId).toBe(teamMember.participantId.value)
   })
 })

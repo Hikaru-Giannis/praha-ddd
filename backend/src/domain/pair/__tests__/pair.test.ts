@@ -3,6 +3,7 @@ import { Pair } from '../pair'
 import { PairMember } from '../pair-member'
 import { PairName } from '../PairName'
 import { ulid } from 'ulid'
+import { TeamId } from 'src/domain/team/TeamId'
 
 describe('Pair', () => {
   it('作成', () => {
@@ -10,8 +11,10 @@ describe('Pair', () => {
       participantId: new ParticipantId(ulid()),
     })
 
+    const teamId = new TeamId(ulid())
+
     const createProps = {
-      teamId: 'teamId',
+      teamId: teamId,
       pairMembers: [pairMember],
       latestPair: undefined,
     }
@@ -20,7 +23,7 @@ describe('Pair', () => {
     expect(pair).toBeDefined()
     expect(pair.getAllProperties).toEqual({
       id: expect.any(String),
-      teamId: 'teamId',
+      teamId: teamId,
       pairName: PairName.first,
       pairMembers: [pairMember.getAllProperties],
     })

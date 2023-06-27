@@ -4,7 +4,6 @@ import { PairName } from 'src/domain/pair/PairName'
 import { Pair } from 'src/domain/pair/pair'
 import { PairMember } from 'src/domain/pair/pair-member'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
-import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { TeamId } from 'src/domain/team/TeamId'
 import { tokens } from 'src/tokens'
 
@@ -29,8 +28,7 @@ export class PairRepository implements IPairRepository {
           pairMembers: pair.members.map((member) =>
             PairMember.reconstruct({
               ...member,
-              participantId: new ParticipantId(member.participant_id),
-              teamId: pair.team_id,
+              participantId: member.participant_id,
             }),
           ),
         })
@@ -51,8 +49,7 @@ export class PairRepository implements IPairRepository {
         pairMembers: pair.members.map((member) =>
           PairMember.reconstruct({
             ...member,
-            participantId: new ParticipantId(member.participant_id),
-            teamId: pair.team_id,
+            participantId: member.participant_id,
           }),
         ),
       }),
@@ -72,8 +69,7 @@ export class PairRepository implements IPairRepository {
         pairMembers: pair.members.map((member) =>
           PairMember.reconstruct({
             ...member,
-            participantId: new ParticipantId(member.participant_id),
-            teamId: pair.team_id,
+            participantId: member.participant_id,
           }),
         ),
       }),
@@ -84,14 +80,14 @@ export class PairRepository implements IPairRepository {
     const allProperties = pair.getAllProperties
 
     await this.prismaClient.pair.upsert({
-      where: { id: pair.id },
+      where: { id: pair.id.value },
       update: {
-        team_id: allProperties.teamId,
+        team_id: allProperties.teamId.value,
         name: allProperties.pairName.value,
       },
       create: {
         id: allProperties.id,
-        team_id: allProperties.teamId,
+        team_id: allProperties.teamId.value,
         name: allProperties.pairName.value,
       },
     })
@@ -101,13 +97,13 @@ export class PairRepository implements IPairRepository {
         await this.prismaClient.pairMember.upsert({
           where: { id: pairMember.id },
           update: {
-            pair_id: pair.id,
-            participant_id: pairMember.participantId.value,
+            pair_id: pair.id.value,
+            participant_id: pairMember.participantId,
           },
           create: {
             id: pairMember.id,
-            pair_id: pair.id,
-            participant_id: pairMember.participantId.value,
+            pair_id: pair.id.value,
+            participant_id: pairMember.participantId,
           },
         })
       }),

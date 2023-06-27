@@ -1,5 +1,6 @@
 import { createRandomIdString } from 'src/util/random'
 import { ParticipantId } from '../participant/ParticipantId'
+import { TeamMemberId } from './TeamMemberId'
 
 type CreateProps = {
   participantId: ParticipantId
@@ -12,21 +13,27 @@ type ReconstructProps = {
 
 export class TeamMember {
   private constructor(
-    public readonly id: string,
+    public readonly id: TeamMemberId,
     public readonly participantId: ParticipantId,
   ) {}
 
   static create({ participantId }: CreateProps) {
-    return new TeamMember(createRandomIdString(), participantId)
+    return new TeamMember(
+      new TeamMemberId(createRandomIdString()),
+      participantId,
+    )
   }
 
   static reconstruct({ id, participantId }: ReconstructProps) {
-    return new TeamMember(id, new ParticipantId(participantId))
+    return new TeamMember(
+      new TeamMemberId(id),
+      new ParticipantId(participantId),
+    )
   }
 
   public get getAllProperties() {
     return {
-      id: this.id,
+      id: this.id.value,
       participantId: this.participantId.value,
     }
   }

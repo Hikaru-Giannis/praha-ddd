@@ -3,9 +3,10 @@ import { PairName } from './PairName'
 import { PairMember } from './pair-member'
 import { ParticipantId } from '../participant/ParticipantId'
 import { TeamId } from '../team/TeamId'
+import { PairId } from './PairId'
 
 type CreateProps = {
-  teamId: string
+  teamId: TeamId
   pairMembers: PairMember[]
   latestPair: Pair | undefined
 }
@@ -21,8 +22,8 @@ export class Pair {
   private MaxPairMembersCount = 3
 
   private constructor(
-    public readonly id: string,
-    private readonly teamId: string,
+    public readonly id: PairId,
+    private readonly teamId: TeamId,
     private readonly pairName: PairName,
     private readonly pairMembers: PairMember[] = [],
   ) {
@@ -34,11 +35,16 @@ export class Pair {
 
   static create({ teamId, pairMembers, latestPair }: CreateProps) {
     const newPairName = latestPair ? latestPair.pairName.next : PairName.first
-    return new Pair(createRandomIdString(), teamId, newPairName, pairMembers)
+    return new Pair(
+      new PairId(createRandomIdString()),
+      teamId,
+      newPairName,
+      pairMembers,
+    )
   }
 
   static reconstruct({ id, teamId, pairName, pairMembers }: ReconstructProps) {
-    return new Pair(id, teamId, pairName, pairMembers)
+    return new Pair(new PairId(id), new TeamId(teamId), pairName, pairMembers)
   }
 
   public equals(pair: Pair): boolean {
@@ -47,7 +53,7 @@ export class Pair {
 
   public get getAllProperties() {
     return {
-      id: this.id,
+      id: this.id.value,
       teamId: this.teamId,
       pairName: this.pairName,
       pairMembers: this.pairMembers.map(
@@ -103,7 +109,7 @@ export class Pair {
   }
 
   public changeTeam(teamId: TeamId): Pair {
-    return new Pair(this.id, teamId.value, this.pairName, this.pairMembers)
+    return new Pair(this.id, teamId, this.pairName, this.pairMembers)
   }
 
   public hasPairMember(participantId: ParticipantId): boolean {

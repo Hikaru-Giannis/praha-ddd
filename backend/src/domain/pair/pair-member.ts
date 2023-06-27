@@ -1,5 +1,6 @@
 import { createRandomIdString } from 'src/util/random'
 import { ParticipantId } from '../participant/ParticipantId'
+import { PairMemeberId } from './PairMemeberId'
 
 type CreateProps = {
   participantId: ParticipantId
@@ -7,28 +8,33 @@ type CreateProps = {
 
 type ReconstructProps = {
   id: string
-  participantId: ParticipantId
-  teamId: string
+  participantId: string
 }
 
 export class PairMember {
   private constructor(
-    public readonly id: string,
+    public readonly id: PairMemeberId,
     private readonly participantId: ParticipantId,
   ) {}
 
   static create({ participantId }: CreateProps) {
-    return new PairMember(createRandomIdString(), participantId)
+    return new PairMember(
+      new PairMemeberId(createRandomIdString()),
+      participantId,
+    )
   }
 
   static reconstruct({ id, participantId }: ReconstructProps) {
-    return new PairMember(id, participantId)
+    return new PairMember(
+      new PairMemeberId(id),
+      new ParticipantId(participantId),
+    )
   }
 
   public get getAllProperties() {
     return {
-      id: this.id,
-      participantId: this.participantId,
+      id: this.id.value,
+      participantId: this.participantId.value,
     }
   }
 

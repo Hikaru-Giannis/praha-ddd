@@ -1,6 +1,7 @@
 import { Pair } from 'src/domain/pair/pair'
 import { PairMember } from 'src/domain/pair/pair-member'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
+import { TeamId } from 'src/domain/team/TeamId'
 import { ulid } from 'ulid'
 
 /**
@@ -19,7 +20,7 @@ export const createPairMembers = (memberCount: 2 | 3): PairMember[] => {
  */
 export const createPair = (memberCount: 2 | 3): Pair => {
   return Pair.create({
-    teamId: '1',
+    teamId: new TeamId(ulid()),
     pairMembers: createPairMembers(memberCount),
     latestPair: undefined,
   })

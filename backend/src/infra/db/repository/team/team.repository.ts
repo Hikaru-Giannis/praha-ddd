@@ -40,7 +40,7 @@ export class TeamRepository implements ITeamRepository {
     const allProperties = pair.getAllProperties
 
     const team = await this.prismaClient.team.findUnique({
-      where: { id: allProperties.teamId },
+      where: { id: allProperties.teamId.value },
       include: {
         members: true,
       },
