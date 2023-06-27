@@ -98,6 +98,10 @@ export class TeamRepository implements ITeamRepository {
       },
     })
 
+    await this.prismaClient.teamMember.deleteMany({
+      where: { team_id: team.id.value },
+    })
+
     await Promise.all(
       allProperties.teamMembers.map(async (teamMember) => {
         await this.prismaClient.teamMember.upsert({

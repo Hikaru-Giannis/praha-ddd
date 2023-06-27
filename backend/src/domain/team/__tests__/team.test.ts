@@ -145,4 +145,54 @@ describe('Team', () => {
     expect(updatedTeam.isInactive).toBe(true)
     expect(movedTeamMembers.length).toBe(2)
   })
+
+  test('あるチームメンバーを含むか', () => {
+    const participantId1 = createRandomIdString()
+    const participantId2 = createRandomIdString()
+    const participantId3 = createRandomIdString()
+    const team = Team.create({
+      teamName: new TeamName('1'),
+      teamMembers: [
+        TeamMember.create({
+          participantId: new ParticipantId(participantId1),
+        }),
+        TeamMember.create({
+          participantId: new ParticipantId(participantId2),
+        }),
+        TeamMember.create({
+          participantId: new ParticipantId(participantId3),
+        }),
+      ],
+    })
+
+    const participantId = new ParticipantId(participantId1)
+    const notIncludedParticipantId = new ParticipantId(createRandomIdString())
+    expect(team.hasTeamMember(participantId)).toBe(true)
+    expect(team.hasTeamMember(notIncludedParticipantId)).toBe(false)
+  })
+
+  test('チームメンバーを削除できるか', () => {
+    const participantId1 = createRandomIdString()
+    const participantId2 = createRandomIdString()
+    const participantId3 = createRandomIdString()
+    const team = Team.create({
+      teamName: new TeamName('1'),
+      teamMembers: [
+        TeamMember.create({
+          participantId: new ParticipantId(participantId1),
+        }),
+        TeamMember.create({
+          participantId: new ParticipantId(participantId2),
+        }),
+        TeamMember.create({
+          participantId: new ParticipantId(participantId3),
+        }),
+      ],
+    })
+
+    const participantId = new ParticipantId(participantId1)
+    const updatedTeam = team.removeTeamMember(participantId)
+    expect(updatedTeam.teamMembersCount).toBe(2)
+    expect(updatedTeam.isInactive).toBe(true)
+  })
 })

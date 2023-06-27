@@ -92,15 +92,14 @@ export class PairRepository implements IPairRepository {
       },
     })
 
+    await this.prismaClient.pairMember.deleteMany({
+      where: { pair_id: pair.id.value },
+    })
+
     await Promise.all(
       allProperties.pairMembers.map(async (pairMember) => {
-        await this.prismaClient.pairMember.upsert({
-          where: { id: pairMember.id },
-          update: {
-            pair_id: pair.id.value,
-            participant_id: pairMember.participantId,
-          },
-          create: {
+        await this.prismaClient.pairMember.create({
+          data: {
             id: pairMember.id,
             pair_id: pair.id.value,
             participant_id: pairMember.participantId,
@@ -108,5 +107,9 @@ export class PairRepository implements IPairRepository {
         })
       }),
     )
+  }
+
+  public async delete(pair: Pair): Promise<void> {
+    await this.prismaClient.pair.delete({ where: { id: pair.id.value } })
   }
 }

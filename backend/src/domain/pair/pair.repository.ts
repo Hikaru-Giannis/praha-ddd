@@ -5,4 +5,5 @@ export interface IPairRepository {
   fetchByTeamId(teamId: TeamId): Promise<Pair[]>
   fetchAll(): Promise<Pair[]>
   save(pair: Pair): Promise<void>
+  delete(pair: Pair): Promise<void>
 }

@@ -19,11 +19,12 @@ type ReconstructProps = {
 }
 
 export class Pair {
-  private MaxPairMembersCount = 3
+  private MAX_PAIR_MEMBER_COUNT = 3
+  private MIN_PAIR_MEMBER_COUNT = 2
 
   private constructor(
     public readonly id: PairId,
-    private readonly teamId: TeamId,
+    public readonly teamId: TeamId,
     private readonly pairName: PairName,
     private readonly pairMembers: PairMember[] = [],
   ) {
@@ -67,7 +68,7 @@ export class Pair {
   }
 
   public get isFull(): boolean {
-    return this.pairMembersCount >= this.MaxPairMembersCount
+    return this.pairMembersCount === this.MAX_PAIR_MEMBER_COUNT
   }
 
   public dividePair(pairMember: PairMember): [Pair, [PairMember, PairMember]] {
@@ -98,7 +99,7 @@ export class Pair {
   }
 
   public assignPairMember(pairMember: PairMember): Pair {
-    if (this.pairMembersCount >= this.MaxPairMembersCount) {
+    if (this.pairMembersCount >= this.MAX_PAIR_MEMBER_COUNT) {
       throw new Error('Over the maximum number of pair members.')
     }
 
@@ -138,5 +139,25 @@ export class Pair {
       ),
       pairMember,
     ]
+  }
+
+  get isActive(): boolean {
+    return (
+      this.pairMembersCount >= this.MIN_PAIR_MEMBER_COUNT &&
+      this.pairMembersCount <= this.MAX_PAIR_MEMBER_COUNT
+    )
+  }
+
+  public removePairMember(participantId: ParticipantId): Pair {
+    return new Pair(
+      this.id,
+      this.teamId,
+      this.pairName,
+      this.pairMembers.filter((member) => !member.equals(participantId)),
+    )
+  }
+
+  public isBelongTo(teamId: TeamId): boolean {
+    return this.teamId.equals(teamId)
   }
 }

@@ -13,6 +13,7 @@ describe('ValidateEmailUniquenessService', () => {
 
   beforeEach(() => {
     participantRepository = {
+      fetchAll: jest.fn(),
       findById: jest.fn(),
       findByEmail: jest.fn(),
       save: jest.fn(),

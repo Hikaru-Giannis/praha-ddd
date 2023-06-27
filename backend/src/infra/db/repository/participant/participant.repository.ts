@@ -12,6 +12,13 @@ export class ParticipantRepository implements IParticipantRepository {
     private prismaClient: PrismaClient,
   ) {}
 
+  public async fetchAll(): Promise<Participant[]> {
+    const participants = await this.prismaClient.participant.findMany()
+    return participants.map((participant) =>
+      Participant.reconstruct(participant),
+    )
+  }
+
   public async findById(id: string): Promise<Participant | null> {
     const participant = await this.prismaClient.participant.findUnique({
       where: { id },

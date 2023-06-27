@@ -53,6 +53,22 @@ export class Participant {
     }
   }
 
+  get isParticipating() {
+    return this.status.isParticipating
+  }
+
+  get isAdjourning() {
+    return this.status.isAdjourning
+  }
+
+  get isWithdrawn() {
+    return this.status.isWithdrawn
+  }
+
+  public equalsStatus(status: ParticipantStatusType): boolean {
+    return this.status.value === status
+  }
+
   public changeStatus(status: ParticipantStatusType): Participant {
     return new Participant(
       this.id,

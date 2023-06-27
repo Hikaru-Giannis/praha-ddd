@@ -4,6 +4,7 @@ import { TeamStatus, TeamStatusType } from './TeamStatus'
 import { TeamName } from './TeamName'
 import { Pair } from '../pair/pair'
 import { TeamId } from './TeamId'
+import { ParticipantId } from '../participant/ParticipantId'
 
 type CreateProps = {
   teamName: TeamName
@@ -118,5 +119,21 @@ export class Team {
       new Team(this.id, this.teamName, newStatus, teamMembers),
       movedTeamMembers,
     ]
+  }
+
+  public hasTeamMember(participantId: ParticipantId): boolean {
+    return this.teamMembers.some((teamMember) => {
+      return teamMember.participantId.equals(participantId)
+    })
+  }
+
+  public removeTeamMember(participantId: ParticipantId): Team {
+    const teamMembers = this.teamMembers.filter((teamMember) => {
+      return !teamMember.participantId.equals(participantId)
+    })
+
+    const newStatus = this.getStatusByTeamMembersCount(teamMembers.length)
+
+    return new Team(this.id, this.teamName, newStatus, teamMembers)
   }
 }

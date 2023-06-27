@@ -50,6 +50,7 @@ export class AssignPairService {
       return [newPair]
     }
 
-    throw new Error('ペアの割り当てに失敗しました')
+    // TODO 管理者にメール送信
+    throw new Error('割り当てるペアが見つかりませんでした')
   }
 }

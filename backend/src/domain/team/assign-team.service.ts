@@ -41,6 +41,7 @@ export class AssignTeamService {
       return team
     }
 
-    throw new Error('チームの割り当てに失敗しました')
+    // TODO 管理者にメール送信
+    throw new Error('割り当てるチームが見つかりませんでした')
   }
 }
