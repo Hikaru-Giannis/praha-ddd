@@ -49,7 +49,7 @@ export class Pair {
   }
 
   public equals(pair: Pair): boolean {
-    return this.id === pair.id
+    return this.id.equals(pair.id)
   }
 
   public get getAllProperties() {
@@ -73,7 +73,7 @@ export class Pair {
 
   public dividePair(pairMember: PairMember): [Pair, [PairMember, PairMember]] {
     if (this.isFull === false) {
-      throw new Error('Insufficient number of pair members.')
+      throw new Error('ペアメンバーが満たされていません。')
     }
 
     // 現状のメンバーからランダムに1人を選択する
@@ -100,7 +100,7 @@ export class Pair {
 
   public assignPairMember(pairMember: PairMember): Pair {
     if (this.pairMembersCount >= this.MAX_PAIR_MEMBER_COUNT) {
-      throw new Error('Over the maximum number of pair members.')
+      throw new Error('ペアメンバーが満たされています。')
     }
 
     return new Pair(this.id, this.teamId, this.pairName, [
