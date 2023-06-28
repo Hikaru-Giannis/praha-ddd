@@ -29,13 +29,18 @@ export class ChangePairUseCase {
     }
 
     const [newTeam, movedTeamMembers] = oldTeam.moveTeamMember(pair)
-
     // 移動元のチームを保存
     await this.teamRepository.save(newTeam)
+    if (newTeam.isInactive) {
+      // TODO 管理者にメール
+    }
 
     // 移動先のチームを保存
     const movedTeam = team.assignTeamMembers(movedTeamMembers)
     await this.teamRepository.save(movedTeam)
+    if (movedTeam.isInactive) {
+      // TODO 管理者にメール
+    }
 
     const newPair = pair.changeTeam(team.id)
     await this.pairRepository.save(newPair)

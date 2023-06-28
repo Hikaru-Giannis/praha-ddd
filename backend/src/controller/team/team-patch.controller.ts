@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Inject,
-  Injectable,
-  Param,
-  Patch,
-} from '@nestjs/common'
+import { Body, Controller, Inject, Param, Patch } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { ChangePairUseCase } from 'src/app/team/change-pair.usecase'
 import { PatchTeamRequest } from './request/patch-team-request'
@@ -23,7 +16,12 @@ export class TeamPatchController {
   ): Promise<{
     status: number
   }> {
-    await this.changePairUseCase.do(teamId, putParticipantDto.pair.id)
-    return { status: 200 }
+    try {
+      await this.changePairUseCase.do(teamId, putParticipantDto.pair.id)
+      return { status: 200 }
+    } catch (e) {
+      console.error(e)
+      return { status: 500 }
+    }
   }
 }

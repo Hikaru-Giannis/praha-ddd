@@ -16,10 +16,15 @@ export class PairPatchController {
   ): Promise<{
     status: number
   }> {
-    await this.changePaiticipantUseCase.do(
-      putParticipantDto.participant.id,
-      pairId,
-    )
-    return { status: 200 }
+    try {
+      await this.changePaiticipantUseCase.do(
+        putParticipantDto.participant.id,
+        pairId,
+      )
+      return { status: 200 }
+    } catch (e) {
+      console.error(e)
+      return { status: 500 }
+    }
   }
 }
