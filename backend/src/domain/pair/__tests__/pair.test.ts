@@ -93,7 +93,7 @@ describe('Pair', () => {
       ],
     })
 
-    const allProperties = pair.getAllProperties
+    const allProperties = pair.getAllProperties()
 
     expect(allProperties.id).toBe(pairId)
     expect(allProperties.teamId).toBe(pair.teamId)

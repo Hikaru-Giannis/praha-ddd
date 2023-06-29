@@ -37,7 +37,7 @@ export class TeamRepository implements ITeamRepository {
   }
 
   public async findByPair(pair: Pair): Promise<Team | null> {
-    const allProperties = pair.getAllProperties
+    const allProperties = pair.getAllProperties()
 
     const team = await this.prismaClient.team.findUnique({
       where: { id: allProperties.teamId.value },

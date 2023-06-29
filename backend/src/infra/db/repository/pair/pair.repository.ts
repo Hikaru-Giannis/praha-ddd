@@ -77,7 +77,7 @@ export class PairRepository implements IPairRepository {
   }
 
   public async save(pair: Pair): Promise<void> {
-    const allProperties = pair.getAllProperties
+    const allProperties = pair.getAllProperties()
 
     await this.prismaClient.pair.upsert({
       where: { id: pair.id.value },

@@ -6,27 +6,27 @@ export const TASK_STATUS = {
   COMPLETED: 'completed',
 } as const
 
-export type TaskStatusType = typeof TASK_STATUS[keyof typeof TASK_STATUS]
+export type TaskProgressStatusType = typeof TASK_STATUS[keyof typeof TASK_STATUS]
 
-export class TaskStatus {
-  public readonly value: TaskStatusType
-  public constructor(value: TaskStatusType) {
+export class TaskProgressStatus {
+  public readonly value: TaskProgressStatusType
+  public constructor(value: TaskProgressStatusType) {
     if (!Object.values(TASK_STATUS).includes(value)) {
       throw new DomainValidationError('異常な状態値です。')
     }
     this.value = value
   }
 
-  public static notStarted(): TaskStatus {
-    return new TaskStatus(TASK_STATUS.NOT_STARTED)
+  public static notStarted(): TaskProgressStatus {
+    return new TaskProgressStatus(TASK_STATUS.NOT_STARTED)
   }
 
-  public static pendingReview(): TaskStatus {
-    return new TaskStatus(TASK_STATUS.PENDING_REVIEW)
+  public static pendingReview(): TaskProgressStatus {
+    return new TaskProgressStatus(TASK_STATUS.PENDING_REVIEW)
   }
 
-  public static completed(): TaskStatus {
-    return new TaskStatus(TASK_STATUS.COMPLETED)
+  public static completed(): TaskProgressStatus {
+    return new TaskProgressStatus(TASK_STATUS.COMPLETED)
   }
 
   public get isNotStarted(): boolean {

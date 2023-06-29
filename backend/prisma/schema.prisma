@@ -74,7 +74,7 @@ model Task {
   progresses TaskProgress[]
 }
 
-enum TaskStatus {
+enum TaskProgressStatus {
   not_started
   pending_review
   completed
@@ -86,5 +86,6 @@ model TaskProgress {
   task Task @relation(fields: [task_id], references: [id])
   participant_id String
   participant Participant @relation(fields: [participant_id], references: [id])
-  status TaskStatus
+  status TaskProgressStatus
+  @@unique([task_id, participant_id])
 }

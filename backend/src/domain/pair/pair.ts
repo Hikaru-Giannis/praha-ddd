@@ -52,7 +52,7 @@ export class Pair {
     return this.id.equals(pair.id)
   }
 
-  public get getAllProperties() {
+  public getAllProperties() {
     return {
       id: this.id.value,
       teamId: this.teamId,
