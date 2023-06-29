@@ -16,4 +16,6 @@ export const tokens = {
   ChangePaiticipantUseCase: Symbol('ChangePaiticipantUseCase'),
   AssignTeamService: Symbol('AssignTeamService'),
   AssignPairService: Symbol('AssignPairService'),
+  ChangeTaskProgressUseCase: Symbol('ChangeTaskProgressUseCase'),
+  ITaskProgressRepository: Symbol('ITaskProgressRepository'),
 }

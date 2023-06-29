@@ -2,9 +2,12 @@ import { ITaskProgressRepository } from 'src/domain/task-progress/task-progress.
 import { TaskId } from 'src/domain/task/TaskId'
 import { TaskProgressStatusType } from 'src/domain/task-progress/TaskProgressStatus'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
+import { Inject } from '@nestjs/common'
+import { tokens } from 'src/tokens'
 
 export class ChangeTaskProgressUseCase {
   constructor(
+    @Inject(tokens.ITaskProgressRepository)
     private readonly taskProgressRepository: ITaskProgressRepository,
   ) {}
 

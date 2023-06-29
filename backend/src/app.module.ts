@@ -25,6 +25,9 @@ import { PairPatchController } from './controller/pair/pair-patch.controller'
 import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
 import { AssignTeamService } from './domain/team/assign-team.service'
 import { AssignPairService } from './domain/pair/assign-pair.service'
+import { ChangeTaskProgressUseCase } from './app/pair/change-task-progress.usecase'
+import { TaskProgressRepository } from './infra/db/repository/task-progress/task-progress.repository'
+import { ParticipantPatchTaskProgressController } from './controller/participant/participant-patch-task-progress.controller'
 
 @Module({
   imports: [],
@@ -37,6 +40,7 @@ import { AssignPairService } from './domain/pair/assign-pair.service'
     TeamPatchController,
     PairIndexController,
     PairPatchController,
+    ParticipantPatchTaskProgressController,
   ],
   providers: [
     {
@@ -106,6 +110,14 @@ import { AssignPairService } from './domain/pair/assign-pair.service'
     {
       provide: tokens.AssignPairService,
       useClass: AssignPairService,
+    },
+    {
+      provide: tokens.ChangeTaskProgressUseCase,
+      useClass: ChangeTaskProgressUseCase,
+    },
+    {
+      provide: tokens.ITaskProgressRepository,
+      useClass: TaskProgressRepository,
     },
   ],
 })
