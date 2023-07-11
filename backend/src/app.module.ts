@@ -28,6 +28,9 @@ import { AssignPairService } from './domain/pair/assign-pair.service'
 import { ChangeTaskProgressUseCase } from './app/pair/change-task-progress.usecase'
 import { TaskProgressRepository } from './infra/db/repository/task-progress/task-progress.repository'
 import { ParticipantPatchTaskProgressController } from './controller/participant/participant-patch-task-progress.controller'
+import { ParticipantSearchQS } from './infra/db/query-service/participant/participant-search.qs'
+import { GetParticipantSearchUseCase } from './app/participant/get-participant-search.usecase'
+import { ParticipantSearchController } from './controller/participant/participant-search.controller'
 
 @Module({
   imports: [],
@@ -41,6 +44,7 @@ import { ParticipantPatchTaskProgressController } from './controller/participant
     PairIndexController,
     PairPatchController,
     ParticipantPatchTaskProgressController,
+    ParticipantSearchController,
   ],
   providers: [
     {
@@ -118,6 +122,14 @@ import { ParticipantPatchTaskProgressController } from './controller/participant
     {
       provide: tokens.ITaskProgressRepository,
       useClass: TaskProgressRepository,
+    },
+    {
+      provide: tokens.IParticipantSearchQS,
+      useClass: ParticipantSearchQS,
+    },
+    {
+      provide: tokens.GetParticipantSearchUseCase,
+      useClass: GetParticipantSearchUseCase,
     },
   ],
 })

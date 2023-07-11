@@ -23,6 +23,7 @@ export class PutParticipantUseCase {
     @Inject(tokens.AssignPairService)
     private readonly assignPairService: AssignPairService,
   ) {}
+
   async do(participantId: string, status: ParticipantStatusType) {
     const participant = await this.validateParticipant(participantId, status)
     const updatedParticipant = participant.changeStatus(status)
@@ -52,6 +53,7 @@ export class PutParticipantUseCase {
     if (participant.equalsStatus(status)) {
       throw new DomainValidationError('同じ状態に変更することはできません。')
     }
+
     return participant
   }
 

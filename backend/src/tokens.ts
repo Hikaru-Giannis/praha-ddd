@@ -18,4 +18,6 @@ export const tokens = {
   AssignPairService: Symbol('AssignPairService'),
   ChangeTaskProgressUseCase: Symbol('ChangeTaskProgressUseCase'),
   ITaskProgressRepository: Symbol('ITaskProgressRepository'),
+  IParticipantSearchQS: Symbol('IParticipantSearchQS'),
+  GetParticipantSearchUseCase: Symbol('GetParticipantSearchUseCase'),
 }
