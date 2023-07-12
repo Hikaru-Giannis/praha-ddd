@@ -25,7 +25,10 @@ export class PatchParticipantUseCase {
   ) {}
 
   async do(participantId: string, status: ParticipantStatusType) {
-    const participant = await this.validateParticipant(participantId, status)
+    const participant = await this.participantRepository.findById(participantId)
+    if (!participant) {
+      throw new DomainValidationError('参加者が存在しません。')
+    }
     const updatedParticipant = participant.changeStatus(status)
 
     if (updatedParticipant.isParticipating) {
@@ -35,26 +38,6 @@ export class PatchParticipantUseCase {
     if (updatedParticipant.isAdjourning || updatedParticipant.isWithdrawn) {
       await this.handleNotParticipating(updatedParticipant)
     }
-  }
-
-  private async validateParticipant(
-    participantId: string,
-    status: ParticipantStatusType,
-  ) {
-    const participant = await this.participantRepository.findById(participantId)
-    if (!participant) {
-      throw new DomainValidationError('参加者が存在しません。')
-    }
-
-    if (participant.isWithdrawn) {
-      throw new DomainValidationError('既に退会済みです。')
-    }
-
-    if (participant.equalsStatus(status)) {
-      throw new DomainValidationError('同じ状態に変更することはできません。')
-    }
-
-    return participant
   }
 
   private async handleParticipating(updatedParticipant: Participant) {
