@@ -1,6 +1,6 @@
 import { Controller, Body, Inject, Param, Patch } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
-import { PutParticipantUseCase } from 'src/app/participant/put-participant.usecase'
+import { PatchParticipantUseCase } from 'src/app/participant/patch-participant.usecase'
 import { PatchParticipantRequest } from './request/patch-participant-request'
 import { tokens } from 'src/tokens'
 import { DomainValidationError } from 'src/domain/error/domain-validation.error'
@@ -8,24 +8,25 @@ import { DomainValidationError } from 'src/domain/error/domain-validation.error'
 @Controller('participant/:participantId')
 export class ParticipantPatchController {
   constructor(
-    @Inject(tokens.PutParticipantUseCase)
-    private readonly putParticipantUseCase: PutParticipantUseCase,
+    @Inject(tokens.PatchParticipantUseCase)
+    private readonly PatchParticipantUseCase: PatchParticipantUseCase,
   ) {}
   // Patch処理
   @Patch()
   @ApiResponse({ status: 200 })
-  async putParticipant(
+  async patchParticipant(
     @Param('participantId') participantId: string,
-    @Body() putParticipantDto: PatchParticipantRequest,
+    @Body() patchParticipantDto: PatchParticipantRequest,
   ): Promise<{
     status: number
     message?: string
   }> {
     try {
-      await this.putParticipantUseCase.do(
+      await this.PatchParticipantUseCase.do(
         participantId,
-        putParticipantDto.status,
+        patchParticipantDto.status,
       )
+
       return { status: 200 }
     } catch (error) {
       if (error instanceof DomainValidationError) {

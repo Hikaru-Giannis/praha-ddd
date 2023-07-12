@@ -10,7 +10,7 @@ import { ITeamRepository } from 'src/domain/team/team.repository'
 import { tokens } from 'src/tokens'
 
 @Injectable()
-export class PutParticipantUseCase {
+export class PatchParticipantUseCase {
   constructor(
     @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,

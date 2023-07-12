@@ -13,7 +13,7 @@ import { TeamRepository } from './infra/db/repository/team/team.repository'
 import { PairRepository } from './infra/db/repository/pair/pair.repository'
 import { ParticipantPostController } from './controller/participant/participant-post.controller'
 import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
-import { PutParticipantUseCase } from './app/participant/put-participant.usecase'
+import { PatchParticipantUseCase } from './app/participant/patch-participant.usecase'
 import { ParticipantPatchController } from './controller/participant/participant-patch.controller'
 import { GetTeamIndexUseCase } from './app/team/get-team-index.usecase'
 import { TeamQS } from './infra/db/query-service/team/team.qs'
@@ -80,8 +80,8 @@ import { ParticipantSearchController } from './controller/participant/participan
       useClass: StoreParticipantUseCase,
     },
     {
-      provide: tokens.PutParticipantUseCase,
-      useClass: PutParticipantUseCase,
+      provide: tokens.PatchParticipantUseCase,
+      useClass: PatchParticipantUseCase,
     },
     {
       provide: tokens.GetTeamIndexUseCase,
