@@ -1,15 +1,21 @@
 import { Controller, Body, Inject, Param, Patch } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
-import { PatchParticipantUseCase } from 'src/app/participant/patch-participant.usecase'
 import { PatchParticipantRequest } from './request/patch-participant-request'
 import { tokens } from 'src/tokens'
 import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { PatchParticipantingUseCase } from 'src/app/participant/patch-participanting.usecase'
+import { PatchAdjourningUseCase } from 'src/app/participant/patch-adjourning.usecase'
+import { PatchWithdrawnUseCase } from 'src/app/participant/patch-withdrawn.usecase'
 
 @Controller('participant/:participantId')
 export class ParticipantPatchController {
   constructor(
-    @Inject(tokens.PatchParticipantUseCase)
-    private readonly PatchParticipantUseCase: PatchParticipantUseCase,
+    @Inject(tokens.PatchParticipantingUseCase)
+    private readonly PatchParticipantingUseCase: PatchParticipantingUseCase,
+    @Inject(tokens.PatchAdjourningUseCase)
+    private readonly PatchAdjourningUseCase: PatchAdjourningUseCase,
+    @Inject(tokens.PatchWithdrawnUseCase)
+    private readonly PatchWithdrawnUseCase: PatchWithdrawnUseCase,
   ) {}
   // Patch処理
   @Patch()
@@ -22,10 +28,26 @@ export class ParticipantPatchController {
     message?: string
   }> {
     try {
-      await this.PatchParticipantUseCase.do(
-        participantId,
-        patchParticipantDto.status,
-      )
+      if (patchParticipantDto.status === 'participating') {
+        await this.PatchParticipantingUseCase.do(
+          participantId,
+          patchParticipantDto.status,
+        )
+      }
+
+      if (patchParticipantDto.status === 'adjourning') {
+        await this.PatchAdjourningUseCase.do(
+          participantId,
+          patchParticipantDto.status,
+        )
+      }
+
+      if (patchParticipantDto.status === 'withdrawn') {
+        await this.PatchWithdrawnUseCase.do(
+          participantId,
+          patchParticipantDto.status,
+        )
+      }
 
       return { status: 200 }
     } catch (error) {

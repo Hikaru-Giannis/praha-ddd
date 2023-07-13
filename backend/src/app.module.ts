@@ -13,7 +13,6 @@ import { TeamRepository } from './infra/db/repository/team/team.repository'
 import { PairRepository } from './infra/db/repository/pair/pair.repository'
 import { ParticipantPostController } from './controller/participant/participant-post.controller'
 import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
-import { PatchParticipantUseCase } from './app/participant/patch-participant.usecase'
 import { ParticipantPatchController } from './controller/participant/participant-patch.controller'
 import { GetTeamIndexUseCase } from './app/team/get-team-index.usecase'
 import { TeamQS } from './infra/db/query-service/team/team.qs'
@@ -31,6 +30,9 @@ import { ParticipantPatchTaskProgressController } from './controller/participant
 import { ParticipantSearchQS } from './infra/db/query-service/participant/participant-search.qs'
 import { GetParticipantSearchUseCase } from './app/participant/get-participant-search.usecase'
 import { ParticipantSearchController } from './controller/participant/participant-search.controller'
+import { PatchParticipantingUseCase } from './app/participant/patch-participanting.usecase'
+import { PatchAdjourningUseCase } from './app/participant/patch-adjourning.usecase'
+import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase'
 
 @Module({
   imports: [],
@@ -80,8 +82,16 @@ import { ParticipantSearchController } from './controller/participant/participan
       useClass: StoreParticipantUseCase,
     },
     {
-      provide: tokens.PatchParticipantUseCase,
-      useClass: PatchParticipantUseCase,
+      provide: tokens.PatchParticipantingUseCase,
+      useClass: PatchParticipantingUseCase,
+    },
+    {
+      provide: tokens.PatchAdjourningUseCase,
+      useClass: PatchAdjourningUseCase,
+    },
+    {
+      provide: tokens.PatchWithdrawnUseCase,
+      useClass: PatchWithdrawnUseCase,
     },
     {
       provide: tokens.GetTeamIndexUseCase,

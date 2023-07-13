@@ -3,14 +3,12 @@ import { DomainValidationError } from 'src/domain/error/domain-validation.error'
 import { AssignPairService } from 'src/domain/pair/assign-pair.service'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
-import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
-import { AssignTeamService } from 'src/domain/team/assign-team.service'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { tokens } from 'src/tokens'
 
 @Injectable()
-export class PatchParticipantUseCase {
+export class PatchAdjourningUseCase {
   constructor(
     @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,
@@ -18,8 +16,6 @@ export class PatchParticipantUseCase {
     private readonly teamRepository: ITeamRepository,
     @Inject(tokens.IPairRepository)
     private readonly pairRepository: IPairRepository,
-    @Inject(tokens.AssignTeamService)
-    private readonly assignTeamService: AssignTeamService,
     @Inject(tokens.AssignPairService)
     private readonly assignPairService: AssignPairService,
   ) {}
@@ -30,29 +26,6 @@ export class PatchParticipantUseCase {
       throw new DomainValidationError('参加者が存在しません。')
     }
     const updatedParticipant = participant.changeStatus(status)
-
-    if (updatedParticipant.isParticipating) {
-      await this.handleParticipating(updatedParticipant)
-    }
-
-    if (updatedParticipant.isAdjourning || updatedParticipant.isWithdrawn) {
-      await this.handleNotParticipating(updatedParticipant)
-    }
-  }
-
-  private async handleParticipating(updatedParticipant: Participant) {
-    const newTeam = await this.assignTeamService.assign(updatedParticipant)
-
-    await this.teamRepository.save(newTeam)
-    const newPairs = await this.assignPairService.assign(
-      updatedParticipant,
-      newTeam,
-    )
-
-    await Promise.all(newPairs.map((pair) => this.pairRepository.save(pair)))
-  }
-
-  private async handleNotParticipating(updatedParticipant: Participant) {
     // 所属チームから削除
     const teams = await this.teamRepository.fetchAll()
     const team = teams.find((team) => team.hasTeamMember(updatedParticipant.id))
