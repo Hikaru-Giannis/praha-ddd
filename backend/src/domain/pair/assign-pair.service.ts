@@ -13,13 +13,13 @@ export class AssignPairService {
   ) {}
 
   public async assign(participant: Participant, team: Team): Promise<Pair[]> {
-    // ペアを割り当てる
     const pairs = await this.pairRepository.fetchByTeamId(team.id)
 
-    // 一番ペアメンバー数が少ないペアを選択する
+    // ペア内の最小参加数を取得
     const minMembersCount = Math.min(
       ...pairs.map((pair) => pair.pairMembersCount),
     )
+    // 最小参加数のペアを取得
     const minMembersPairs = pairs.filter(
       (pair) => pair.pairMembersCount === minMembersCount,
     )

@@ -14,12 +14,14 @@ export class AssignTeamService {
   public async assign(participant: Participant): Promise<Team> {
     const allTeams = await this.teamRepository.fetchAll()
 
+    // 1. メンバーが不足しているチームから割り当てる
     const inactiveTeams = allTeams.filter((team) => team.isInactive)
     if (inactiveTeams.length > 0) {
       const team = this.assignToTeamWithMinMembers(inactiveTeams, participant)
       return team
     }
 
+    // 2. メンバーが足りているチームから割り当てる
     const activeTeams = allTeams.filter((team) => team.isActive)
     return this.assignToTeamWithMinMembers(activeTeams, participant)
   }
@@ -28,13 +30,16 @@ export class AssignTeamService {
     teams: Team[],
     participant: Participant,
   ): Team {
+    // チーム内の最小参加数を取得
     const minMembersCount = Math.min(
       ...teams.map((team) => team.teamMembersCount),
     )
+    // 最小参加数のチームを取得
     const minMembersTeams = teams.filter(
       (team) => team.teamMembersCount === minMembersCount,
     )
 
+    // 最小参加数のチームからランダムに1つ選択
     const chosenTeam =
       minMembersTeams[Math.floor(Math.random() * minMembersTeams.length)]
 

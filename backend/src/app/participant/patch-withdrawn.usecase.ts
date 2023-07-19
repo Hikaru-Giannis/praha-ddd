@@ -26,44 +26,52 @@ export class PatchWithdrawnUseCase {
       throw new DomainValidationError('参加者が存在しません。')
     }
     const updatedParticipant = participant.changeStatus(status)
-    // 所属チームから削除
+    await this.participantRepository.save(updatedParticipant)
+
+    // 所属しているチームを取得
     const teams = await this.teamRepository.fetchAll()
     const team = teams.find((team) => team.hasTeamMember(updatedParticipant.id))
-    if (team) {
-      const removedTeam = team.removeTeamMember(updatedParticipant.id)
-      await this.teamRepository.save(removedTeam)
-      if (removedTeam.isInactive) {
-        // TODO 管理者にメール送信
-      }
-
-      // 所属ペアから削除
-      const pairs = await this.pairRepository.fetchAll()
-      const pair = pairs.find((pair) =>
-        pair.hasPairMember(updatedParticipant.id),
-      )
-      if (pair) {
-        const removedPair = pair.removePairMember(updatedParticipant.id)
-        if (removedPair.isActive === false) {
-          const participants = await this.participantRepository.fetchAll()
-          const remainParticipant = participants.find((participant) =>
-            removedPair.hasPairMember(participant.id),
-          )
-          if (remainParticipant) {
-            const assignedPairs = await this.assignPairService.assign(
-              remainParticipant,
-              team,
-            )
-            await assignedPairs.map(async (pair) => {
-              await this.pairRepository.save(pair)
-            })
-          }
-          await this.pairRepository.delete(removedPair)
-        } else {
-          await this.pairRepository.save(removedPair)
-        }
-      }
+    if (team === undefined) {
+      throw new Error('チームが存在しません。')
     }
 
-    await this.participantRepository.save(updatedParticipant)
+    // チームメンバーから、自分を削除
+    const removedTeam = team.removeTeamMember(updatedParticipant.id)
+    await this.teamRepository.save(removedTeam)
+    if (removedTeam.isInactive) {
+      // TODO 管理者にメール送信
+    }
+
+    // 所属しているペアを取得
+    const pairs = await this.pairRepository.fetchAll()
+    const pair = pairs.find((pair) => pair.hasPairMember(updatedParticipant.id))
+    if (pair === undefined) {
+      throw new Error('ペアが存在しません。')
+    }
+
+    // ペアメンバーから、自分を削除
+    const removedPair = pair.removePairMember(updatedParticipant.id)
+    if (removedPair.isActive === false) {
+      // そのペアが無効になった場合、残りのメンバーを取得
+      const participants = await this.participantRepository.fetchAll()
+      const remainParticipant = participants.find((participant) =>
+        removedPair.hasPairMember(participant.id),
+      )
+      if (remainParticipant) {
+        // 残りのメンバーを同チーム内の他のペアに割り当てる
+        const assignedPairs = await this.assignPairService.assign(
+          remainParticipant,
+          team,
+        )
+        await assignedPairs.map(async (pair) => {
+          await this.pairRepository.save(pair)
+        })
+      }
+      // 属していたペアを削除
+      await this.pairRepository.delete(removedPair)
+    } else {
+      // ペアが有効な場合、ペアを更新
+      await this.pairRepository.save(removedPair)
+    }
   }
 }

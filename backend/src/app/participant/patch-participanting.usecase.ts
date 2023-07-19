@@ -29,7 +29,9 @@ export class PatchParticipantingUseCase {
       throw new DomainValidationError('参加者が存在しません。')
     }
     const updatedParticipant = participant.changeStatus(status)
+    await this.participantRepository.save(updatedParticipant)
 
+    // チームとペアを再割り当てする
     const newTeam = await this.assignTeamService.assign(updatedParticipant)
     await this.teamRepository.save(newTeam)
     const newPairs = await this.assignPairService.assign(
@@ -38,6 +40,5 @@ export class PatchParticipantingUseCase {
     )
 
     await Promise.all(newPairs.map((pair) => this.pairRepository.save(pair)))
-    await this.participantRepository.save(updatedParticipant)
   }
 }
