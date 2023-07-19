@@ -63,7 +63,6 @@ export class PatchAdjourningUseCase {
         }
       }
     }
-
     await this.participantRepository.save(updatedParticipant)
   }
 }
