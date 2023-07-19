@@ -3,11 +3,16 @@ import { ulid } from 'ulid'
 
 const prisma = new PrismaClient()
 
+const lastNames = ['佐藤', '鈴木', '高橋', '田中', '渡辺']
+
+const firstNames = ['太郎', '次郎', '三郎', '四郎', '五郎', '六郎']
+
 async function main() {
   // 30人分のダミーデータを作成
+  // 名前はランダムに組み合わせる
   const participants = Array.from({ length: 30 }).map((_, i) => ({
     id: ulid(),
-    name: `Participant ${i + 1}`,
+    name: `${lastNames[i % 5]} ${firstNames[i % 6]}`,
     email: `participant${i}` + '@example.com',
     status: ParticipantStatus.participating,
   }))
