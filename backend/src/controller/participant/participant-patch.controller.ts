@@ -53,6 +53,7 @@ export class ParticipantPatchController {
 
       return { status: 200 }
     } catch (error) {
+      console.error(error)
       if (error instanceof DomainValidationError) {
         return { status: 422, message: error.message }
       }

@@ -1,10 +1,15 @@
+import { Inject } from '@nestjs/common'
 import { Participant } from '../participant/participant'
 import { Team } from './team'
 import { TeamMember } from './team-member'
 import { ITeamRepository } from './team.repository'
+import { tokens } from 'src/tokens'
 
 export class AssignTeamService {
-  public constructor(private readonly teamRepository: ITeamRepository) {}
+  public constructor(
+    @Inject(tokens.ITeamRepository)
+    private readonly teamRepository: ITeamRepository,
+  ) {}
 
   public async assign(participant: Participant): Promise<Team> {
     const allTeams = await this.teamRepository.fetchAll()

@@ -3,9 +3,14 @@ import { Participant } from '../participant/participant'
 import { Team } from '../team/team'
 import { PairMember } from './pair-member'
 import { Pair } from './pair'
+import { Inject } from '@nestjs/common'
+import { tokens } from 'src/tokens'
 
 export class AssignPairService {
-  constructor(private readonly pairRepository: IPairRepository) {}
+  constructor(
+    @Inject(tokens.IPairRepository)
+    private readonly pairRepository: IPairRepository,
+  ) {}
 
   public async assign(participant: Participant, team: Team): Promise<Pair[]> {
     // ペアを割り当てる
