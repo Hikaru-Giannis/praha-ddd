@@ -119,7 +119,7 @@ export class Pair {
 
   public movePairMember(participantId: ParticipantId): [Pair, PairMember] {
     if (this.isFull === false) {
-      throw new Error('Insufficient number of pair members.')
+      throw new Error('ペアメンバーが満たされていません。')
     }
 
     const pairMember = this.pairMembers.find((member) =>
@@ -127,7 +127,7 @@ export class Pair {
     )
 
     if (!pairMember) {
-      throw new Error('Not found pair member.')
+      throw new Error('ペアメンバーが見つかりませんでした。')
     }
 
     return [

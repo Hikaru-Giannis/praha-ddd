@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty } from 'class-validator'
+import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export class PostParticipantRequest {
   @ApiProperty()
@@ -8,5 +8,6 @@ export class PostParticipantRequest {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsEmail()
   readonly email!: string
 }
