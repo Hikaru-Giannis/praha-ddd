@@ -28,25 +28,27 @@ export class ParticipantPatchController {
     message?: string
   }> {
     try {
-      if (patchParticipantDto.status === 'participating') {
-        await this.PatchParticipantingUseCase.do(
-          participantId,
-          patchParticipantDto.status,
-        )
-      }
-
-      if (patchParticipantDto.status === 'adjourning') {
-        await this.PatchAdjourningUseCase.do(
-          participantId,
-          patchParticipantDto.status,
-        )
-      }
-
-      if (patchParticipantDto.status === 'withdrawn') {
-        await this.PatchWithdrawnUseCase.do(
-          participantId,
-          patchParticipantDto.status,
-        )
+      switch (patchParticipantDto.status) {
+        case 'participating':
+          await this.PatchParticipantingUseCase.do(
+            participantId,
+            patchParticipantDto.status,
+          )
+          break
+        case 'adjourning':
+          await this.PatchAdjourningUseCase.do(
+            participantId,
+            patchParticipantDto.status,
+          )
+          break
+        case 'withdrawn':
+          await this.PatchWithdrawnUseCase.do(
+            participantId,
+            patchParticipantDto.status,
+          )
+          break
+        default:
+          throw new DomainValidationError('status is invalid')
       }
 
       return { status: 200 }
