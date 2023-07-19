@@ -29,8 +29,9 @@ export class PatchParticipantingUseCase {
       throw new DomainValidationError('参加者が存在しません。')
     }
     const updatedParticipant = participant.changeStatus(status)
-    const newTeam = await this.assignTeamService.assign(updatedParticipant)
+    await this.participantRepository.save(updatedParticipant)
 
+    const newTeam = await this.assignTeamService.assign(updatedParticipant)
     await this.teamRepository.save(newTeam)
     const newPairs = await this.assignPairService.assign(
       updatedParticipant,
