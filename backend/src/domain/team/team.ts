@@ -1,6 +1,6 @@
 import { createRandomIdString } from 'src/util/random'
 import { TeamMember } from './team-member'
-import { TeamStatus, TeamStatusType } from './TeamStatus'
+import { TeamStatus } from './TeamStatus'
 import { TeamName } from './TeamName'
 import { Pair } from '../pair/pair'
 import { TeamId } from './TeamId'
@@ -14,55 +14,42 @@ type CreateProps = {
 type ReconstructProps = {
   id: string
   teamName: string
-  status: TeamStatusType
   teamMembers: TeamMember[]
 }
 
 export class Team {
   public readonly id: TeamId
   private readonly teamName: TeamName
-  private readonly status: TeamStatus
   private readonly teamMembers: TeamMember[]
 
   private constructor(
     id: TeamId,
     teamName: TeamName,
-    status: TeamStatus,
     teamMembers: TeamMember[] = [],
   ) {
     this.id = id
     this.teamName = teamName
-    this.status = status
     this.teamMembers = teamMembers
   }
 
   static create({ teamName, teamMembers }: CreateProps) {
-    if (teamMembers.length >= 3) {
-      return new Team(
-        new TeamId(createRandomIdString()),
-        teamName,
-        TeamStatus.active(),
-        teamMembers,
-      )
-    }
-
-    return new Team(
-      new TeamId(createRandomIdString()),
-      teamName,
-      TeamStatus.inactive(),
-      teamMembers,
-    )
+    return new Team(new TeamId(createRandomIdString()), teamName, teamMembers)
   }
 
-  static reconstruct({ id, teamName, status, teamMembers }: ReconstructProps) {
+  static reconstruct({ id, teamName, teamMembers }: ReconstructProps) {
     return new Team(
       new TeamId(id),
       new TeamName(teamName),
-      new TeamStatus(status),
       teamMembers.map((teamMember) => {
         return TeamMember.reconstruct(teamMember.getAllProperties)
       }),
     )
+  }
+
+  public get status(): TeamStatus {
+    return this.teamMembers.length >= 3
+      ? TeamStatus.active()
+      : TeamStatus.inactive()
   }
 
   public getAllProperties() {
@@ -78,16 +65,7 @@ export class Team {
 
   public assignTeamMembers(teamMembers: TeamMember[]): Team {
     const newTeamMembers = [...this.teamMembers, ...teamMembers]
-    const newStatus = this.getStatusByTeamMembersCount(newTeamMembers.length)
-    return new Team(this.id, this.teamName, newStatus, newTeamMembers)
-  }
-
-  private getStatusByTeamMembersCount(teamMembersCount: number): TeamStatus {
-    if (teamMembersCount >= 3) {
-      return TeamStatus.active()
-    }
-
-    return TeamStatus.inactive()
+    return new Team(this.id, this.teamName, newTeamMembers)
   }
 
   public get isActive(): boolean {
@@ -113,12 +91,7 @@ export class Team {
       return !pair.hasPairMember(teamMember.participantId)
     })
 
-    const newStatus = this.getStatusByTeamMembersCount(teamMembers.length)
-
-    return [
-      new Team(this.id, this.teamName, newStatus, teamMembers),
-      movedTeamMembers,
-    ]
+    return [new Team(this.id, this.teamName, teamMembers), movedTeamMembers]
   }
 
   public hasTeamMember(participantId: ParticipantId): boolean {
@@ -132,8 +105,6 @@ export class Team {
       return !teamMember.participantId.equals(participantId)
     })
 
-    const newStatus = this.getStatusByTeamMembersCount(teamMembers.length)
-
-    return new Team(this.id, this.teamName, newStatus, teamMembers)
+    return new Team(this.id, this.teamName, teamMembers)
   }
 }

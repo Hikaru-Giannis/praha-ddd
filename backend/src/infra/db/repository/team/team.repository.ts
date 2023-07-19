@@ -25,7 +25,6 @@ export class TeamRepository implements ITeamRepository {
       ? Team.reconstruct({
           id: team.id,
           teamName: team.name,
-          status: team.status,
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
@@ -50,7 +49,6 @@ export class TeamRepository implements ITeamRepository {
       ? Team.reconstruct({
           id: team.id,
           teamName: team.name,
-          status: team.status,
           teamMembers: team.members.map((member) => {
             return TeamMember.reconstruct({
               id: member.id,
@@ -72,7 +70,6 @@ export class TeamRepository implements ITeamRepository {
       return Team.reconstruct({
         id: team.id,
         teamName: team.name,
-        status: team.status,
         teamMembers: team.members.map((member) => {
           return TeamMember.reconstruct({
             id: member.id,
