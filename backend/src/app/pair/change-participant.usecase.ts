@@ -14,9 +14,11 @@ export class ChangePaiticipantUseCase {
   ) {}
 
   async do(participantId: string, pairId: string) {
+    // TODO トランザクション
+
     const participant = await this.participantRepository.findById(participantId)
     if (!participant) {
-      throw new Error('Participant is not found')
+      throw new Error('参加者が存在しません。')
     }
 
     const allPairs = await this.pairRepository.fetchAll()
@@ -25,9 +27,8 @@ export class ChangePaiticipantUseCase {
     const currentPair = allPairs.find((pair) =>
       pair.hasPairMember(participant.id),
     )
-
     if (!currentPair) {
-      throw new Error('Pair is not found')
+      throw new Error('所属ペアが存在しません。')
     }
 
     // 移動後のペア
@@ -35,16 +36,16 @@ export class ChangePaiticipantUseCase {
       pair.id.equals(new PairId(pairId)),
     )
     if (!destinationPair) {
-      throw new Error('Pair is not found')
+      throw new Error('移動先ペアが存在しません。')
     }
 
-    // 移動前のペアからペアメンバーを削除
+    // 移動前のペアから移動参加者を削除
     const [currentPairWithoutMember, pairMember] = currentPair.movePairMember(
       participant.id,
     )
     await this.pairRepository.save(currentPairWithoutMember)
 
-    // 移動後のペアにペアメンバーを追加
+    // 移動後のペアに移動参加者を追加
     const destinationPairWithNewMember = destinationPair.assignPairMember(
       pairMember,
     )

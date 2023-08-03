@@ -22,7 +22,7 @@ export class ChangeTaskProgressUseCase {
     )
 
     if (!taskProgress) {
-      throw new Error('TaskProgress is not found')
+      throw new Error('進捗が存在しません。')
     }
 
     const newTaskProgress = taskProgress.changeStatus(status)

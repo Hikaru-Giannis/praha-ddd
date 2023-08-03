@@ -15,17 +15,17 @@ export class ChangePairUseCase {
   async do(teamId: string, pairId: string) {
     const team = await this.teamRepository.findById(teamId)
     if (!team) {
-      throw new Error('Team not found')
+      throw new Error('チームが存在しません。')
     }
 
     const pair = await this.pairRepository.findById(pairId)
     if (!pair) {
-      throw new Error('Pair not found')
+      throw new Error('ペアが存在しません。')
     }
 
     const oldTeam = await this.teamRepository.findByPair(pair)
     if (!oldTeam) {
-      throw new Error('Pair not found')
+      throw new Error('ペアが所属しているチームが存在しません。')
     }
 
     const [newTeam, movedTeamMembers] = oldTeam.moveTeamMember(pair)
@@ -42,6 +42,7 @@ export class ChangePairUseCase {
       // TODO 管理者にメール
     }
 
+    // ペアの所属チームを変更
     const newPair = pair.changeTeam(team.id)
     await this.pairRepository.save(newPair)
   }
