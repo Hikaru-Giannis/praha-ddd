@@ -15,4 +15,11 @@ export class Task {
   static reconstruct({ id, name }: ReconstructProps) {
     return new Task(new TaskId(id), new TaskName(name))
   }
+
+  public getAllProperties() {
+    return {
+      id: this.id.value,
+      name: this.name.value,
+    }
+  }
 }

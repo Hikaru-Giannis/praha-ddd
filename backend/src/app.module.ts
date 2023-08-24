@@ -33,6 +33,7 @@ import { ParticipantSearchController } from './controller/participant/participan
 import { PatchParticipantingUseCase } from './app/participant/patch-participanting.usecase'
 import { PatchAdjourningUseCase } from './app/participant/patch-adjourning.usecase'
 import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase'
+import { TaskRepository } from './infra/db/repository/task/task.repository'
 
 @Module({
   imports: [],
@@ -128,6 +129,10 @@ import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase
     {
       provide: tokens.ChangeTaskProgressUseCase,
       useClass: ChangeTaskProgressUseCase,
+    },
+    {
+      provide: tokens.ITaskRepository,
+      useClass: TaskRepository,
     },
     {
       provide: tokens.ITaskProgressRepository,

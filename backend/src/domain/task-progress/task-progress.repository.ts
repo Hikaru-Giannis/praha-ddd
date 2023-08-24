@@ -7,5 +7,7 @@ export interface ITaskProgressRepository {
     taskId: TaskId,
     participantId: ParticipantId,
   ): Promise<TaskProgress | null>
+  findManyByParticipant(participantId: ParticipantId): Promise<TaskProgress[]>
   save(taskProgress: TaskProgress): Promise<void>
+  saveMany(taskProgresses: TaskProgress[]): Promise<void>
 }

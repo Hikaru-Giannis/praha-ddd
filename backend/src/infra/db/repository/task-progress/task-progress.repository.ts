@@ -35,6 +35,24 @@ export class TaskProgressRepository implements ITaskProgressRepository {
       : null
   }
 
+  public async findManyByParticipant(
+    participantId: ParticipantId,
+  ): Promise<TaskProgress[]> {
+    const taskProgresses = await this.prismaClient.taskProgress.findMany({
+      where: {
+        participant_id: participantId.value,
+      },
+    })
+    return taskProgresses.map((taskProgress) => {
+      return TaskProgress.reconstruct({
+        id: taskProgress.id,
+        taskId: taskProgress.task_id,
+        participantId: taskProgress.participant_id,
+        status: taskProgress.status,
+      })
+    })
+  }
+
   public async save(taskProgress: TaskProgress): Promise<void> {
     const allProperties = taskProgress.getAllProperties()
     await this.prismaClient.taskProgress.upsert({
@@ -50,6 +68,20 @@ export class TaskProgressRepository implements ITaskProgressRepository {
         participant_id: allProperties.participantId,
         status: allProperties.status,
       },
+    })
+  }
+
+  public async saveMany(taskProgresses: TaskProgress[]): Promise<void> {
+    await this.prismaClient.taskProgress.createMany({
+      data: taskProgresses.map((taskProgress) => {
+        const allProperties = taskProgress.getAllProperties()
+        return {
+          id: allProperties.id,
+          task_id: allProperties.taskId,
+          participant_id: allProperties.participantId,
+          status: allProperties.status,
+        }
+      }),
     })
   }
 }

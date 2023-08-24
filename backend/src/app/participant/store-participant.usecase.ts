@@ -63,5 +63,7 @@ export class StoreParticipantUseCase {
     await pairs.map(async (pair) => {
       await this.pairRepository.save(pair)
     })
+
+    // TODO 進捗割り当て
   }
 }
