@@ -34,6 +34,7 @@ import { PatchParticipantingUseCase } from './app/participant/patch-participanti
 import { PatchAdjourningUseCase } from './app/participant/patch-adjourning.usecase'
 import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase'
 import { TaskRepository } from './infra/db/repository/task/task.repository'
+import { AssignTaskProgressesService } from './domain/task-progress/assign-task-progresses.service'
 
 @Module({
   imports: [],
@@ -145,6 +146,10 @@ import { TaskRepository } from './infra/db/repository/task/task.repository'
     {
       provide: tokens.GetParticipantSearchUseCase,
       useClass: GetParticipantSearchUseCase,
+    },
+    {
+      provide: tokens.AssignTaskProgressesService,
+      useClass: AssignTaskProgressesService,
     },
   ],
 })

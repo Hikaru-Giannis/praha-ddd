@@ -8,6 +8,7 @@ import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { AssignTaskProgressesService } from 'src/domain/task-progress/assign-task-progresses.service'
 
 type StoreParticipantProps = {
   name: string
@@ -29,6 +30,8 @@ export class StoreParticipantUseCase {
     private readonly assignTeamService: AssignTeamService,
     @Inject(tokens.AssignPairService)
     private readonly assignPairService: AssignPairService,
+    @Inject(tokens.AssignTaskProgressesService)
+    private readonly assignTaskProgressesService: AssignTaskProgressesService,
   ) {}
 
   public async do({ name, email }: StoreParticipantProps) {
@@ -64,6 +67,7 @@ export class StoreParticipantUseCase {
       await this.pairRepository.save(pair)
     })
 
-    // TODO 進捗割り当て
+    // 進捗割り当て
+    await this.assignTaskProgressesService.assign(participant.id)
   }
 }
