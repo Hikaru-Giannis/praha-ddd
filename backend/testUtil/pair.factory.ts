@@ -18,9 +18,9 @@ export const createPairMembers = (memberCount: 2 | 3): PairMember[] => {
 /**
  * ペアを作成
  */
-export const createPair = (memberCount: 2 | 3): Pair => {
+export const createPair = (memberCount: 2 | 3, teamId?: TeamId): Pair => {
   return Pair.create({
-    teamId: new TeamId(ulid()),
+    teamId: teamId || new TeamId(ulid()),
     pairMembers: createPairMembers(memberCount),
     latestPair: undefined,
   })

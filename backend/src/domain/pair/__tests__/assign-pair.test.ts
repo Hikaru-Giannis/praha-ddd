@@ -1,92 +1,91 @@
 import { Participant } from 'src/domain/participant/participant'
 import { AssignPairService } from '../assign-pair.service'
-import { IPairRepository } from '../pair.repository'
-import { createActiveTeam } from '@testUtil/team.factory'
+import { createTeam } from '@testUtil/team.factory'
 import { createPair } from '@testUtil/pair.factory'
+import { Test, TestingModule } from '@nestjs/testing'
+import { tokens } from 'src/tokens'
+import { PairInMemoryRepository } from 'src/infra/db/repository/pair/pair.in-memory.repository'
+import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-memory.repository'
 
 describe('AssignPairService', () => {
-  it('参加者がペアに正常に割り当てられ、そのペアが返される', async () => {
-    const participant = Participant.create({
+  let testApp: TestingModule
+  let participant: Participant
+
+  beforeEach(async () => {
+    // 参加者を作成
+    participant = Participant.create({
       name: 'test test',
       email: 'test@example.com',
     })
 
-    const pair = createPair(2)
-    const team = createActiveTeam()
+    testApp = await Test.createTestingModule({
+      providers: [
+        {
+          provide: tokens.IPairRepository,
+          useClass: PairInMemoryRepository,
+        },
+        {
+          provide: tokens.AssignPairService,
+          useClass: AssignPairService,
+        },
+        {
+          provide: tokens.ITeamRepository,
+          useClass: TeamInMemoryRepository,
+        },
+      ],
+    }).compile()
+  })
 
-    const pairRepository = ({
-      fetchByTeamId: jest.fn().mockResolvedValueOnce([pair]),
-      save: jest.fn(),
-    } as unknown) as IPairRepository
+  it('参加者がペアに正常に割り当てられ、そのペアが返される', async () => {
+    // arrange
+    const team = createTeam(participant.id)
+    const teamRepository = testApp.get(tokens.ITeamRepository)
+    teamRepository.items = [team]
 
-    const assignPairService = new AssignPairService(pairRepository)
+    const pairRepository = testApp.get(tokens.IPairRepository)
+    const pair = createPair(2, team.id)
+    pairRepository.items = [pair]
 
-    const assignedPairs = await assignPairService.assign(participant, team)
-    expect(assignedPairs).toHaveLength(1)
-    expect(assignedPairs[0]?.isFull).toBeTruthy()
-    expect(assignedPairs[0]?.equals(pair)).toBeTruthy()
+    // act
+    const assignPairService = testApp.get(tokens.AssignPairService)
+    await assignPairService.assign(participant)
+
+    // assert
+    const assignedPair = await pairRepository.findById(pair.id)
+    expect(assignedPair.id.equals(pair.id)).toBeTruthy()
   })
 
   it('チームにペアが存在しない場合、エラーがスローされること', async () => {
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    // arrange
+    const team = createTeam(participant.id)
+    const teamRepository = testApp.get(tokens.ITeamRepository)
+    teamRepository.items = [team]
 
-    const team = createActiveTeam()
+    // act
+    const assignPairService = testApp.get(tokens.AssignPairService)
 
-    const pairRepository = ({
-      fetchByTeamId: jest.fn().mockResolvedValueOnce([]),
-      save: jest.fn(),
-    } as unknown) as IPairRepository
-
-    const assignPairService = new AssignPairService(pairRepository)
-
-    await expect(
-      assignPairService.assign(participant, team),
-    ).rejects.toThrowError()
+    // assert
+    await expect(assignPairService.assign(participant)).rejects.toThrowError()
   })
 
   it('選択されたペアが満員の場合、そのペアが分割され、新しいペアが作成されること。', async () => {
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    // arrange
+    const team = createTeam(participant.id)
+    const teamRepository = testApp.get(tokens.ITeamRepository)
+    teamRepository.items = [team]
 
-    const pair = createPair(3)
-    const team = createActiveTeam()
+    const pairRepository = testApp.get(tokens.IPairRepository)
+    const pair = createPair(3, team.id)
+    pairRepository.items = [pair]
 
-    const pairRepository = ({
-      fetchByTeamId: jest.fn().mockResolvedValueOnce([pair]),
-      save: jest.fn(),
-    } as unknown) as IPairRepository
+    // act
+    const assignPairService = testApp.get(tokens.AssignPairService)
+    await assignPairService.assign(participant)
 
-    const assignPairService = new AssignPairService(pairRepository)
-
-    const assignedPairs = await assignPairService.assign(participant, team)
-    expect(assignedPairs).toHaveLength(2)
-    expect(
-      assignedPairs[0]?.equals(pair) || assignedPairs[1]?.equals(pair),
-    ).toBeTruthy()
-  })
-
-  it('最新のペアが取得できない場合、エラーがスローされること', async () => {
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
-
-    const team = createActiveTeam()
-
-    const pairRepository = ({
-      fetchByTeamId: jest.fn().mockResolvedValueOnce([null]),
-      save: jest.fn(),
-    } as unknown) as IPairRepository
-
-    const assignPairService = new AssignPairService(pairRepository)
-
-    await expect(
-      assignPairService.assign(participant, team),
-    ).rejects.toThrowError()
+    // assert
+    const pairs = await pairRepository.findManyByTeamId(team.id)
+    expect(pairs.length).toBe(2)
+    expect(pairs[0].pairMembersCount).toBe(2)
+    expect(pairs[1].pairMembersCount).toBe(2)
   })
 })

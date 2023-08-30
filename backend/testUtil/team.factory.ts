@@ -38,3 +38,16 @@ export const createActiveTeam = (memberCount: 3 | 4 | 5 | 6 = 3) => {
     teamMembers: teamMembers,
   })
 }
+
+export const createTeam = (participantId: ParticipantId) => {
+  const teamMembers = createTeamMembers(3)
+  return Team.create({
+    teamName: new TeamName('1'),
+    teamMembers: [
+      ...teamMembers,
+      TeamMember.create({
+        participantId: participantId,
+      }),
+    ],
+  })
+}

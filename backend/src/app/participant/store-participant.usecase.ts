@@ -52,20 +52,10 @@ export class StoreParticipantUseCase {
     await this.participantRepository.save(participant)
 
     // チーム割り当て
-    const team = await this.assignTeamService.assign(participant)
-    if (!team) {
-      throw new Error('チームの割り当てに失敗しました')
-    }
-    await this.teamRepository.save(team)
+    await this.assignTeamService.assign(participant)
 
     // ペア割り当て
-    const pairs = await this.assignPairService.assign(participant, team)
-    if (!pairs) {
-      throw new Error('ペアの割り当てに失敗しました')
-    }
-    await pairs.map(async (pair) => {
-      await this.pairRepository.save(pair)
-    })
+    await this.assignPairService.assign(participant)
 
     // 進捗割り当て
     await this.assignTaskProgressesService.assign(participant.id)

@@ -1,19 +1,25 @@
 import { IPairRepository } from './pair.repository'
 import { Participant } from '../participant/participant'
-import { Team } from '../team/team'
 import { PairMember } from './pair-member'
 import { Pair } from './pair'
 import { Inject } from '@nestjs/common'
 import { tokens } from 'src/tokens'
+import { ITeamRepository } from '../team/team.repository'
 
 export class AssignPairService {
   constructor(
+    @Inject(tokens.ITeamRepository)
+    private readonly teamRepository: ITeamRepository,
     @Inject(tokens.IPairRepository)
     private readonly pairRepository: IPairRepository,
   ) {}
 
-  public async assign(participant: Participant, team: Team): Promise<Pair[]> {
-    const pairs = await this.pairRepository.fetchByTeamId(team.id)
+  public async assign(participant: Participant): Promise<void> {
+    const team = await this.teamRepository.findByParticipantId(participant.id)
+    if (!team) {
+      throw new Error('参加者が所属しているチームが見つかりませんでした')
+    }
+    const pairs = await this.pairRepository.findManyByTeamId(team.id)
 
     // ペア内の最小参加数を取得
     const minMembersCount = Math.min(
@@ -43,8 +49,9 @@ export class AssignPairService {
           pairMembers: newPairMembers,
           latestPair,
         })
-        const newPairs = [pair, newPair]
-        return newPairs
+        await this.pairRepository.save(newPair)
+        await this.pairRepository.save(pair)
+        return
       }
 
       // ペアに参加者を追加する
@@ -52,7 +59,8 @@ export class AssignPairService {
         participantId: participant.id,
       })
       const newPair = chosenPair.assignPairMember(pairMember)
-      return [newPair]
+      await this.pairRepository.save(newPair)
+      return
     }
 
     // TODO 管理者にメール送信
