@@ -1,7 +1,7 @@
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Team } from 'src/domain/team/team'
 import { Pair } from 'src/domain/pair/pair'
-import { Participant } from 'src/domain/participant/participant'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 
 export class TeamInMemoryRepository implements ITeamRepository {
   public items: Team[] = []
@@ -15,11 +15,11 @@ export class TeamInMemoryRepository implements ITeamRepository {
     return team ? team : null
   }
 
-  public async findByPartcipant(
-    participant: Participant,
+  public async findByParticipantId(
+    participantId: ParticipantId,
   ): Promise<Team | null> {
     const team = this.items.find((item) => {
-      return item.hasTeamMember(participant.id)
+      return item.hasTeamMember(participantId)
     })
     return team ? team : null
   }

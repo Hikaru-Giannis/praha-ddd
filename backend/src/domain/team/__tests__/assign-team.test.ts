@@ -7,8 +7,8 @@ import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-mem
 
 describe('AssignTeamService', () => {
   let testApp: TestingModule
-
   let participant: Participant
+
   beforeEach(async () => {
     participant = Participant.create({
       name: 'test test',
@@ -41,7 +41,9 @@ describe('AssignTeamService', () => {
     await assignTeamService.assign(participant)
 
     // assert
-    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    const team = await teamInMemoryRepository.findByParticipantId(
+      participant.id,
+    )
     expect(team.isInactive).toBeTruthy()
   })
 
@@ -56,7 +58,9 @@ describe('AssignTeamService', () => {
     await assignTeamService.assign(participant)
 
     // assert
-    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    const team = await teamInMemoryRepository.findByParticipantId(
+      participant.id,
+    )
     expect(team.isActive).toBeTruthy()
   })
 
@@ -72,7 +76,9 @@ describe('AssignTeamService', () => {
     await assignTeamService.assign(participant)
 
     // assert
-    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    const team = await teamInMemoryRepository.findByParticipantId(
+      participant.id,
+    )
     expect(inactiveTeam1.id.equals(team.id)).toBeTruthy()
   })
 
@@ -89,7 +95,9 @@ describe('AssignTeamService', () => {
     await assignTeamService.assign(participant)
 
     // assert
-    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    const team = await teamInMemoryRepository.findByParticipantId(
+      participant.id,
+    )
     expect(activeTeam1.id.equals(team.id)).toBeTruthy()
   })
 
