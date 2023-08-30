@@ -43,7 +43,7 @@ export class PatchAdjourningUseCase {
     }
 
     // 所属しているペアを取得
-    const pairs = await this.pairRepository.fetchAll()
+    const pairs = await this.pairRepository.findAll()
     const pair = pairs.find((pair) => pair.hasPairMember(updatedParticipant.id))
     if (pair === undefined) {
       throw new Error('ペアが存在しません。')
@@ -59,13 +59,7 @@ export class PatchAdjourningUseCase {
       )
       if (remainParticipant) {
         // 残りのメンバーを同チーム内の他のペアに割り当てる
-        const assignedPairs = await this.assignPairService.assign(
-          remainParticipant,
-          team,
-        )
-        await assignedPairs.map(async (pair) => {
-          await this.pairRepository.save(pair)
-        })
+        await this.assignPairService.assign(remainParticipant)
       }
       // 属していたペアを削除
       await this.pairRepository.delete(removedPair)

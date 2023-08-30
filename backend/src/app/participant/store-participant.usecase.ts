@@ -1,10 +1,8 @@
 import { AssignPairService } from 'src/domain/pair/assign-pair.service'
-import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { ValidateEmailUniquenessService } from 'src/domain/participant/validate-email-uniqueness.service'
 import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { AssignTeamService } from 'src/domain/team/assign-team.service'
-import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { DomainValidationError } from 'src/domain/error/domain-validation.error'
@@ -20,10 +18,6 @@ export class StoreParticipantUseCase {
   public constructor(
     @Inject(tokens.IParticipantRepository)
     private readonly participantRepository: IParticipantRepository,
-    @Inject(tokens.ITeamRepository)
-    private readonly teamRepository: ITeamRepository,
-    @Inject(tokens.IPairRepository)
-    private readonly pairRepository: IPairRepository,
     @Inject(tokens.ValidateEmailUniquenessService)
     private readonly validateEmailUniquenessService: ValidateEmailUniquenessService,
     @Inject(tokens.AssignTeamService)
