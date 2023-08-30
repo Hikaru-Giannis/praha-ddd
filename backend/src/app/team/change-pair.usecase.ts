@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { PairId } from 'src/domain/pair/PairId'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
+import { TeamId } from 'src/domain/team/TeamId'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { tokens } from 'src/tokens'
 
@@ -13,17 +15,17 @@ export class ChangePairUseCase {
   ) {}
 
   async do(teamId: string, pairId: string) {
-    const team = await this.teamRepository.findById(teamId)
+    const team = await this.teamRepository.findById(new TeamId(teamId))
     if (!team) {
       throw new Error('チームが存在しません。')
     }
 
-    const pair = await this.pairRepository.findById(pairId)
+    const pair = await this.pairRepository.findById(new PairId(pairId))
     if (!pair) {
       throw new Error('ペアが存在しません。')
     }
 
-    const oldTeam = await this.teamRepository.findByPair(pair)
+    const oldTeam = await this.teamRepository.findById(pair.teamId)
     if (!oldTeam) {
       throw new Error('ペアが所属しているチームが存在しません。')
     }

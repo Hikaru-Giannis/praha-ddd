@@ -1,15 +1,14 @@
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { Team } from 'src/domain/team/team'
-import { Pair } from 'src/domain/pair/pair'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
+import { TeamId } from 'src/domain/team/TeamId'
 
 export class TeamInMemoryRepository implements ITeamRepository {
   public items: Team[] = []
 
-  public async findById(id: string): Promise<Team | null> {
+  public async findById(id: TeamId): Promise<Team | null> {
     const team = this.items.find((item) => {
-      const allProperties = item.getAllProperties()
-      return allProperties.id === id
+      return item.id.equals(id)
     })
 
     return team ? team : null
@@ -24,15 +23,7 @@ export class TeamInMemoryRepository implements ITeamRepository {
     return team ? team : null
   }
 
-  public async findByPair(pair: Pair): Promise<Team | null> {
-    const allProperties = pair.getAllProperties()
-    const team = this.items.find((item) => {
-      return item.id.equals(allProperties.teamId)
-    })
-    return team ? team : null
-  }
-
-  public async fetchAll(): Promise<Team[]> {
+  public async findAll(): Promise<Team[]> {
     return this.items
   }
 

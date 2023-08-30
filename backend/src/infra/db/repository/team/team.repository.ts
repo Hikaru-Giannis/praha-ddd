@@ -4,7 +4,8 @@ import { Team } from 'src/domain/team/team'
 import { TeamMember } from 'src/domain/team/team-member'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
-import { Pair } from 'src/domain/pair/pair'
+import { TeamId } from 'src/domain/team/TeamId'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 
 @Injectable()
 export class TeamRepository implements ITeamRepository {
@@ -13,9 +14,9 @@ export class TeamRepository implements ITeamRepository {
     private prismaClient: PrismaClient,
   ) {}
 
-  public async findById(id: string): Promise<Team | null> {
+  public async findById(id: TeamId): Promise<Team | null> {
     const team = await this.prismaClient.team.findUnique({
-      where: { id },
+      where: { id: id.value },
       include: {
         members: true,
       },
@@ -35,11 +36,17 @@ export class TeamRepository implements ITeamRepository {
       : null
   }
 
-  public async findByPair(pair: Pair): Promise<Team | null> {
-    const allProperties = pair.getAllProperties()
-
-    const team = await this.prismaClient.team.findUnique({
-      where: { id: allProperties.teamId.value },
+  public async findByParticipantId(
+    participantId: ParticipantId,
+  ): Promise<Team | null> {
+    const team = await this.prismaClient.team.findFirst({
+      where: {
+        members: {
+          some: {
+            participant_id: participantId.value,
+          },
+        },
+      },
       include: {
         members: true,
       },
@@ -59,7 +66,7 @@ export class TeamRepository implements ITeamRepository {
       : null
   }
 
-  public async fetchAll(): Promise<Team[]> {
+  public async findAll(): Promise<Team[]> {
     const teams = await this.prismaClient.team.findMany({
       include: {
         members: true,

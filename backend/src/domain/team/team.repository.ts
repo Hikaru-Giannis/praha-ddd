@@ -1,11 +1,10 @@
-import { Pair } from '../pair/pair'
 import { ParticipantId } from '../participant/ParticipantId'
+import { TeamId } from './TeamId'
 import { Team } from './team'
 
 export interface ITeamRepository {
-  findById(id: string): Promise<Team | null>
+  findById(id: TeamId): Promise<Team | null>
   findByParticipantId(participantId: ParticipantId): Promise<Team | null>
-  findByPair(pair: Pair): Promise<Team | null>
-  fetchAll(): Promise<Team[]>
+  findAll(): Promise<Team[]>
   save(team: Team): Promise<void>
 }

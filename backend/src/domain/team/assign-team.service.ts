@@ -12,7 +12,7 @@ export class AssignTeamService {
   ) {}
 
   public async assign(participant: Participant): Promise<void> {
-    const allTeams = await this.teamRepository.fetchAll()
+    const allTeams = await this.teamRepository.findAll()
 
     // 1. メンバーが不足しているチームから割り当てる
     const inactiveTeams = allTeams.filter((team) => team.isInactive)

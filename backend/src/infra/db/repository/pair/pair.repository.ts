@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
+import { PairId } from 'src/domain/pair/PairId'
 import { PairName } from 'src/domain/pair/PairName'
 import { Pair } from 'src/domain/pair/pair'
 import { PairMember } from 'src/domain/pair/pair-member'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { TeamId } from 'src/domain/team/TeamId'
 import { tokens } from 'src/tokens'
 
@@ -14,9 +16,9 @@ export class PairRepository implements IPairRepository {
     private prismaClient: PrismaClient,
   ) {}
 
-  public async findById(id: string): Promise<Pair | null> {
+  public async findById(id: PairId): Promise<Pair | null> {
     const pair = await this.prismaClient.pair.findUnique({
-      where: { id },
+      where: { id: id.value },
       include: { members: true },
     })
 
@@ -35,7 +37,36 @@ export class PairRepository implements IPairRepository {
       : null
   }
 
-  public async fetchByTeamId(teamId: TeamId) {
+  public async findByParticipantId(
+    participantId: ParticipantId,
+  ): Promise<Pair | null> {
+    const pair = await this.prismaClient.pair.findFirst({
+      where: {
+        members: {
+          some: {
+            participant_id: participantId.value,
+          },
+        },
+      },
+      include: { members: true },
+    })
+
+    return pair
+      ? Pair.reconstruct({
+          ...pair,
+          teamId: pair.team_id,
+          pairName: new PairName(pair.name),
+          pairMembers: pair.members.map((member) =>
+            PairMember.reconstruct({
+              ...member,
+              participantId: member.participant_id,
+            }),
+          ),
+        })
+      : null
+  }
+
+  public async findManyByTeamId(teamId: TeamId) {
     const pairs = await this.prismaClient.pair.findMany({
       where: { team_id: teamId.value },
       include: { members: true },
@@ -56,7 +87,7 @@ export class PairRepository implements IPairRepository {
     )
   }
 
-  public async fetchAll() {
+  public async findAll() {
     const pairs = await this.prismaClient.pair.findMany({
       include: { members: true },
     })
