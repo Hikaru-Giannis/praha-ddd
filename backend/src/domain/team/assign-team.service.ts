@@ -11,25 +11,25 @@ export class AssignTeamService {
     private readonly teamRepository: ITeamRepository,
   ) {}
 
-  public async assign(participant: Participant): Promise<Team> {
+  public async assign(participant: Participant): Promise<void> {
     const allTeams = await this.teamRepository.fetchAll()
 
     // 1. メンバーが不足しているチームから割り当てる
     const inactiveTeams = allTeams.filter((team) => team.isInactive)
     if (inactiveTeams.length > 0) {
-      const team = this.assignToTeamWithMinMembers(inactiveTeams, participant)
-      return team
+      await this.assignToTeamWithMinMembers(inactiveTeams, participant)
+      return
     }
 
     // 2. メンバーが足りているチームから割り当てる
     const activeTeams = allTeams.filter((team) => team.isActive)
-    return this.assignToTeamWithMinMembers(activeTeams, participant)
+    await this.assignToTeamWithMinMembers(activeTeams, participant)
   }
 
-  private assignToTeamWithMinMembers(
+  private async assignToTeamWithMinMembers(
     teams: Team[],
     participant: Participant,
-  ): Team {
+  ): Promise<void> {
     // チーム内の最小参加数を取得
     const minMembersCount = Math.min(
       ...teams.map((team) => team.teamMembersCount),
@@ -48,7 +48,8 @@ export class AssignTeamService {
         participantId: participant.id,
       })
       const team = chosenTeam.assignTeamMembers([teamMember])
-      return team
+      await this.teamRepository.save(team)
+      return
     }
 
     // TODO 管理者にメール送信

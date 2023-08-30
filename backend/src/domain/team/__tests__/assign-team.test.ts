@@ -1,109 +1,107 @@
 import { Participant } from 'src/domain/participant/participant'
 import { AssignTeamService } from '../assign-team.service'
-import { ITeamRepository } from '../team.repository'
 import { createActiveTeam, createInactiveTeam } from '@testUtil/team.factory'
+import { Test, TestingModule } from '@nestjs/testing'
+import { tokens } from 'src/tokens'
+import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-memory.repository'
 
 describe('AssignTeamService', () => {
-  it('活性化チームと非活性化のチームが存在する場合、非活性化チームに参加者が割り当てられる', async () => {
-    const inactiveTeam = createInactiveTeam()
-    const activeTeam = createActiveTeam()
-    const participant = Participant.create({
+  let testApp: TestingModule
+
+  let participant: Participant
+  beforeEach(async () => {
+    participant = Participant.create({
       name: 'test test',
       email: 'test@example.com',
     })
 
-    const teamRepository = ({
-      fetchAll: jest.fn().mockResolvedValueOnce([inactiveTeam, activeTeam]),
-      save: jest.fn(),
-    } as unknown) as ITeamRepository
+    testApp = await Test.createTestingModule({
+      providers: [
+        {
+          provide: tokens.ITeamRepository,
+          useClass: TeamInMemoryRepository,
+        },
+        {
+          provide: tokens.AssignTeamService,
+          useClass: AssignTeamService,
+        },
+      ],
+    }).compile()
+  })
 
-    const assignTeamService = new AssignTeamService(teamRepository)
+  it('活性化チームと非活性化のチームが存在する場合、非活性化チームに参加者が割り当てられる', async () => {
+    // arrange
+    const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
+    const inactiveTeam = createInactiveTeam()
+    const activeTeam = createActiveTeam()
+    teamInMemoryRepository.items = [inactiveTeam, activeTeam]
 
-    const team = await assignTeamService.assign(participant)
-    expect(team?.isInactive).toBeTruthy()
+    // act
+    const assignTeamService = testApp.get(tokens.AssignTeamService)
+    await assignTeamService.assign(participant)
+
+    // assert
+    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    expect(team.isInactive).toBeTruthy()
   })
 
   it('非活性化チームが存在しない場合、活性化チームに参加者が割り当てられる', async () => {
+    // arrange
+    const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
     const activeTeam = createActiveTeam()
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    teamInMemoryRepository.items = [activeTeam]
 
-    const teamRepository = ({
-      fetchAll: jest.fn().mockResolvedValueOnce([activeTeam]),
-      save: jest.fn(),
-    } as unknown) as ITeamRepository
+    // act
+    const assignTeamService = testApp.get(tokens.AssignTeamService)
+    await assignTeamService.assign(participant)
 
-    const assignTeamService = new AssignTeamService(teamRepository)
-
-    const team = await assignTeamService.assign(participant)
-    expect(team?.isActive).toBeTruthy()
+    // assert
+    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    expect(team.isActive).toBeTruthy()
   })
 
   it('非活性化チームのみの場合、非活性化チームで一番チームメンバーが少ないチームに参加者が割り当てられる', async () => {
-    const inactiveTeam1 = createInactiveTeam(0)
-    const inactiveTeam2 = createInactiveTeam(1)
-    const inactiveTeam3 = createInactiveTeam(2)
-    const activeTeam = createActiveTeam()
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    // arrange
+    const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
+    const inactiveTeam1 = createInactiveTeam(1)
+    const inactiveTeam2 = createInactiveTeam(2)
+    teamInMemoryRepository.items = [inactiveTeam1, inactiveTeam2]
 
-    const teamRepository = ({
-      fetchAll: jest
-        .fn()
-        .mockResolvedValueOnce([
-          inactiveTeam1,
-          inactiveTeam2,
-          inactiveTeam3,
-          ,
-          activeTeam,
-        ]),
-      save: jest.fn(),
-    } as unknown) as ITeamRepository
+    // act
+    const assignTeamService = testApp.get(tokens.AssignTeamService)
+    await assignTeamService.assign(participant)
 
-    const assignTeamService = new AssignTeamService(teamRepository)
-
-    const team = await assignTeamService.assign(participant)
-    expect(team?.teamMembersCount).toBe(1)
+    // assert
+    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    expect(inactiveTeam1.id.equals(team.id)).toBeTruthy()
   })
 
-  it('非活性化チームが存在しない場合、活性化チームかつ一番チームメンバーが少ないチームに参加者が割り当てられる', async () => {
+  it('活性化チームのみの場合、活性化チームかつ一番チームメンバーが少ないチームに参加者が割り当てられる', async () => {
+    // arrange
+    const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
+
     const activeTeam1 = createActiveTeam(3)
     const activeTeam2 = createActiveTeam(4)
-    const activeTeam3 = createActiveTeam(5)
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    teamInMemoryRepository.items = [activeTeam1, activeTeam2]
 
-    const teamRepository = ({
-      fetchAll: jest
-        .fn()
-        .mockResolvedValueOnce([activeTeam1, activeTeam2, activeTeam3]),
-      save: jest.fn(),
-    } as unknown) as ITeamRepository
+    // act
+    const assignTeamService = testApp.get(tokens.AssignTeamService)
+    await assignTeamService.assign(participant)
 
-    const assignTeamService = new AssignTeamService(teamRepository)
-
-    const team = await assignTeamService.assign(participant)
-    expect(team?.teamMembersCount).toBe(4)
+    // assert
+    const team = await teamInMemoryRepository.findByPartcipant(participant)
+    expect(activeTeam1.id.equals(team.id)).toBeTruthy()
   })
 
   it('非活性化チームと活性化チームが存在しない場合、例外エラーを返す', async () => {
-    const participant = Participant.create({
-      name: 'test test',
-      email: 'test@example.com',
-    })
+    // arrange
+    const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
+    teamInMemoryRepository.items = []
 
-    const teamRepository = ({
-      fetchAll: jest.fn().mockResolvedValueOnce([]),
-      save: jest.fn(),
-    } as unknown) as ITeamRepository
+    // act
+    const assignTeamService = testApp.get(tokens.AssignTeamService)
 
-    const assignTeamService = new AssignTeamService(teamRepository)
+    // assert
     await expect(assignTeamService.assign(participant)).rejects.toThrowError()
   })
 })
