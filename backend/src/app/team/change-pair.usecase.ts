@@ -16,17 +16,17 @@ export class ChangePairUseCase {
 
   async do(teamId: string, pairId: string) {
     const team = await this.teamRepository.findById(new TeamId(teamId))
-    if (!team) {
+    if (team === null) {
       throw new Error('チームが存在しません。')
     }
 
     const pair = await this.pairRepository.findById(new PairId(pairId))
-    if (!pair) {
+    if (pair === null) {
       throw new Error('ペアが存在しません。')
     }
 
     const oldTeam = await this.teamRepository.findById(pair.teamId)
-    if (!oldTeam) {
+    if (oldTeam === null) {
       throw new Error('ペアが所属しているチームが存在しません。')
     }
 

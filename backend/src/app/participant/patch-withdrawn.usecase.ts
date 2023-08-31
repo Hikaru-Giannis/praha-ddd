@@ -29,9 +29,10 @@ export class PatchWithdrawnUseCase {
     await this.participantRepository.save(updatedParticipant)
 
     // 所属しているチームを取得
-    const teams = await this.teamRepository.findAll()
-    const team = teams.find((team) => team.hasTeamMember(updatedParticipant.id))
-    if (team === undefined) {
+    const team = await this.teamRepository.findByParticipantId(
+      updatedParticipant.id,
+    )
+    if (team === null) {
       throw new Error('チームが存在しません。')
     }
 
@@ -43,9 +44,10 @@ export class PatchWithdrawnUseCase {
     }
 
     // 所属しているペアを取得
-    const pairs = await this.pairRepository.findAll()
-    const pair = pairs.find((pair) => pair.hasPairMember(updatedParticipant.id))
-    if (pair === undefined) {
+    const pair = await this.pairRepository.findByParticipantId(
+      updatedParticipant.id,
+    )
+    if (pair === null) {
       throw new Error('ペアが存在しません。')
     }
 

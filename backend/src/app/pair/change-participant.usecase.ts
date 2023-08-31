@@ -14,26 +14,22 @@ export class ChangePaiticipantUseCase {
   ) {}
 
   async do(participantId: string, pairId: string) {
-    // TODO トランザクション
-
     const participant = await this.participantRepository.findById(participantId)
     if (!participant) {
       throw new Error('参加者が存在しません。')
     }
 
-    const allPairs = await this.pairRepository.findAll()
-
     // 移動前のペア
-    const currentPair = allPairs.find((pair) =>
-      pair.hasPairMember(participant.id),
+    const currentPair = await this.pairRepository.findByParticipantId(
+      participant.id,
     )
     if (!currentPair) {
-      throw new Error('所属ペアが存在しません。')
+      throw new Error('移動元ペアが存在しません。')
     }
 
     // 移動後のペア
-    const destinationPair = allPairs.find((pair) =>
-      pair.id.equals(new PairId(pairId)),
+    const destinationPair = await this.pairRepository.findById(
+      new PairId(pairId),
     )
     if (!destinationPair) {
       throw new Error('移動先ペアが存在しません。')
