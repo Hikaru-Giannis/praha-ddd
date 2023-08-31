@@ -4,6 +4,7 @@ import { createActiveTeam, createInactiveTeam } from '@testUtil/team.factory'
 import { Test, TestingModule } from '@nestjs/testing'
 import { tokens } from 'src/tokens'
 import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-memory.repository'
+import { NoTeamFoundToAssignException } from '../no-team-found-to-assign.exception'
 
 describe('AssignTeamService', () => {
   let testApp: TestingModule
@@ -101,7 +102,7 @@ describe('AssignTeamService', () => {
     expect(activeTeam1.id.equals(team.id)).toBeTruthy()
   })
 
-  it('非活性化チームと活性化チームが存在しない場合、例外エラーを返す', async () => {
+  it('割り当てるチームが存在しない場合、例外エラーを返す', async () => {
     // arrange
     const teamInMemoryRepository = testApp.get(tokens.ITeamRepository)
     teamInMemoryRepository.items = []
@@ -110,6 +111,8 @@ describe('AssignTeamService', () => {
     const assignTeamService = testApp.get(tokens.AssignTeamService)
 
     // assert
-    await expect(assignTeamService.assign(participant)).rejects.toThrowError()
+    await expect(assignTeamService.assign(participant)).rejects.toThrow(
+      NoTeamFoundToAssignException,
+    )
   })
 })

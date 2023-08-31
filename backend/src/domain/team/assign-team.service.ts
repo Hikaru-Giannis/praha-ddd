@@ -4,6 +4,7 @@ import { Team } from './team'
 import { TeamMember } from './team-member'
 import { ITeamRepository } from './team.repository'
 import { tokens } from 'src/tokens'
+import { NoTeamFoundToAssignException } from './no-team-found-to-assign.exception'
 
 export class AssignTeamService {
   public constructor(
@@ -52,10 +53,8 @@ export class AssignTeamService {
       return
     }
 
-    // TODO 管理者にメール送信
-    throw new Error('割り当てるチームが見つかりませんでした')
-
-    // q: 割り当てるチームが見つかりませんでした を英訳すると？
-    // a: No team found to assign
+    throw new NoTeamFoundToAssignException(
+      '割り当てるチームが見つかりませんでした',
+    )
   }
 }
