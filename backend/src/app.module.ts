@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { SampleController } from './controller/sample/some-data.controller'
 import { tokens } from './tokens'
 import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
 import { TeamIndexController } from './controller/team/team-index.controller'
@@ -39,7 +38,6 @@ import { AssignTaskProgressesService } from './domain/task-progress/assign-task-
 @Module({
   imports: [],
   controllers: [
-    SampleController,
     ParticipantIndexController,
     ParticipantPostController,
     ParticipantPatchController,
