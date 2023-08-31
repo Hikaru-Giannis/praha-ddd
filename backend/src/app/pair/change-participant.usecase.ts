@@ -21,7 +21,7 @@ export class ChangePaiticipantUseCase {
       throw new Error('参加者が存在しません。')
     }
 
-    const allPairs = await this.pairRepository.fetchAll()
+    const allPairs = await this.pairRepository.findAll()
 
     // 移動前のペア
     const currentPair = allPairs.find((pair) =>

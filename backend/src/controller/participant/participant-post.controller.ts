@@ -29,6 +29,7 @@ export class ParticipantPostController {
       if (error instanceof DomainValidationError) {
         return { status: 422, message: error.message }
       }
+      console.error(error)
       return { status: 500 }
     }
   }

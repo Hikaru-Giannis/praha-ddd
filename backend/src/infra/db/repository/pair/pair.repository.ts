@@ -129,8 +129,13 @@ export class PairRepository implements IPairRepository {
 
     await Promise.all(
       allProperties.pairMembers.map(async (pairMember) => {
-        await this.prismaClient.pairMember.create({
-          data: {
+        await this.prismaClient.pairMember.upsert({
+          where: { id: pairMember.id },
+          update: {
+            pair_id: pair.id.value,
+            participant_id: pairMember.participantId,
+          },
+          create: {
             id: pairMember.id,
             pair_id: pair.id.value,
             participant_id: pairMember.participantId,

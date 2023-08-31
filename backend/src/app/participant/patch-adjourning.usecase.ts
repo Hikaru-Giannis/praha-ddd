@@ -29,7 +29,7 @@ export class PatchAdjourningUseCase {
     await this.participantRepository.save(updatedParticipant)
 
     // 所属しているチームを取得
-    const teams = await this.teamRepository.fetchAll()
+    const teams = await this.teamRepository.findAll()
     const team = teams.find((team) => team.hasTeamMember(updatedParticipant.id))
     if (team === undefined) {
       throw new Error('チームが存在しません。')
