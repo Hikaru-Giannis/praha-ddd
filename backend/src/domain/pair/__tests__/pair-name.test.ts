@@ -1,4 +1,4 @@
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { PairName } from '../PairName'
 
 describe('PairName', () => {
@@ -8,11 +8,11 @@ describe('PairName', () => {
   })
 
   test('英字ではない場合、エラーを投げるか', () => {
-    expect(() => new PairName('1')).toThrow(DomainValidationError)
+    expect(() => new PairName('1')).toThrow(DomainValidationException)
   })
 
   test('1文字以上の英字の場合、エラーを投げるか', () => {
-    expect(() => new PairName('AB')).toThrow(DomainValidationError)
+    expect(() => new PairName('AB')).toThrow(DomainValidationException)
   })
 
   test('次の英字のペア名を返すか', () => {
@@ -23,7 +23,7 @@ describe('PairName', () => {
 
   test('最後のペア名だった場合、エラーを投げるか', () => {
     const pairName = new PairName('Z')
-    expect(() => pairName.next).toThrow(DomainValidationError)
+    expect(() => pairName.next).toThrow(DomainValidationException)
   })
 
   test('同じペア名の比較でTrueを返すか', () => {

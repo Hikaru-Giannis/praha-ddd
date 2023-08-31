@@ -1,10 +1,10 @@
-import { DomainValidationError } from '../error/domain-validation.error'
+import { DomainValidationException } from '../error/domain-validation.exception'
 
 export class Email {
   public readonly value
   constructor(value: string) {
     if (!this.validateEmail(value)) {
-      throw new DomainValidationError(
+      throw new DomainValidationException(
         'メールアドレスの形式が正しくありません。',
       )
     }

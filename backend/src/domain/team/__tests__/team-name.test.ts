@@ -1,4 +1,4 @@
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { TeamName } from '../TeamName'
 
 describe('TeamName', () => {
@@ -10,13 +10,13 @@ describe('TeamName', () => {
   it('数字以外が含まれるとエラーを投げるか', () => {
     expect(() => {
       new TeamName('123abc')
-    }).toThrow(DomainValidationError)
+    }).toThrow(DomainValidationException)
   })
 
   it('3文字以上の数字だとエラーを投げるか', () => {
     expect(() => {
       new TeamName('1234')
-    }).toThrow(DomainValidationError)
+    }).toThrow(DomainValidationException)
   })
 
   it('正しい比較ができているか', () => {

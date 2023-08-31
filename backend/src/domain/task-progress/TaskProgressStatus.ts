@@ -1,4 +1,4 @@
-import { DomainValidationError } from '../error/domain-validation.error'
+import { DomainValidationException } from '../error/domain-validation.exception'
 
 export const TASK_STATUS = {
   NOT_STARTED: 'not_started',
@@ -12,7 +12,7 @@ export class TaskProgressStatus {
   public readonly value: TaskProgressStatusType
   public constructor(value: TaskProgressStatusType) {
     if (!Object.values(TASK_STATUS).includes(value)) {
-      throw new DomainValidationError('異常な状態値です。')
+      throw new DomainValidationException('異常な状態値です。')
     }
     this.value = value
   }

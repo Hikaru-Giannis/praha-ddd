@@ -5,7 +5,7 @@ import { IParticipantRepository } from 'src/domain/participant/participant.repos
 import { AssignTeamService } from 'src/domain/team/assign-team.service'
 import { Inject, Injectable } from '@nestjs/common'
 import { tokens } from 'src/tokens'
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { AssignTaskProgressesService } from 'src/domain/task-progress/assign-task-progresses.service'
 
 type StoreParticipantProps = {
@@ -39,7 +39,7 @@ export class StoreParticipantUseCase {
       (await this.validateEmailUniquenessService.isUnique(participant)) ===
       false
     ) {
-      throw new DomainValidationError('参加者は既に存在しています')
+      throw new DomainValidationException('参加者は既に存在しています')
     }
 
     // 参加者を保存

@@ -2,7 +2,7 @@ import { Controller, Body, Inject, Param, Patch } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PatchParticipantRequest } from './request/patch-participant-request'
 import { tokens } from 'src/tokens'
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { PatchParticipantingUseCase } from 'src/app/participant/patch-participanting.usecase'
 import { PatchAdjourningUseCase } from 'src/app/participant/patch-adjourning.usecase'
 import { PatchWithdrawnUseCase } from 'src/app/participant/patch-withdrawn.usecase'
@@ -48,13 +48,13 @@ export class ParticipantPatchController {
           )
           break
         default:
-          throw new DomainValidationError('status is invalid')
+          throw new DomainValidationException('status is invalid')
       }
 
       return { status: 200 }
     } catch (error) {
       console.error(error)
-      if (error instanceof DomainValidationError) {
+      if (error instanceof DomainValidationException) {
         return { status: 422, message: error.message }
       }
 

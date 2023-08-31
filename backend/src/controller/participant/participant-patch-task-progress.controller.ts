@@ -1,7 +1,7 @@
 import { Controller, Body, Inject, Param, Patch } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { tokens } from 'src/tokens'
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { ChangeTaskProgressUseCase } from 'src/app/pair/change-task-progress.usecase'
 import { PatchParticipantTaskProgressRequest } from './request/patch-participant-task-progress-request'
 
@@ -30,7 +30,7 @@ export class ParticipantPatchTaskProgressController {
       )
       return { status: 200 }
     } catch (error) {
-      if (error instanceof DomainValidationError) {
+      if (error instanceof DomainValidationException) {
         return { status: 422, message: error.message }
       }
       console.error(error)

@@ -3,7 +3,7 @@ import { ApiResponse } from '@nestjs/swagger'
 import { StoreParticipantUseCase } from 'src/app/participant/store-participant.usecase'
 import { PostParticipantRequest } from './request/post-participant-request'
 import { tokens } from 'src/tokens'
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 
 @Controller('participant')
 export class ParticipantPostController {
@@ -26,7 +26,7 @@ export class ParticipantPostController {
       })
       return { status: 200 }
     } catch (error) {
-      if (error instanceof DomainValidationError) {
+      if (error instanceof DomainValidationException) {
         return { status: 422, message: error.message }
       }
       console.error(error)

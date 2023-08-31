@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { AssignPairService } from 'src/domain/pair/assign-pair.service'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
@@ -23,7 +23,7 @@ export class PatchWithdrawnUseCase {
   async do(participantId: string, status: ParticipantStatusType) {
     const participant = await this.participantRepository.findById(participantId)
     if (!participant) {
-      throw new DomainValidationError('参加者が存在しません。')
+      throw new DomainValidationException('参加者が存在しません。')
     }
     const updatedParticipant = participant.changeStatus(status)
     await this.participantRepository.save(updatedParticipant)

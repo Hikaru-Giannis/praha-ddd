@@ -1,4 +1,4 @@
-import { DomainValidationError } from 'src/domain/error/domain-validation.error'
+import { DomainValidationException } from 'src/domain/error/domain-validation.exception'
 import { TaskName } from '../TaskName'
 
 describe('TaskName', () => {
@@ -15,7 +15,7 @@ describe('TaskName', () => {
     // Arrange
     // Act
     // Assert
-    expect(() => new TaskName('')).toThrow(DomainValidationError)
+    expect(() => new TaskName('')).toThrow(DomainValidationException)
   })
 
   it('256文字以上の課題名の場合は、例外を投げるか', () => {
@@ -23,6 +23,6 @@ describe('TaskName', () => {
     const taskName = new Array(257).join('a')
     // Act
     // Assert
-    expect(() => new TaskName(taskName)).toThrow(DomainValidationError)
+    expect(() => new TaskName(taskName)).toThrow(DomainValidationException)
   })
 })

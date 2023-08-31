@@ -54,5 +54,8 @@ export class AssignTeamService {
 
     // TODO 管理者にメール送信
     throw new Error('割り当てるチームが見つかりませんでした')
+
+    // q: 割り当てるチームが見つかりませんでした を英訳すると？
+    // a: No team found to assign
   }
 }

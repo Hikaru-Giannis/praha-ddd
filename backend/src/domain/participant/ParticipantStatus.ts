@@ -1,4 +1,4 @@
-import { DomainValidationError } from '../error/domain-validation.error'
+import { DomainValidationException } from '../error/domain-validation.exception'
 
 export const PARTICIPANT_STATUS = {
   PARTICIPATING: 'participating',
@@ -12,7 +12,7 @@ export class ParticipantStatus {
   public readonly value: ParticipantStatusType
   public constructor(value: ParticipantStatusType) {
     if (!Object.values(PARTICIPANT_STATUS).includes(value)) {
-      throw new DomainValidationError('異常な状態値です。')
+      throw new DomainValidationException('異常な状態値です。')
     }
     this.value = value
   }

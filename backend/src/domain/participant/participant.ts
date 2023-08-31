@@ -3,7 +3,7 @@ import { ParticipantStatus, ParticipantStatusType } from './ParticipantStatus'
 import { ParticipantId } from './ParticipantId'
 import { ParticipantName } from './ParticipantName'
 import { Email } from './Email'
-import { DomainValidationError } from '../error/domain-validation.error'
+import { DomainValidationException } from '../error/domain-validation.exception'
 
 type CreateProps = {
   name: string
@@ -68,10 +68,12 @@ export class Participant {
 
   public changeStatus(status: ParticipantStatusType): Participant {
     if (this.isWithdrawn) {
-      throw new DomainValidationError('既に退会済みです。')
+      throw new DomainValidationException('既に退会済みです。')
     }
     if (this.status.value === status) {
-      throw new DomainValidationError('同じ状態に変更することはできません。')
+      throw new DomainValidationException(
+        '同じ状態に変更することはできません。',
+      )
     }
     return new Participant(
       this.id,
