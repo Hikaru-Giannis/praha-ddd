@@ -4,6 +4,7 @@ import { PairMember } from './pair-member'
 import { ParticipantId } from '../participant/ParticipantId'
 import { TeamId } from '../team/TeamId'
 import { PairId } from './PairId'
+import { DomainException } from '../error/domain.exception'
 
 type CreateProps = {
   teamId: TeamId
@@ -73,7 +74,7 @@ export class Pair {
 
   public dividePair(pairMember: PairMember): [Pair, [PairMember, PairMember]] {
     if (this.isFull === false) {
-      throw new Error('ペアメンバーが満たされていません。')
+      throw new DomainException('ペアメンバーが満たされていません')
     }
 
     // 現状のメンバーからランダムに1人を選択する
@@ -82,7 +83,7 @@ export class Pair {
     ]
 
     if (!randomPairMember) {
-      throw new Error('No pair member found.')
+      throw new DomainException('ペアメンバーが見つかりませんでした')
     }
 
     return [
@@ -100,7 +101,7 @@ export class Pair {
 
   public assignPairMember(pairMember: PairMember): Pair {
     if (this.pairMembersCount >= this.MAX_PAIR_MEMBER_COUNT) {
-      throw new Error('ペアメンバーが満たされています。')
+      throw new DomainException('ペアメンバーが満たされています')
     }
 
     return new Pair(this.id, this.teamId, this.pairName, [
@@ -119,7 +120,7 @@ export class Pair {
 
   public movePairMember(participantId: ParticipantId): [Pair, PairMember] {
     if (this.isFull === false) {
-      throw new Error('ペアメンバーが満たされていません。')
+      throw new DomainException('ペアメンバーが満たされていません')
     }
 
     const pairMember = this.pairMembers.find((member) =>
@@ -127,7 +128,7 @@ export class Pair {
     )
 
     if (!pairMember) {
-      throw new Error('ペアメンバーが見つかりませんでした。')
+      throw new DomainException('ペアメンバーが見つかりませんでした')
     }
 
     return [

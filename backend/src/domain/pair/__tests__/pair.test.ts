@@ -5,6 +5,7 @@ import { PairName } from '../PairName'
 import { ulid } from 'ulid'
 import { TeamId } from 'src/domain/team/TeamId'
 import { Participant } from 'src/domain/participant/participant'
+import { DomainException } from 'src/domain/error/domain.exception'
 
 describe('Pair', () => {
   it('正常に作成できるか', () => {
@@ -133,8 +134,9 @@ describe('Pair', () => {
       latestPair,
     })
 
+    expect(() => notFullPair.dividePair(pairMember)).toThrow(DomainException)
     expect(() => notFullPair.dividePair(pairMember)).toThrow(
-      'ペアメンバーが満たされていません。',
+      'ペアメンバーが満たされていません',
     )
   })
 
@@ -190,7 +192,10 @@ describe('Pair', () => {
     })
 
     expect(() => latestPair.assignPairMember(pairMember)).toThrow(
-      'ペアメンバーが満たされています。',
+      DomainException,
+    )
+    expect(() => latestPair.assignPairMember(pairMember)).toThrow(
+      'ペアメンバーが満たされています',
     )
   })
 
