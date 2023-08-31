@@ -1,3 +1,4 @@
+import { DomainException } from 'src/domain/error/domain.exception'
 import { PARTICIPANT_STATUS } from '../ParticipantStatus'
 import { Participant } from '../participant'
 
@@ -38,5 +39,28 @@ describe('Participant', () => {
     )
     const allProps = adjournedParticipant.getAllProperties()
     expect(allProps.status).toBe(PARTICIPANT_STATUS.ADJOURNING)
+  })
+
+  it('参加者で同じ状態であればステータスを変更できないか', () => {
+    const participant = Participant.create(createProps)
+    expect(() => {
+      participant.changeStatus(PARTICIPANT_STATUS.PARTICIPATING)
+    }).toThrow(DomainException)
+    expect(() => {
+      participant.changeStatus(PARTICIPANT_STATUS.PARTICIPATING)
+    }).toThrow('同じ状態に変更することはできません')
+  })
+
+  it('退会済みの参加者はステータスを変更できないか', () => {
+    const participant = Participant.create(createProps)
+    const withdrawnParticipant = participant.changeStatus(
+      PARTICIPANT_STATUS.WITHDRAWN,
+    )
+    expect(() => {
+      withdrawnParticipant.changeStatus(PARTICIPANT_STATUS.PARTICIPATING)
+    }).toThrow(DomainException)
+    expect(() => {
+      withdrawnParticipant.changeStatus(PARTICIPANT_STATUS.PARTICIPATING)
+    }).toThrow('既に退会済みです')
   })
 })
