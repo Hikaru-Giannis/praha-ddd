@@ -5,6 +5,8 @@ import { Pair } from './pair'
 import { Inject } from '@nestjs/common'
 import { tokens } from 'src/tokens'
 import { ITeamRepository } from '../team/team.repository'
+import { DomainException } from '../error/domain.exception'
+import { NoPairFoundToAssignException } from './no-pair-found-to-assign.exception'
 
 export class AssignPairService {
   constructor(
@@ -17,7 +19,9 @@ export class AssignPairService {
   public async assign(participant: Participant): Promise<void> {
     const team = await this.teamRepository.findByParticipantId(participant.id)
     if (!team) {
-      throw new Error('参加者が所属しているチームが見つかりませんでした')
+      throw new DomainException(
+        '参加者が所属しているチームが見つかりませんでした',
+      )
     }
     const pairs = await this.pairRepository.findManyByTeamId(team.id)
 
@@ -38,7 +42,7 @@ export class AssignPairService {
         // 最新のペアの名前を取得する
         const latestPair = pairs[pairs.length - 1]
         if (!latestPair) {
-          throw new Error('最新のペアの取得に失敗しました')
+          throw new DomainException('最新のペアの取得に失敗しました')
         }
         const newPairMember = PairMember.create({
           participantId: participant.id,
@@ -63,7 +67,8 @@ export class AssignPairService {
       return
     }
 
-    // TODO 管理者にメール送信
-    throw new Error('割り当てるペアが見つかりませんでした')
+    throw new NoPairFoundToAssignException(
+      '割り当てるペアが見つかりませんでした',
+    )
   }
 }

@@ -6,6 +6,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { tokens } from 'src/tokens'
 import { PairInMemoryRepository } from 'src/infra/db/repository/pair/pair.in-memory.repository'
 import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-memory.repository'
+import { DomainException } from 'src/domain/error/domain.exception'
+import { NoPairFoundToAssignException } from '../no-pair-found-to-assign.exception'
 
 describe('AssignPairService', () => {
   let testApp: TestingModule
@@ -36,7 +38,7 @@ describe('AssignPairService', () => {
     }).compile()
   })
 
-  it('参加者がペアに正常に割り当てられ、そのペアが返される', async () => {
+  it('ペアが満員ではない場合、そのペアに対して参加者が追加されること。', async () => {
     // arrange
     const team = createTeam(participant.id)
     const teamRepository = testApp.get(tokens.ITeamRepository)
@@ -55,6 +57,39 @@ describe('AssignPairService', () => {
     expect(assignedPair.id.equals(pair.id)).toBeTruthy()
   })
 
+  it('ペアが満員の場合、新しいペアが作成されること。', async () => {
+    // arrange
+    const team = createTeam(participant.id)
+    const teamRepository = testApp.get(tokens.ITeamRepository)
+    teamRepository.items = [team]
+
+    const pairRepository = testApp.get(tokens.IPairRepository)
+    const pair = createPair(3, team.id)
+    pairRepository.items = [pair]
+
+    // act
+    const assignPairService = testApp.get(tokens.AssignPairService)
+    await assignPairService.assign(participant)
+
+    // assert
+    const pairs = await pairRepository.findManyByTeamId(team.id)
+    expect(pairs.length).toBe(2)
+  })
+
+  it('参加者が属しているチームが存在しない場合、エラーがスローされること', async () => {
+    // arrange
+    const teamRepository = testApp.get(tokens.ITeamRepository)
+    teamRepository.items = []
+
+    // act
+    const assignPairService = testApp.get(tokens.AssignPairService)
+
+    // assert
+    await expect(assignPairService.assign(participant)).rejects.toThrow(
+      DomainException,
+    )
+  })
+
   it('チームにペアが存在しない場合、エラーがスローされること', async () => {
     // arrange
     const team = createTeam(participant.id)
@@ -65,7 +100,9 @@ describe('AssignPairService', () => {
     const assignPairService = testApp.get(tokens.AssignPairService)
 
     // assert
-    await expect(assignPairService.assign(participant)).rejects.toThrowError()
+    await expect(assignPairService.assign(participant)).rejects.toThrow(
+      NoPairFoundToAssignException,
+    )
   })
 
   it('選択されたペアが満員の場合、そのペアが分割され、新しいペアが作成されること。', async () => {
