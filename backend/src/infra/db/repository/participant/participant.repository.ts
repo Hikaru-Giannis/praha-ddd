@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { Email } from 'src/domain/participant/Email'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { Participant } from 'src/domain/participant/participant'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { tokens } from 'src/tokens'
@@ -12,16 +13,16 @@ export class ParticipantRepository implements IParticipantRepository {
     private prismaClient: PrismaClient,
   ) {}
 
-  public async fetchAll(): Promise<Participant[]> {
+  public async findAll(): Promise<Participant[]> {
     const participants = await this.prismaClient.participant.findMany()
     return participants.map((participant) =>
       Participant.reconstruct(participant),
     )
   }
 
-  public async findById(id: string): Promise<Participant | null> {
+  public async findById(id: ParticipantId): Promise<Participant | null> {
     const participant = await this.prismaClient.participant.findUnique({
-      where: { id },
+      where: { id: id.value },
     })
     return participant ? Participant.reconstruct(participant) : null
   }

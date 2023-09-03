@@ -3,6 +3,8 @@ import { tokens } from 'src/tokens'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { PairId } from 'src/domain/pair/PairId'
+import { ParticipantId } from 'src/domain/participant/ParticipantId'
+import { DomainException } from 'src/domain/error/domain.exception'
 
 @Injectable()
 export class ChangePaiticipantUseCase {
@@ -14,9 +16,11 @@ export class ChangePaiticipantUseCase {
   ) {}
 
   async do(participantId: string, pairId: string) {
-    const participant = await this.participantRepository.findById(participantId)
+    const participant = await this.participantRepository.findById(
+      new ParticipantId(participantId),
+    )
     if (!participant) {
-      throw new Error('参加者が存在しません。')
+      throw new DomainException('参加者が存在しません')
     }
 
     // 移動前のペア
@@ -24,7 +28,7 @@ export class ChangePaiticipantUseCase {
       participant.id,
     )
     if (!currentPair) {
-      throw new Error('移動元ペアが存在しません。')
+      throw new DomainException('移動元ペアが存在しません')
     }
 
     // 移動後のペア
@@ -32,7 +36,7 @@ export class ChangePaiticipantUseCase {
       new PairId(pairId),
     )
     if (!destinationPair) {
-      throw new Error('移動先ペアが存在しません。')
+      throw new DomainException('移動先ペアが存在しません')
     }
 
     // 移動前のペアから移動参加者を削除
