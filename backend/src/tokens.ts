@@ -24,4 +24,5 @@ export const tokens = {
   IParticipantSearchQS: Symbol('IParticipantSearchQS'),
   GetParticipantSearchUseCase: Symbol('GetParticipantSearchUseCase'),
   AssignTaskProgressesService: Symbol('AssignTaskProgressesService'),
+  EmailSender: Symbol('EmailSender'),
 }

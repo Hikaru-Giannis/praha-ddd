@@ -34,6 +34,7 @@ import { PatchAdjourningUseCase } from './app/participant/patch-adjourning.useca
 import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase'
 import { TaskDbRepository } from './infra/db/repository/task/task.db.repository'
 import { AssignTaskProgressesService } from './domain/task-progress/assign-task-progresses.service'
+import { EmailMockSender } from './infra/email/email.mock.repository'
 
 @Module({
   imports: [],
@@ -148,6 +149,10 @@ import { AssignTaskProgressesService } from './domain/task-progress/assign-task-
     {
       provide: tokens.AssignTaskProgressesService,
       useClass: AssignTaskProgressesService,
+    },
+    {
+      provide: tokens.EmailSender,
+      useClass: EmailMockSender,
     },
   ],
 })

@@ -9,6 +9,9 @@ import { DomainValidationException } from 'src/domain/error/domain-validation.ex
 import { AssignTaskProgressesService } from 'src/domain/task-progress/assign-task-progresses.service'
 import { NoTeamFoundToAssignException } from 'src/domain/team/no-team-found-to-assign.exception'
 import { NoPairFoundToAssignException } from 'src/domain/pair/no-pair-found-to-assign.exception'
+import { NoTeamFoundAssignMail } from 'src/domain/team/no-team-found-assign.mail'
+import { EmailSender } from 'src/domain/email/email-sender'
+import { NoPairFoundAssignMail } from 'src/domain/pair/no-pair-found-assign.mail'
 
 type StoreParticipantProps = {
   name: string
@@ -28,6 +31,8 @@ export class StoreParticipantUseCase {
     private readonly assignPairService: AssignPairService,
     @Inject(tokens.AssignTaskProgressesService)
     private readonly assignTaskProgressesService: AssignTaskProgressesService,
+    @Inject(tokens.EmailSender)
+    private readonly emailSender: EmailSender,
   ) {}
 
   public async do({ name, email }: StoreParticipantProps) {
@@ -58,11 +63,15 @@ export class StoreParticipantUseCase {
       await this.assignTaskProgressesService.assign(participant.id)
     } catch (error) {
       if (error instanceof NoTeamFoundToAssignException) {
-        // TODO 管理者に通知
+        // 管理者に通知
+        const noTeamFoundAssignMail = new NoTeamFoundAssignMail()
+        await this.emailSender.send(noTeamFoundAssignMail)
       }
 
       if (error instanceof NoPairFoundToAssignException) {
-        // TODO 管理者に通知
+        // 管理者に通知
+        const noPairFoundAssignMail = new NoPairFoundAssignMail()
+        await this.emailSender.send(noPairFoundAssignMail)
       }
     }
   }
