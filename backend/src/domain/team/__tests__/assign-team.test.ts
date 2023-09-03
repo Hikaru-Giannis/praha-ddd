@@ -3,7 +3,7 @@ import { AssignTeamService } from '../assign-team.service'
 import { createActiveTeam, createInactiveTeam } from '@testUtil/team.factory'
 import { Test, TestingModule } from '@nestjs/testing'
 import { tokens } from 'src/tokens'
-import { TeamInMemoryRepository } from 'src/infra/db/repository/team/team.in-memory.repository'
+import { TeamInMemoryRepository } from 'src/infra/in-memory/team/team.in-memory.repository'
 import { NoTeamFoundToAssignException } from '../no-team-found-to-assign.exception'
 
 describe('AssignTeamService', () => {

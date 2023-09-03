@@ -2,7 +2,7 @@ import { ValidateEmailUniquenessService } from '../validate-email-uniqueness.ser
 import { Participant } from '../participant'
 import { Test, TestingModule } from '@nestjs/testing'
 import { tokens } from 'src/tokens'
-import { ParticipantInMemoryRepository } from 'src/infra/db/repository/participant/participant.in-memory.repository'
+import { ParticipantInMemoryRepository } from 'src/infra/in-memory/participant/participant.in-memory.repository'
 
 describe('ValidateEmailUniquenessService', () => {
   let testApp: TestingModule
