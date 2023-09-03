@@ -10,7 +10,7 @@ import { TeamId } from 'src/domain/team/TeamId'
 import { tokens } from 'src/tokens'
 
 @Injectable()
-export class PairRepository implements IPairRepository {
+export class PairDbRepository implements IPairRepository {
   public constructor(
     @Inject(tokens.PrismaClient)
     private prismaClient: PrismaClient,

@@ -8,7 +8,7 @@ import { TeamId } from 'src/domain/team/TeamId'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
 
 @Injectable()
-export class TeamRepository implements ITeamRepository {
+export class TeamDbRepository implements ITeamRepository {
   public constructor(
     @Inject(tokens.PrismaClient)
     private prismaClient: PrismaClient,

@@ -7,7 +7,7 @@ import { TaskId } from 'src/domain/task/TaskId'
 import { tokens } from 'src/tokens'
 
 @Injectable()
-export class TaskProgressRepository implements ITaskProgressRepository {
+export class TaskProgressDbRepository implements ITaskProgressRepository {
   public constructor(
     @Inject(tokens.PrismaClient)
     private prismaClient: PrismaClient,

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { tokens } from './tokens'
-import { ParticipantRepository } from './infra/db/repository/participant/participant.repository'
+import { ParticipantDbRepository } from './infra/db/repository/participant/participant.db.repository'
 import { TeamIndexController } from './controller/team/team-index.controller'
 import { PrismaClient } from '@prisma/client'
 import { PairIndexController } from './controller/pair/pair-index.controller'
@@ -8,8 +8,8 @@ import { ParticipantIndexController } from './controller/participant/participant
 import { ParticipantQS } from './infra/db/query-service/participant/participant.qs'
 import { GetParticipantIndexUseCase } from './app/participant/get-participant-index.usecase'
 import { ValidateEmailUniquenessService } from './domain/participant/validate-email-uniqueness.service'
-import { TeamRepository } from './infra/db/repository/team/team.repository'
-import { PairRepository } from './infra/db/repository/pair/pair.repository'
+import { TeamDbRepository } from './infra/db/repository/team/team.db.repository'
+import { PairDbRepository } from './infra/db/repository/pair/pair.db.repository'
 import { ParticipantPostController } from './controller/participant/participant-post.controller'
 import { StoreParticipantUseCase } from './app/participant/store-participant.usecase'
 import { ParticipantPatchController } from './controller/participant/participant-patch.controller'
@@ -24,7 +24,7 @@ import { ChangePaiticipantUseCase } from './app/pair/change-participant.usecase'
 import { AssignTeamService } from './domain/team/assign-team.service'
 import { AssignPairService } from './domain/pair/assign-pair.service'
 import { ChangeTaskProgressUseCase } from './app/pair/change-task-progress.usecase'
-import { TaskProgressRepository } from './infra/db/repository/task-progress/task-progress.repository'
+import { TaskProgressDbRepository } from './infra/db/repository/task-progress/task-progress.db.repository'
 import { ParticipantPatchTaskProgressController } from './controller/participant/participant-patch-task-progress.controller'
 import { ParticipantSearchQS } from './infra/db/query-service/participant/participant-search.qs'
 import { GetParticipantSearchUseCase } from './app/participant/get-participant-search.usecase'
@@ -32,7 +32,7 @@ import { ParticipantSearchController } from './controller/participant/participan
 import { PatchParticipantingUseCase } from './app/participant/patch-participanting.usecase'
 import { PatchAdjourningUseCase } from './app/participant/patch-adjourning.usecase'
 import { PatchWithdrawnUseCase } from './app/participant/patch-withdrawn.usecase'
-import { TaskRepository } from './infra/db/repository/task/task.repository'
+import { TaskDbRepository } from './infra/db/repository/task/task.db.repository'
 import { AssignTaskProgressesService } from './domain/task-progress/assign-task-progresses.service'
 
 @Module({
@@ -51,15 +51,15 @@ import { AssignTaskProgressesService } from './domain/task-progress/assign-task-
   providers: [
     {
       provide: tokens.IParticipantRepository,
-      useClass: ParticipantRepository,
+      useClass: ParticipantDbRepository,
     },
     {
       provide: tokens.ITeamRepository,
-      useClass: TeamRepository,
+      useClass: TeamDbRepository,
     },
     {
       provide: tokens.IPairRepository,
-      useClass: PairRepository,
+      useClass: PairDbRepository,
     },
     {
       provide: tokens.PrismaClient,
@@ -131,11 +131,11 @@ import { AssignTaskProgressesService } from './domain/task-progress/assign-task-
     },
     {
       provide: tokens.ITaskRepository,
-      useClass: TaskRepository,
+      useClass: TaskDbRepository,
     },
     {
       provide: tokens.ITaskProgressRepository,
-      useClass: TaskProgressRepository,
+      useClass: TaskProgressDbRepository,
     },
     {
       provide: tokens.IParticipantSearchQS,

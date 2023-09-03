@@ -7,7 +7,7 @@ import { IParticipantRepository } from 'src/domain/participant/participant.repos
 import { tokens } from 'src/tokens'
 
 @Injectable()
-export class ParticipantRepository implements IParticipantRepository {
+export class ParticipantDbRepository implements IParticipantRepository {
   public constructor(
     @Inject(tokens.PrismaClient)
     private prismaClient: PrismaClient,
