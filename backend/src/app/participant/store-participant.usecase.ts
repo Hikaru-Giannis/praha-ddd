@@ -73,6 +73,8 @@ export class StoreParticipantUseCase {
         const noPairFoundAssignMail = new NoPairFoundAssignMail()
         await this.emailSender.send(noPairFoundAssignMail)
       }
+
+      throw error
     }
   }
 }

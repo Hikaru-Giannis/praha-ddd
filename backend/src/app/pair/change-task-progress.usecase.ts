@@ -4,6 +4,7 @@ import { TaskProgressStatusType } from 'src/domain/task-progress/TaskProgressSta
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { Inject } from '@nestjs/common'
 import { tokens } from 'src/tokens'
+import { DomainException } from 'src/domain/error/domain.exception'
 
 export class ChangeTaskProgressUseCase {
   constructor(
@@ -22,7 +23,7 @@ export class ChangeTaskProgressUseCase {
     )
 
     if (!taskProgress) {
-      throw new Error('進捗が存在しません。')
+      throw new DomainException('進捗が存在しません')
     }
 
     const newTaskProgress = taskProgress.changeStatus(status)

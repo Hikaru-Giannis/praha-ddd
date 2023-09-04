@@ -51,6 +51,8 @@ export class PatchParticipantingUseCase {
         const noPairFoundAssignMail = new NoPairFoundAssignMail()
         await this.emailSender.send(noPairFoundAssignMail)
       }
+
+      throw error
     }
   }
 }

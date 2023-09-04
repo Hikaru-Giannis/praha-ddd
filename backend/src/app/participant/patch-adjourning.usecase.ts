@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { EmailSender } from 'src/domain/email/email-sender'
 import { DomainException } from 'src/domain/error/domain.exception'
 import { AssignPairService } from 'src/domain/pair/assign-pair.service'
 import { IPairRepository } from 'src/domain/pair/pair.repository'
 import { ParticipantId } from 'src/domain/participant/ParticipantId'
 import { ParticipantStatusType } from 'src/domain/participant/ParticipantStatus'
 import { IParticipantRepository } from 'src/domain/participant/participant.repository'
+import { InvalidTeamMail } from 'src/domain/team/invalid-team.mail'
 import { ITeamRepository } from 'src/domain/team/team.repository'
 import { tokens } from 'src/tokens'
 
@@ -19,6 +21,8 @@ export class PatchAdjourningUseCase {
     private readonly pairRepository: IPairRepository,
     @Inject(tokens.AssignPairService)
     private readonly assignPairService: AssignPairService,
+    @Inject(tokens.EmailSender)
+    private readonly emailSender: EmailSender,
   ) {}
 
   async do(participantId: string, status: ParticipantStatusType) {
@@ -44,7 +48,10 @@ export class PatchAdjourningUseCase {
       const removedTeam = team.removeTeamMember(updatedParticipant.id)
       await this.teamRepository.save(removedTeam)
       if (removedTeam.isInactive) {
-        // TODO 管理者にメール送信
+        // 管理者にメール送信
+        // メールは送信するが、処理は続行
+        const invalidTeamMail = new InvalidTeamMail(removedTeam)
+        await this.emailSender.send(invalidTeamMail)
       }
 
       // 所属しているペアを取得
@@ -73,6 +80,8 @@ export class PatchAdjourningUseCase {
         // ペアが有効な場合、ペアを更新
         await this.pairRepository.save(removedPair)
       }
-    } catch (error) {}
+    } catch (error) {
+      throw error
+    }
   }
 }

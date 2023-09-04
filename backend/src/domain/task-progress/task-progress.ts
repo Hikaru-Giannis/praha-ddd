@@ -5,8 +5,8 @@ import {
   TaskProgressStatus,
   TaskProgressStatusType,
 } from './TaskProgressStatus'
-import { DomainValidationException } from '../error/domain-validation.exception'
 import { TaskId } from '../task/TaskId'
+import { DomainException } from '../error/domain.exception'
 
 type CreateProps = {
   taskId: TaskId
@@ -57,9 +57,7 @@ export class TaskProgress {
 
   public changeStatus(status: TaskProgressStatusType): TaskProgress {
     if (this.status.isCompleted) {
-      throw new DomainValidationException(
-        '既に完了している課題は変更できません。',
-      )
+      throw new DomainException('既に完了している課題は変更できません。')
     }
     return new TaskProgress(
       this.id,
