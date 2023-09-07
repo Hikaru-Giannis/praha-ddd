@@ -8,8 +8,78 @@ generator client {
   provider        = "prisma-client-js"
 }
 
-model SomeData {
-  id        String    @id
-  required Boolean
-  number   Int     @db.SmallInt
+enum ParticipantStatus {
+  participating
+  adjourning
+  withdrawn
+}
+
+model Participant {
+  id     String @id
+  name   String @db.VarChar(255)
+  email  String @unique @db.VarChar(255)
+  status ParticipantStatus
+  teamMember TeamMember?
+  pairMember PairMember?
+  taskProgresses TaskProgress[]
+}
+
+enum TeamStatus {
+  active
+  inactive
+  disbanded
+}
+
+model Team {
+  id     String @id
+  name   String @db.VarChar(255)
+  status TeamStatus
+  members TeamMember[]
+  pairs Pair[]
+}
+
+model TeamMember {
+  id     String @id
+  participant_id String @unique
+  participant Participant @relation(fields: [participant_id], references: [id])
+  team_id String
+  team Team @relation(fields: [team_id], references: [id])
+}
+
+model Pair {
+  id     String @id
+  team_id String
+  team Team @relation(fields: [team_id], references: [id])
+  name   String @db.VarChar(255)
+  members PairMember[]
+}
+
+model PairMember {
+  id     String @id
+  participant_id String @unique
+  participant Participant @relation(fields: [participant_id], references: [id])
+  pair_id String
+  pair Pair @relation(fields: [pair_id], references: [id])
+}
+
+model Task {
+  id     String @id
+  name   String @db.VarChar(255)
+  progresses TaskProgress[]
+}
+
+enum TaskProgressStatus {
+  not_started
+  pending_review
+  completed
+}
+
+model TaskProgress {
+  id     String @id
+  task_id String
+  task Task @relation(fields: [task_id], references: [id])
+  participant_id String
+  participant Participant @relation(fields: [participant_id], references: [id])
+  status TaskProgressStatus
+  @@unique([task_id, participant_id])
 }
